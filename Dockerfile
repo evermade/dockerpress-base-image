@@ -17,6 +17,7 @@ RUN set -ex; \
     echo "deb https://packages.sury.org/nginx/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx.list; \
     \
     apt-get update; \
+    apt-get upgrade -y; \
     apt-get install -y --no-install-recommends \
         libjpeg-dev \
         libpng-dev \
