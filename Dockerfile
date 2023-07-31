@@ -1,4 +1,4 @@
-FROM php:8.2.8-fpm
+FROM php:8.2.8-fpm-bullseye
 
 LABEL maintainer="Evermade"
 
@@ -13,8 +13,8 @@ RUN set -ex; \
     ; \
     \
     # This adds a more frequently updated nginx apt repository
-    curl -o /etc/apt/trusted.gpg.d/nginx.gpg https://packages.sury.org/nginx/apt.gpg; \
-    echo "deb https://packages.sury.org/nginx/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx.list; \
+    curl -sSLo /usr/share/keyrings/deb.sury.org-nginx.gpg https://packages.sury.org/nginx/apt.gpg; \
+    echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx.list; \
     \
     apt-get update; \
     apt-get upgrade -y; \
