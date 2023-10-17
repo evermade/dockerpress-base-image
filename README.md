@@ -2,7 +2,6 @@
 
 A great base image for WordPress sites.
 
-
 ## Usage
 
 The base image is available on both [Docker Hub](https://hub.docker.com/r/evermadefi/dockerpress-base-image) and [GitHub Container Registry](https://github.com/evermade/dockerpress-base-image/pkgs/container/dockerpress-base-image).
@@ -11,7 +10,7 @@ We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:2.0.5
+FROM evermadefi/dockerpress-base-image:2.0.17
 
 # To use a specific semantic minor version
 FROM evermadefi/dockerpress-base-image:2.0
@@ -20,28 +19,27 @@ FROM evermadefi/dockerpress-base-image:2.0
 FROM evermadefi/dockerpress-base-image:2
 
 # To use a specific tag
-FROM evermadefi/dockerpress-base-image:v2.0.5
+FROM evermadefi/dockerpress-base-image:v2.0.17
 
 # To use a specific branch
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
-FROM evermadefi/dockerpress-base-image:c1db184a832a62409e25a552a69dc7592ac2e114
+FROM evermadefi/dockerpress-base-image:93233ddf75072565d23cc86c8a4583b16c8f4356
 
 # To use GitHub Container Registry instead of Docker Hub (you can use all the same tags described above)
-FROM ghcr.io/evermade/dockerpress-base-image:2.0.5
+FROM ghcr.io/evermade/dockerpress-base-image:2.0.17
 ```
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:2.0.5`
+`docker pull evermadefi/dockerpress-base-image:2.0.17`
 
 And for GitHub Container Registry, same thing:
 
-`docker pull ghcr.io/evermade/dockerpress-base-image:2.0.5`
+`docker pull ghcr.io/evermade/dockerpress-base-image:2.0.17`
 
 And enjoy!
-
 
 ## Contributing
 
@@ -66,7 +64,7 @@ And enjoy!
 
     ```md
     # Changelog summary
-    - Updated PHP base image to [8.0.27](https://www.php.net/ChangeLog-8.php#8.0.27)
+    - Updated PHP base image to [8.0.30](https://www.php.net/ChangeLog-8.php#8.0.30)
 
     https://hub.docker.com/r/evermadefi/dockerpress-base-image/
     https://github.com/evermade/dockerpress-base-image/pkgs/container/dockerpress-base-image
