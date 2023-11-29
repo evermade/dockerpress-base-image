@@ -10,7 +10,7 @@ We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:2.0.17
+FROM evermadefi/dockerpress-base-image:2.0.19
 
 # To use a specific semantic minor version
 FROM evermadefi/dockerpress-base-image:2.0
@@ -19,25 +19,25 @@ FROM evermadefi/dockerpress-base-image:2.0
 FROM evermadefi/dockerpress-base-image:2
 
 # To use a specific tag
-FROM evermadefi/dockerpress-base-image:v2.0.17
+FROM evermadefi/dockerpress-base-image:v2.0.19
 
 # To use a specific branch
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
-FROM evermadefi/dockerpress-base-image:93233ddf75072565d23cc86c8a4583b16c8f4356
+FROM evermadefi/dockerpress-base-image:4cd08eba0985970255f7e02870e1ceac14a69820
 
 # To use GitHub Container Registry instead of Docker Hub (you can use all the same tags described above)
-FROM ghcr.io/evermade/dockerpress-base-image:2.0.17
+FROM ghcr.io/evermade/dockerpress-base-image:2.0.19
 ```
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:2.0.17`
+`docker pull evermadefi/dockerpress-base-image:2.0.19`
 
 And for GitHub Container Registry, same thing:
 
-`docker pull ghcr.io/evermade/dockerpress-base-image:2.0.17`
+`docker pull ghcr.io/evermade/dockerpress-base-image:2.0.19`
 
 And enjoy!
 
@@ -58,7 +58,7 @@ And enjoy!
 
 ## Publishing a new version
 
-1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.0.5). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
+1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.0.20). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
 
 2. Write a description with the changelog for the release using the following template:
 
