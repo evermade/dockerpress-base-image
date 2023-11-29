@@ -10,34 +10,34 @@ We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:2.0.17
+FROM evermadefi/dockerpress-base-image:2.2.0
 
 # To use a specific semantic minor version
-FROM evermadefi/dockerpress-base-image:2.0
+FROM evermadefi/dockerpress-base-image:2.2
 
 # To use a specific semantic major version
 FROM evermadefi/dockerpress-base-image:2
 
 # To use a specific tag
-FROM evermadefi/dockerpress-base-image:v2.0.17
+FROM evermadefi/dockerpress-base-image:v2.2.0
 
 # To use a specific branch
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
-FROM evermadefi/dockerpress-base-image:93233ddf75072565d23cc86c8a4583b16c8f4356
+FROM evermadefi/dockerpress-base-image:02c91bbc026c70964f7c61debb3a65aea9494b87
 
 # To use GitHub Container Registry instead of Docker Hub (you can use all the same tags described above)
-FROM ghcr.io/evermade/dockerpress-base-image:2.0.17
+FROM ghcr.io/evermade/dockerpress-base-image:2.2.0
 ```
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:2.0.17`
+`docker pull evermadefi/dockerpress-base-image:2.2.0`
 
 And for GitHub Container Registry, same thing:
 
-`docker pull ghcr.io/evermade/dockerpress-base-image:2.0.17`
+`docker pull ghcr.io/evermade/dockerpress-base-image:2.2.0`
 
 And enjoy!
 
@@ -58,13 +58,13 @@ And enjoy!
 
 ## Publishing a new version
 
-1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.0.5). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
+1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.2.1). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
 
 2. Write a description with the changelog for the release using the following template:
 
     ```md
     # Changelog summary
-    - Updated PHP base image to [8.0.30](https://www.php.net/ChangeLog-8.php#8.0.30)
+    - Updated PHP base image to [8.2.13](https://www.php.net/ChangeLog-8.php#8.2.13)
 
     https://hub.docker.com/r/evermadefi/dockerpress-base-image/
     https://github.com/evermade/dockerpress-base-image/pkgs/container/dockerpress-base-image
