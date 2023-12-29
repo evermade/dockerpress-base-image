@@ -98,9 +98,11 @@ RUN set -ex; \
 	# Temporarily download and install master branch of imagick for php8.3
 	# See https://github.com/Imagick/imagick/issues/640 and
 	# https://github.com/evermade/dockerpress-base-image/actions/runs/7355478018/job/20024141869#step:8:5088
-	mkdir -p /usr/src/php/ext/imagick; \
-	curl -fsSL https://github.com/Imagick/imagick/archive/refs/heads/master.tar.gz | tar xvz -C "/usr/src/php/ext/imagick" --strip 1; \
-	pecl install imagick; \
+	mkdir imagick-3.7.0; \
+	curl -fsSL https://github.com/Imagick/imagick/archive/refs/heads/master.tar.gz | tar xvz -C imagick-3.7.0 --strip 1; \
+	tar --remove-files -acvf imagick.tgz imagick-3.7.0; \
+	pecl install --offline imagick.tgz; \
+	rm imagick.tgz; \
 	docker-php-ext-enable imagick; \
 	\
 	rm -rf /tmp/pear; \
