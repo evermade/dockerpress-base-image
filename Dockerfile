@@ -88,12 +88,10 @@ RUN set -ex; \
 	; \
 	pecl install \
 		igbinary \
-		# imagick-3.7.0 \
 		redis \
 	; \
 	docker-php-ext-enable \
 		igbinary \
-		# imagick \
 		redis \
 	; \
 	\
