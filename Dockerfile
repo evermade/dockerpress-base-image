@@ -17,6 +17,9 @@ ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a
 # Download the deb.sury.org apt archive keyring
 ADD --checksum=sha256:fc814e120cb28bbedf75b5e8df7a32e2b903c624d4f78bcd83dc6c4ae30a1dd5 --chmod=444 https://packages.sury.org/nginx/pool/main/d/debsuryorg-archive-keyring/debsuryorg-archive-keyring_2024.02.05%2B0~20240226.2%2Bdebian11~1.gbp343037_all.deb /tmp/debsuryorg-archive-keyring.deb
 
+# Download imagick source
+ADD --checksum=sha256:998d32bb9bbe0d48b685b26d44f0a1f8018dbff3a5c7e53da10c5d8b1bd7cd1d --chmod=444 https://codeload.github.com/Imagick/imagick/legacy.tar.gz/28f27044e435a2b203e32675e942eb8de620ee58 /usr/src/imagick.tar.gz
+
 # This can be used to force rebuild below while allowing use of cache mounts
 ARG BUILD_DATE="undefined"
 
@@ -166,14 +169,23 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 		--configureoptions='enable-redis-igbinary="yes" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="yes" with-liblz4="yes"' \
 		\
 		igbinary \
-		imagick-3.7.0 \
 		redis \
 	; \
 	docker-php-ext-enable \
 		igbinary \
-		imagick \
 		redis \
 	; \
+	\
+	# Temporarily download and install master branch of imagick for php8.3
+	# See https://github.com/Imagick/imagick/issues/640 and
+	# https://github.com/evermade/dockerpress-base-image/actions/runs/7355478018/job/20024141869#step:8:5088
+	mkdir imagick-3.7.0; \
+	tar -xvzf /usr/src/imagick.tar.gz -C imagick-3.7.0 --strip 1; \
+	rm /usr/src/imagick.tar.gz; \
+	tar --remove-files -acvf imagick.tar.gz imagick-3.7.0; \
+	pecl install --offline imagick.tar.gz; \
+	rm imagick.tar.gz; \
+	docker-php-ext-enable imagick; \
 	\
 	# Some misbehaving extensions end up outputting to stdout 🙈 (https://github.com/docker-library/wordpress/issues/669#issuecomment-993945967)
 	out="$(php -r 'exit(0);')"; \
