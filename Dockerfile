@@ -88,14 +88,23 @@ RUN set -ex; \
 	; \
 	pecl install \
 		igbinary \
-		imagick-3.7.0 \
+		# imagick-3.7.0 \
 		redis \
 	; \
 	docker-php-ext-enable \
 		igbinary \
-		imagick \
+		# imagick \
 		redis \
 	; \
+	\
+	# Temporarily download and install master branch of imagick for php8.3
+	# See https://github.com/Imagick/imagick/issues/640 and
+	# https://github.com/evermade/dockerpress-base-image/actions/runs/7355478018/job/20024141869#step:8:5088
+	mkdir -p /usr/src/php/ext/imagick; \
+	curl -fsSL https://github.com/Imagick/imagick/archive/refs/heads/master.tar.gz | tar xvz -C "/usr/src/php/ext/imagick" --strip 1; \
+	pecl install imagick; \
+	docker-php-ext-enable imagick; \
+	\
 	rm -rf /tmp/pear; \
 	\
 	# Some misbehaving extensions end up outputting to stdout 🙈 (https://github.com/docker-library/wordpress/issues/669#issuecomment-993945967)
