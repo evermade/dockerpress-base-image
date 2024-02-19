@@ -13,7 +13,8 @@ RUN set -ex; \
 	; \
 	\
 	# This adds a more frequently updated nginx apt repository
-	curl -sSLo /usr/share/keyrings/deb.sury.org-nginx.gpg https://packages.sury.org/nginx/apt.gpg; \
+	curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb; \
+	dpkg -i /tmp/debsuryorg-archive-keyring.deb; \
 	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $( lsb_release -sc ) main" > /etc/apt/sources.list.d/nginx.list; \
 	apt-get update; \
 	\
