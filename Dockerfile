@@ -77,6 +77,9 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 		\
 		# imagick
 		libmagickwand-dev \
+		\
+		# redis
+		liblz4-dev \
 	; \
 	\
 	# Configure PHP GD extension
@@ -87,7 +90,7 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	; \
 	\
 	# Compile and install PHP extensions
-	docker-php-ext-install -j "$(nproc)" \
+	docker-php-ext-install -j"$(nproc)" \
 		bcmath \
 		exif \
 		gd \
@@ -96,15 +99,18 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 		opcache \
 		zip \
 	; \
-	export MAKEFLAGS="-j $(nproc)"; \
+	export MAKEFLAGS="-j$(nproc)"; \
 	pecl install \
-		imagick-3.7.0 \
+		--onlyreqdeps \
+		--configureoptions='enable-redis-igbinary="yes" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="yes" with-liblz4="yes"' \
+		\
 		igbinary \
+		imagick-3.7.0 \
 		redis \
 	; \
 	docker-php-ext-enable \
-		imagick \
 		igbinary \
+		imagick \
 		redis \
 	; \
 	rm -rf /tmp/pear; \
