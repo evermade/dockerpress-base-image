@@ -32,7 +32,12 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 		\
 		# Nginx
 		nginx \
+		libnginx-mod-http-brotli \
+		libnginx-mod-http-cache-purge \
+		libnginx-mod-http-geoip \
+		libnginx-mod-http-geoip2 \
 		libnginx-mod-http-headers-more-filter \
+		libnginx-mod-http-image-filter \
 		\
 		# Tools
 		cron \
