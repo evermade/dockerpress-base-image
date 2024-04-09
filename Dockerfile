@@ -129,6 +129,9 @@ RUN set -ex; \
 	err="$(php --version 3>&1 1>&2 2>&3)"; \
 	[ -z "$err" ]; \
 	\
+	# Clean up useless leftovers
+	rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc; \
+	\
 	# Install WP-CLI
 	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
 	chmod +x wp-cli.phar; \
