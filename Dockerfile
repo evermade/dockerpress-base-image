@@ -122,7 +122,7 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual $savedAptMark; \
 	ldd "$extDir"/*.so \
-		| awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); print so }' \
+		| awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); printf "*%s\n", so }' \
 		| sort -u \
 		| xargs -r dpkg-query --search \
 		| cut -d: -f1 \
