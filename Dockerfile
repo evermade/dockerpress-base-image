@@ -78,7 +78,7 @@ RUN set -ex; \
 	; \
 	\
 	# Compile and install PHP extensions
-	docker-php-ext-install -j "$( nproc )" \
+	docker-php-ext-install -j "$(nproc)" \
 		bcmath \
 		exif \
 		gd \
@@ -87,6 +87,7 @@ RUN set -ex; \
 		opcache \
 		zip \
 	; \
+	export MAKEFLAGS="-j $(nproc)"; \
 	pecl install \
 		imagick-3.7.0 \
 		igbinary \
