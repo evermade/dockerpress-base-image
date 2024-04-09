@@ -133,11 +133,9 @@ RUN set -ex; \
 	rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc; \
 	\
 	# Install WP-CLI
-	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
-	chmod +x wp-cli.phar; \
-	mv wp-cli.phar /usr/local/bin/wp; \
+	curl -sSo /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
+	chmod +x /usr/local/bin/wp; \
 	\
 	# Install WP-CLI tab completions
-	curl -O https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash; \
-	mv wp-completion.bash /etc/wp-completion.bash; \
+	curl -sSo /etc/wp-completion.bash https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash; \
 	echo 'source /etc/wp-completion.bash' >> /etc/bash.bashrc
