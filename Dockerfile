@@ -17,6 +17,9 @@ RUN set -ex; \
 	dpkg -i /tmp/debsuryorg-archive-keyring.deb; \
 	rm /tmp/debsuryorg-archive-keyring.deb; \
 	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx.list; \
+	printf "Package: nginx nginx-* libnginx-mod-*\n\
+Pin: origin packages.sury.org\n\
+Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	apt-get update; \
 	\
 	# Upgrade apt packages
