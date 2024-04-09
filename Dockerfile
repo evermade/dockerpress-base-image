@@ -141,6 +141,9 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	# Clean up useless leftovers
 	rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc; \
 	\
+	# Create old brotli module config file for backwards compatibility
+	cat /etc/nginx/modules-enabled/50-mod-http-brotli-filter.conf /etc/nginx/modules-enabled/50-mod-http-brotli-static.conf > /etc/nginx/modules-enabled/50-mod-brotli.conf; \
+	\
 	# Install WP-CLI
 	curl -sSo /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
 	chmod +x /usr/local/bin/wp; \
