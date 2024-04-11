@@ -38,6 +38,8 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 		libnginx-mod-http-geoip2 \
 		libnginx-mod-http-headers-more-filter \
 		libnginx-mod-http-image-filter \
+		libnginx-mod-stream \
+		libnginx-mod-stream-geoip \
 		\
 		# Tools
 		cron \
