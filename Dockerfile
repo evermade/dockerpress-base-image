@@ -1,4 +1,4 @@
-FROM php:8.2.17-fpm-bullseye
+FROM php:8.2.18-fpm-bullseye
 
 LABEL maintainer="Evermade"
 
@@ -13,9 +13,13 @@ RUN set -ex; \
 	; \
 	\
 	# This adds a more frequently updated nginx apt repository
-	curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb; \
+	curl -sSo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb; \
 	dpkg -i /tmp/debsuryorg-archive-keyring.deb; \
-	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $( lsb_release -sc ) main" > /etc/apt/sources.list.d/nginx.list; \
+	rm /tmp/debsuryorg-archive-keyring.deb; \
+	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx.list; \
+	printf "Package: nginx nginx-* libnginx-mod-*\n\
+Pin: origin packages.sury.org\n\
+Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	apt-get update; \
 	\
 	# Upgrade apt packages
@@ -28,7 +32,14 @@ RUN set -ex; \
 		\
 		# Nginx
 		nginx \
+		libnginx-mod-http-brotli \
+		libnginx-mod-http-cache-purge \
+		libnginx-mod-http-geoip \
+		libnginx-mod-http-geoip2 \
 		libnginx-mod-http-headers-more-filter \
+		libnginx-mod-http-image-filter \
+		libnginx-mod-stream \
+		libnginx-mod-stream-geoip \
 		\
 		# Tools
 		cron \
@@ -68,6 +79,9 @@ RUN set -ex; \
 		\
 		# imagick
 		libmagickwand-dev \
+		\
+		# redis
+		liblz4-dev \
 	; \
 	\
 	# Configure PHP GD extension
@@ -78,7 +92,7 @@ RUN set -ex; \
 	; \
 	\
 	# Compile and install PHP extensions
-	docker-php-ext-install -j "$( nproc )" \
+	docker-php-ext-install -j"$(nproc)" \
 		bcmath \
 		exif \
 		gd \
@@ -87,14 +101,18 @@ RUN set -ex; \
 		opcache \
 		zip \
 	; \
+	export MAKEFLAGS="-j$(nproc)"; \
 	pecl install \
-		imagick-3.7.0 \
+		--onlyreqdeps \
+		--configureoptions='enable-redis-igbinary="yes" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="yes" with-liblz4="yes"' \
+		\
 		igbinary \
+		imagick-3.7.0 \
 		redis \
 	; \
 	docker-php-ext-enable \
-		imagick \
 		igbinary \
+		imagick \
 		redis \
 	; \
 	rm -rf /tmp/pear; \
@@ -112,7 +130,7 @@ RUN set -ex; \
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual $savedAptMark; \
 	ldd "$extDir"/*.so \
-		| awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); print so }' \
+		| awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); printf "*%s\n", so }' \
 		| sort -u \
 		| xargs -r dpkg-query --search \
 		| cut -d: -f1 \
@@ -128,12 +146,16 @@ RUN set -ex; \
 	err="$(php --version 3>&1 1>&2 2>&3)"; \
 	[ -z "$err" ]; \
 	\
+	# Clean up useless leftovers
+	rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc; \
+	\
+	# Create old brotli module config file for backwards compatibility
+	cat /etc/nginx/modules-enabled/50-mod-http-brotli-filter.conf /etc/nginx/modules-enabled/50-mod-http-brotli-static.conf > /etc/nginx/modules-enabled/50-mod-brotli.conf; \
+	\
 	# Install WP-CLI
-	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
-	chmod +x wp-cli.phar; \
-	mv wp-cli.phar /usr/local/bin/wp; \
+	curl -sSo /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
+	chmod +x /usr/local/bin/wp; \
 	\
 	# Install WP-CLI tab completions
-	curl -O https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash; \
-	mv wp-completion.bash /etc/wp-completion.bash; \
+	curl -sSo /etc/wp-completion.bash https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash; \
 	echo 'source /etc/wp-completion.bash' >> /etc/bash.bashrc

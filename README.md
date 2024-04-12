@@ -55,7 +55,6 @@ And enjoy!
 
 6. Once merged to master, a new build process will be automatically dispatched and once complete, the new image will be pushed to container registries with both the long and short commit hash and branch name as tags. The build process also automatically applies [Open Containers](https://opencontainers.org/) labels to the images.
 
-
 ## Publishing a new version
 
 1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.2.1). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
@@ -66,9 +65,9 @@ And enjoy!
     # Changelog summary
     - Updated PHP base image to [8.2.13](https://www.php.net/ChangeLog-8.php#8.2.13)
 
-    https://hub.docker.com/r/evermadefi/dockerpress-base-image/
-    https://github.com/evermade/dockerpress-base-image/pkgs/container/dockerpress-base-image
-    ```
+   https://hub.docker.com/r/evermadefi/dockerpress-base-image/
+   https://github.com/evermade/dockerpress-base-image/pkgs/container/dockerpress-base-image
+   ```
 
 3. Publish the new release
 
