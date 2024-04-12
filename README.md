@@ -10,34 +10,34 @@ We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:2.0.19
+FROM evermadefi/dockerpress-base-image:2.0.23
 
 # To use a specific semantic minor version
-FROM evermadefi/dockerpress-base-image:2.1
+FROM evermadefi/dockerpress-base-image:2.0
 
 # To use a specific semantic major version
 FROM evermadefi/dockerpress-base-image:2
 
 # To use a specific tag
-FROM evermadefi/dockerpress-base-image:v2.0.19
+FROM evermadefi/dockerpress-base-image:v2.0.23
 
 # To use a specific branch
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
-FROM evermadefi/dockerpress-base-image:4cd08eba0985970255f7e02870e1ceac14a69820
+FROM evermadefi/dockerpress-base-image:7bc4f022cc6bce284a03f79d0fba3b21ef492f92
 
 # To use GitHub Container Registry instead of Docker Hub (you can use all the same tags described above)
-FROM ghcr.io/evermade/dockerpress-base-image:2.0.19
+FROM ghcr.io/evermade/dockerpress-base-image:2.0.23
 ```
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:2.0.19`
+`docker pull evermadefi/dockerpress-base-image:2.0.23`
 
 And for GitHub Container Registry, same thing:
 
-`docker pull ghcr.io/evermade/dockerpress-base-image:2.0.19`
+`docker pull ghcr.io/evermade/dockerpress-base-image:2.0.23`
 
 And enjoy!
 
