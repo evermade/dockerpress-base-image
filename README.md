@@ -10,7 +10,7 @@ We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:2.1.5
+FROM evermadefi/dockerpress-base-image:2.1.9
 
 # To use a specific semantic minor version
 FROM evermadefi/dockerpress-base-image:2.1
@@ -19,25 +19,25 @@ FROM evermadefi/dockerpress-base-image:2.1
 FROM evermadefi/dockerpress-base-image:2
 
 # To use a specific tag
-FROM evermadefi/dockerpress-base-image:v2.1.5
+FROM evermadefi/dockerpress-base-image:v2.1.9
 
 # To use a specific branch
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
-FROM evermadefi/dockerpress-base-image:aa2bb613f514e855f457afa313fe31a5660fd47e
+FROM evermadefi/dockerpress-base-image:1ad8ef98d483aa9749877bcbde30a8f6cf418e81
 
 # To use GitHub Container Registry instead of Docker Hub (you can use all the same tags described above)
-FROM ghcr.io/evermade/dockerpress-base-image:2.1.5
+FROM ghcr.io/evermade/dockerpress-base-image:2.1.9
 ```
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:2.1.5`
+`docker pull evermadefi/dockerpress-base-image:2.1.9`
 
 And for GitHub Container Registry, same thing:
 
-`docker pull ghcr.io/evermade/dockerpress-base-image:2.1.5`
+`docker pull ghcr.io/evermade/dockerpress-base-image:2.1.9`
 
 And enjoy!
 
@@ -64,7 +64,7 @@ And enjoy!
    ```md
    # Changelog summary
 
-   - Updated PHP base image to [8.1.26](https://www.php.net/ChangeLog-8.php#8.1.26)
+   - Updated PHP base image to [8.1.28](https://www.php.net/ChangeLog-8.php#8.1.28)
 
    https://hub.docker.com/r/evermadefi/dockerpress-base-image/
    https://github.com/evermade/dockerpress-base-image/pkgs/container/dockerpress-base-image
