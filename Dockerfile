@@ -3,7 +3,7 @@ FROM php:8.1.28-fpm-bullseye
 LABEL maintainer="Evermade"
 
 # Install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/server-environment/#php-extensions)
-RUN set -ex; \
+RUN set -eux; \
 	\
 	# Nginx apt dependencies
 	apt-get update; \
