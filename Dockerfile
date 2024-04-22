@@ -146,9 +146,6 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	err="$(php --version 3>&1 1>&2 2>&3)"; \
 	[ -z "$err" ]; \
 	\
-	# Clean up useless leftovers
-	rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc; \
-	\
 	# Create old brotli module config file for backwards compatibility
 	cat /etc/nginx/modules-enabled/50-mod-http-brotli-filter.conf /etc/nginx/modules-enabled/50-mod-http-brotli-static.conf > /etc/nginx/modules-enabled/50-mod-brotli.conf; \
 	\
