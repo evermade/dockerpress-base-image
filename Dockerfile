@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.1.29-fpm-bullseye
+FROM php:8.0.30-fpm-bullseye
 
 LABEL maintainer="Evermade"
 
