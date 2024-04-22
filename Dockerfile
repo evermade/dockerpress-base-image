@@ -1,6 +1,43 @@
+# syntax=docker/dockerfile:1
+
 FROM php:8.1.28-fpm-bullseye
 
 LABEL maintainer="Evermade"
+
+ENV WP_CLI_GPG_KEYS 63AF7AA15067C05616FDDD88A3A2E8F226F0BC06
+ENV WP_CLI_VERSION 2.10.0
+
+# Download WP-CLI
+ADD --checksum=sha256:d5ceebc80e5dd6efad5389264bb6bbcb55d04c85cb6c5758313838cf5692848a --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
+ADD --checksum=sha256:4c6a93cecae7f499ca481fa7a6d6d4299c8b93214e5e5308e26770dbfd3631df --chmod=555 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar /usr/local/bin/wp
+
+# Download WP-CLI tab completions
+ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a18a395 --chmod=444 https://raw.githubusercontent.com/wp-cli/wp-cli/v$WP_CLI_VERSION/utils/wp-completion.bash /etc/wp-completion.bash
+
+# Verify signatures
+RUN set -eux; \
+	\
+	savedAptMark="$(apt-mark showmanual)"; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends gnupg; \
+	rm -rf /var/lib/apt/lists/*; \
+	\
+	export GNUPGHOME="$(mktemp -d)"; \
+	GPG_KEYS="$WP_CLI_GPG_KEYS"; \
+	for key in $GPG_KEYS; do \
+		gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
+	done; \
+	gpg --batch --verify /usr/local/bin/wp.asc /usr/local/bin/wp; \
+	rm /usr/local/bin/wp.asc; \
+	gpgconf --kill all; \
+	rm -rf "$GNUPGHOME"; \
+	\
+	apt-mark auto '.*' > /dev/null; \
+	apt-mark manual $savedAptMark > /dev/null; \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+
+# Download the deb.sury.org apt archive keyring
+ADD --checksum=sha256:b99022a02f6894450367f21615ad627a92bb56177d49e33bc75540c2a6dfba9e --chown=444 https://packages.sury.org/debsuryorg-archive-keyring.deb /tmp/debsuryorg-archive-keyring.deb
 
 # Install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/server-environment/#php-extensions)
 RUN set -eux; \
@@ -13,11 +50,10 @@ RUN set -eux; \
 	; \
 	\
 	# This adds a more frequently updated nginx apt repository
-	curl -sSo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb; \
 	dpkg -i /tmp/debsuryorg-archive-keyring.deb; \
 	rm /tmp/debsuryorg-archive-keyring.deb; \
 	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx.list; \
-	printf "Package: nginx nginx-* libnginx-mod-*\n\
+	printf "Package: debsuryorg* nginx* libnginx-mod-*\n\
 Pin: origin packages.sury.org\n\
 Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	apt-get update; \
@@ -149,10 +185,5 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	# Create old brotli module config file for backwards compatibility
 	cat /etc/nginx/modules-enabled/50-mod-http-brotli-filter.conf /etc/nginx/modules-enabled/50-mod-http-brotli-static.conf > /etc/nginx/modules-enabled/50-mod-brotli.conf; \
 	\
-	# Install WP-CLI
-	curl -sSo /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
-	chmod +x /usr/local/bin/wp; \
-	\
 	# Install WP-CLI tab completions
-	curl -sSo /etc/wp-completion.bash https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash; \
 	echo 'source /etc/wp-completion.bash' >> /etc/bash.bashrc

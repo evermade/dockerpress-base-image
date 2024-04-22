@@ -75,3 +75,15 @@ And enjoy!
 4. This automatically triggers the image builder GitHub Workflow and will, eventually, after some 30 minutes, push the new images with the appropriate tags and labels to Docker Hub and GitHub Container Registry. So, go get a cup of ☕️ while you wait.
 
 5. Once the build workflow is complete, you can pull the new image from either of the container registries as shown in the Usage section.
+
+## Adding third party downloads
+
+1. Check the integrity of the source yourself, that the contents are correct.
+
+2. Install an `ADD` instruction with the checksum and appropriate owner and permissions.
+
+3. If available, verify the file signatures with a known good GPG key.
+
+If the build is throwing a checksum mismatch error, the file contents must have changed and must be re-verified.
+
+If the signature cannot be verified, the file is not signed by a known good GPG key. If the GPG key used to sign the file looks valid, you should add it to the GPG key list.
