@@ -10,7 +10,7 @@ We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:2.1.9
+FROM evermadefi/dockerpress-base-image:2.1.10
 
 # To use a specific semantic minor version
 FROM evermadefi/dockerpress-base-image:2.1
@@ -19,25 +19,25 @@ FROM evermadefi/dockerpress-base-image:2.1
 FROM evermadefi/dockerpress-base-image:2
 
 # To use a specific tag
-FROM evermadefi/dockerpress-base-image:v2.1.9
+FROM evermadefi/dockerpress-base-image:v2.1.10
 
 # To use a specific branch
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
-FROM evermadefi/dockerpress-base-image:1ad8ef98d483aa9749877bcbde30a8f6cf418e81
+FROM evermadefi/dockerpress-base-image:c2f03ceda98b8df754d27c7b246eea7181351880
 
 # To use GitHub Container Registry instead of Docker Hub (you can use all the same tags described above)
-FROM ghcr.io/evermade/dockerpress-base-image:2.1.9
+FROM ghcr.io/evermade/dockerpress-base-image:2.1.10
 ```
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:2.1.9`
+`docker pull evermadefi/dockerpress-base-image:2.1.10`
 
 And for GitHub Container Registry, same thing:
 
-`docker pull ghcr.io/evermade/dockerpress-base-image:2.1.9`
+`docker pull ghcr.io/evermade/dockerpress-base-image:2.1.10`
 
 And enjoy!
 
@@ -57,7 +57,7 @@ And enjoy!
 
 ## Publishing a new version
 
-1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.1.6). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
+1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.1.11). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
 
 2. Write a description with the changelog for the release using the following template:
 
@@ -72,6 +72,6 @@ And enjoy!
 
 3. Publish the new release
 
-4. This automatically triggers the image builder GitHub Workflow and will, eventually, after some 15–30 minutes, push the new images with the appropriate tags and labels to Docker Hub and GitHub Container Registry. So, go get a cup of ☕️ while you wait.
+4. This automatically triggers the image builder GitHub Workflow and will, eventually, after some 30 minutes, push the new images with the appropriate tags and labels to Docker Hub and GitHub Container Registry. So, go get a cup of ☕️ while you wait.
 
 5. Once the build workflow is complete, you can pull the new image from either of the container registries as shown in the Usage section.
