@@ -147,6 +147,7 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 		zip \
 	; \
 	export MAKEFLAGS="-j$(nproc)"; \
+	pecl update-channels; \
 	pecl install \
 		--onlyreqdeps \
 		--configureoptions='enable-redis-igbinary="yes" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="yes" with-liblz4="yes"' \
