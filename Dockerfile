@@ -85,6 +85,7 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 		libnginx-mod-stream-geoip \
 		\
 		# Tools
+		brotli \
 		cron \
 		gnupg \
 		less \
