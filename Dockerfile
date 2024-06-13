@@ -102,10 +102,19 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 		moreutils \
 		rsyslog \
 		\
-		# Install certbot
-		certbot \
-		python3-certbot-nginx \
+		# Install certbot dependencies
+		python3 \
+		python3-venv \
 	; \
+	\
+	# Install certbot
+	python3 -m venv /opt/certbot/; \
+	/opt/certbot/bin/pip install --upgrade pip; \
+	/opt/certbot/bin/pip install certbot certbot-nginx; \
+	ln -s /opt/certbot/bin/certbot /usr/bin/certbot; \
+	certbot --version; \
+	echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q" > /etc/cron.d/certbot; \
+	mkdir /etc/letsencrypt; \
 	\
 	# Install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/server-environment/#php-extensions)
 	\
