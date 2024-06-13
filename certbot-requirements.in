@@ -1,0 +1,10 @@
+certbot
+certbot-nginx
+
+# Additional dependencies required by certbot:
+#
+# Collecting importlib-metadata>=4.6 (from certbot==2.11.0->-r /opt/certbot/requirements.txt (line 13))
+# ERROR: In --require-hashes mode, all requirements must have their versions pinned with ==. These do not:
+#     importlib-metadata>=4.6 from https://files.pythonhosted.org/packages/2d/0a/679461c511447ffaf176567d5c496d1de27cbe34a87df6677d7171b2fbd4/importlib_metadata-7.1.0-py3-none-any.whl (from certbot==2.11.0->-r /opt/certbot/requirements.txt (line 13))
+#
+importlib-metadata

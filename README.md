@@ -87,3 +87,11 @@ And enjoy!
 If the build is throwing a checksum mismatch error, the file contents must have changed and must be re-verified.
 
 If the signature cannot be verified, the file is not signed by a known good GPG key. If the GPG key used to sign the file looks valid, you should add it to the GPG key list.
+
+## Updating certbot and its dependencies
+
+1. Additional dependencies may be added to the `certbot-requirements.in` file if required.
+
+2. `pip-compile --allow-unsafe --generate-hashes certbot-requirements.in`
+
+3. Verify that the requirements are legit.

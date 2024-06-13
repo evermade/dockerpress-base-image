@@ -26,6 +26,8 @@ ARG DEBIAN_FRONTEND noninteractive
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
 	--mount=type=cache,sharing=private,target=/tmp/pear \
+	--mount=type=cache,sharing=private,target=/tmp/pip \
+	--mount=type=bind,source=./certbot-requirements.txt,target=/opt/certbot/requirements.txt \
 	\
 	set -eux; \
 	\
@@ -109,8 +111,8 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	\
 	# Install certbot
 	python3 -m venv /opt/certbot/; \
-	/opt/certbot/bin/pip install --upgrade pip; \
-	/opt/certbot/bin/pip install certbot certbot-nginx; \
+	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --upgrade pip; \
+	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --require-hashes --requirement /opt/certbot/requirements.txt; \
 	ln -s /opt/certbot/bin/certbot /usr/bin/certbot; \
 	certbot --version; \
 	echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q" > /etc/cron.d/certbot; \
