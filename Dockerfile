@@ -4,8 +4,8 @@ FROM php:8.1.29-fpm-bullseye
 
 LABEL maintainer="Evermade"
 
-ENV WP_CLI_GPG_KEYS 63AF7AA15067C05616FDDD88A3A2E8F226F0BC06
-ENV WP_CLI_VERSION 2.10.0
+ENV WP_CLI_GPG_KEYS="63AF7AA15067C05616FDDD88A3A2E8F226F0BC06"
+ENV WP_CLI_VERSION="2.10.0"
 
 # Download WP-CLI binary and signature
 ADD --checksum=sha256:d5ceebc80e5dd6efad5389264bb6bbcb55d04c85cb6c5758313838cf5692848a --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
@@ -18,10 +18,10 @@ ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a
 ADD --checksum=sha256:b99022a02f6894450367f21615ad627a92bb56177d49e33bc75540c2a6dfba9e --chmod=444 https://packages.sury.org/debsuryorg-archive-keyring.deb /tmp/debsuryorg-archive-keyring.deb
 
 # This can be used to force rebuild below while allowing use of cache mounts
-ARG BUILD_DATE undefined
+ARG BUILD_DATE="undefined"
 
 # Builders aren't interactive
-ARG DEBIAN_FRONTEND noninteractive
+ARG DEBIAN_FRONTEND="noninteractive"
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
