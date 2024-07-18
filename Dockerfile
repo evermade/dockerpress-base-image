@@ -115,7 +115,8 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --require-hashes --requirement /opt/certbot/requirements.txt; \
 	ln -s /opt/certbot/bin/certbot /usr/bin/certbot; \
 	certbot --version; \
-	echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q" > /etc/cron.d/certbot; \
+	printf "PATH=\"/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin\"\n\
+0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q\n" > /etc/cron.d/certbot; \
 	mkdir /etc/letsencrypt; \
 	\
 	# Install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/server-environment/#php-extensions)
