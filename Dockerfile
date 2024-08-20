@@ -5,11 +5,11 @@ FROM php:8.1.29-fpm-bullseye
 LABEL maintainer="Evermade"
 
 ENV WP_CLI_GPG_KEYS="63AF7AA15067C05616FDDD88A3A2E8F226F0BC06"
-ENV WP_CLI_VERSION="2.10.0"
+ENV WP_CLI_VERSION="2.11.0"
 
 # Download WP-CLI binary and signature
-ADD --checksum=sha256:d5ceebc80e5dd6efad5389264bb6bbcb55d04c85cb6c5758313838cf5692848a --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
-ADD --checksum=sha256:4c6a93cecae7f499ca481fa7a6d6d4299c8b93214e5e5308e26770dbfd3631df --chmod=555 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar /usr/local/bin/wp
+ADD --checksum=sha256:35a53c2b59296c39a5251e0f3190f81a4ebcba2f02c069566c7a7367485419e0 --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
+ADD --checksum=sha256:a39021ac809530ea607580dbf93afbc46ba02f86b6cffd03de4b126ca53079f6 --chmod=555 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar /usr/local/bin/wp
 
 # Download WP-CLI bash tab completions
 ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a18a395 --chmod=444 https://raw.githubusercontent.com/wp-cli/wp-cli/v$WP_CLI_VERSION/utils/wp-completion.bash /etc/wp-completion.bash
