@@ -112,7 +112,7 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	# Install certbot
 	python3 -m venv /opt/certbot/; \
 	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --upgrade pip; \
-	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --require-hashes --requirement /opt/certbot/requirements.txt; \
+	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --prefer-binary --require-hashes --requirement /opt/certbot/requirements.txt; \
 	ln -s /opt/certbot/bin/certbot /usr/bin/certbot; \
 	certbot --version; \
 	printf "PATH=\"/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin\"\n\
