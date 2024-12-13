@@ -126,6 +126,7 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	# Install build dependencies to compile PHP extensions
 	apt-get install -y --no-install-recommends \
 		# gd
+		libavif-dev \
 		libfreetype6-dev \
 		libjpeg-dev \
 		libpng-dev \
@@ -144,6 +145,7 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	\
 	# Configure PHP GD extension
 	docker-php-ext-configure gd \
+		--with-avif \
 		--with-freetype \
 		--with-jpeg \
 		--with-webp \
