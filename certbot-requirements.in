@@ -3,8 +3,13 @@ certbot-nginx
 
 # Additional dependencies required by certbot:
 #
-# Collecting importlib-metadata>=4.6 (from certbot==2.11.0->-r /opt/certbot/requirements.txt (line 13))
+# Collecting importlib_metadata>=4.6 (from certbot==4.0.0->-r /opt/certbot/requirements.txt (line 13))
 # ERROR: In --require-hashes mode, all requirements must have their versions pinned with ==. These do not:
-#     importlib-metadata>=4.6 from https://files.pythonhosted.org/packages/2d/0a/679461c511447ffaf176567d5c496d1de27cbe34a87df6677d7171b2fbd4/importlib_metadata-7.1.0-py3-none-any.whl (from certbot==2.11.0->-r /opt/certbot/requirements.txt (line 13))
+#     importlib_metadata>=4.6 from https://files.pythonhosted.org/packages/79/9d/0fb148dc4d6fa4a7dd1d8378168d9b4cd8d4560a6fbf6f0121c5fc34eb68/importlib_metadata-8.6.1-py3-none-any.whl (from certbot==4.0.0->-r /opt/certbot/requirements.txt (line 13))
 #
 importlib-metadata
+#
+# Collecting typing-extensions>=4.9 (from pyopenssl==25.0.0->-r /opt/certbot/requirements.txt (line 265))
+# ERROR: In --require-hashes mode, all requirements must have their versions pinned with ==. These do not:
+#     typing-extensions>=4.9 from https://files.pythonhosted.org/packages/8b/54/b1ae86c0973cc6f0210b53d508ca3641fb6d0c56823f288d108bc7ab3cc8/typing_extensions-4.13.2-py3-none-any.whl (from pyopenssl==25.0.0->-r /opt/certbot/requirements.txt (line 265))
+typing-extensions
