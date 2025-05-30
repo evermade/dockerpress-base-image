@@ -109,13 +109,15 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		logrotate \
 		moreutils \
 		rsyslog \
-		\
-		# Install certbot dependencies
+	; \
+	\
+	savedAptMark="$(apt-mark showmanual)"; \
+	\
+	# Install certbot
+	apt-get install -y --no-install-recommends \
 		python3 \
 		python3-venv \
 	; \
-	\
-	# Install certbot
 	python3 -m venv /opt/certbot/; \
 	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --upgrade pip; \
 	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --prefer-binary --require-hashes --requirement /opt/certbot/requirements.txt; \
@@ -128,8 +130,6 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	mkdir /etc/letsencrypt; \
 	\
 	# Install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/server-environment/#php-extensions)
-	\
-	savedAptMark="$(apt-mark showmanual)"; \
 	\
 	# Install build dependencies to compile PHP extensions
 	apt-get install -y --no-install-recommends \
