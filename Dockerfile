@@ -5,11 +5,11 @@ FROM php:8.0.30-fpm-bullseye
 LABEL maintainer="Evermade"
 
 ENV WP_CLI_GPG_KEYS="63AF7AA15067C05616FDDD88A3A2E8F226F0BC06"
-ENV WP_CLI_VERSION="2.11.0"
+ENV WP_CLI_VERSION="2.12.0"
 
 # Download WP-CLI binary and signature
-ADD --checksum=sha256:35a53c2b59296c39a5251e0f3190f81a4ebcba2f02c069566c7a7367485419e0 --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
-ADD --checksum=sha256:a39021ac809530ea607580dbf93afbc46ba02f86b6cffd03de4b126ca53079f6 --chmod=555 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar /usr/local/bin/wp
+ADD --checksum=sha256:9c2f9d93968d68ad2a8fa60eaf8f916f163740977be031b38d9ca6202e82b5be --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
+ADD --checksum=sha256:ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c --chmod=555 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar /usr/local/bin/wp
 
 # Download WP-CLI bash tab completions
 ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a18a395 --chmod=444 https://raw.githubusercontent.com/wp-cli/wp-cli/v$WP_CLI_VERSION/utils/wp-completion.bash /etc/wp-completion.bash
@@ -52,8 +52,8 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	apt-mark manual $savedAptMark > /dev/null; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
-	# Nginx apt dependencies
 	apt-get install -y --no-install-recommends \
+		# Nginx apt dependencies
 		apt-transport-https \
 		lsb-release \
 	; \
@@ -61,10 +61,16 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	# This adds a more frequently updated nginx apt repository
 	dpkg -i /tmp/debsuryorg-archive-keyring.deb; \
 	rm /tmp/debsuryorg-archive-keyring.deb; \
-	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx.list; \
-	printf "Package: debsuryorg* nginx* libnginx-mod-*\n\
-Pin: origin packages.sury.org\n\
-Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
+	{ \
+		echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main"; \
+		echo "deb-src [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main"; \
+	} | tee /etc/apt/sources.list.d/nginx.list; \
+	{ \
+		echo 'Package: debsuryorg* nginx* libnginx-mod-*'; \
+		echo 'Pin: origin packages.sury.org'; \
+		echo 'Pin-Priority: 1001'; \
+	} | tee /etc/apt/preferences.d/nginx; \
+	\
 	apt-get update; \
 	\
 	# Upgrade apt packages
@@ -103,25 +109,27 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 		logrotate \
 		moreutils \
 		rsyslog \
-		\
-		# Install certbot dependencies
+	; \
+	\
+	savedAptMark="$(apt-mark showmanual)"; \
+	\
+	# Install certbot
+	apt-get install -y --no-install-recommends \
 		python3 \
 		python3-venv \
 	; \
-	\
-	# Install certbot
 	python3 -m venv /opt/certbot/; \
 	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --upgrade pip; \
 	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --prefer-binary --require-hashes --requirement /opt/certbot/requirements.txt; \
 	ln -s /opt/certbot/bin/certbot /usr/bin/certbot; \
 	certbot --version; \
-	printf "PATH=\"/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin\"\n\
-0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q\n" > /etc/cron.d/certbot; \
+	{ \
+		echo 'PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"'; \
+		echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q"; \
+	} | tee /etc/cron.d/certbot; \
 	mkdir /etc/letsencrypt; \
 	\
 	# Install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/server-environment/#php-extensions)
-	\
-	savedAptMark="$(apt-mark showmanual)"; \
 	\
 	# Install build dependencies to compile PHP extensions
 	apt-get install -y --no-install-recommends \
@@ -206,8 +214,8 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	# Print nginx version information
 	nginx -V; \
 	\
-	# Test nginx configuration for failures
-	nginx -t; \
+	# Test nginx configuration for failures and print nginx config contents
+	nginx -T; \
 	\
 	# Create old brotli module config file for backwards compatibility
 	cat /etc/nginx/modules-enabled/50-mod-http-brotli-filter.conf /etc/nginx/modules-enabled/50-mod-http-brotli-static.conf > /etc/nginx/modules-enabled/50-mod-brotli.conf; \
