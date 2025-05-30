@@ -52,8 +52,8 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	apt-mark manual $savedAptMark > /dev/null; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
-	# Nginx apt dependencies
 	apt-get install -y --no-install-recommends \
+		# Nginx apt dependencies
 		apt-transport-https \
 		lsb-release \
 	; \
@@ -61,10 +61,16 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	# This adds a more frequently updated nginx apt repository
 	dpkg -i /tmp/debsuryorg-archive-keyring.deb; \
 	rm /tmp/debsuryorg-archive-keyring.deb; \
-	echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/nginx.list; \
-	printf "Package: debsuryorg* nginx* libnginx-mod-*\n\
-Pin: origin packages.sury.org\n\
-Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
+	{ \
+		echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main"; \
+		echo "deb-src [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main"; \
+	} | tee /etc/apt/sources.list.d/nginx.list; \
+	{ \
+		echo 'Package: debsuryorg* nginx* libnginx-mod-*'; \
+		echo 'Pin: origin packages.sury.org'; \
+		echo 'Pin-Priority: 1001'; \
+	} | tee /etc/apt/preferences.d/nginx; \
+	\
 	apt-get update; \
 	\
 	# Upgrade apt packages
@@ -115,8 +121,10 @@ Pin-Priority: 1001\n" > /etc/apt/preferences.d/nginx; \
 	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --prefer-binary --require-hashes --requirement /opt/certbot/requirements.txt; \
 	ln -s /opt/certbot/bin/certbot /usr/bin/certbot; \
 	certbot --version; \
-	printf "PATH=\"/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin\"\n\
-0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q\n" > /etc/cron.d/certbot; \
+	{ \
+		echo 'PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"'; \
+		echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q"; \
+	} | tee /etc/cron.d/certbot; \
 	mkdir /etc/letsencrypt; \
 	\
 	# Install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/server-environment/#php-extensions)
