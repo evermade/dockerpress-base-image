@@ -39,7 +39,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	# Regenerate /etc/ssl/certs/ca-certificates.crt to use the cURL.se provided CA bundle
 	update-ca-certificates --verbose --fresh; \
 	# Symlink the OpenSSL default cert file path to ca-certificates generated file path
-	ln -s /etc/ssl/certs/ca-certificates.crt /usr/lib/ssl/cert.pem; \
+	ln -vfs /etc/ssl/certs/ca-certificates.crt /usr/lib/ssl/cert.pem; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
 	apt-get update; \
