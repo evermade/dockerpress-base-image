@@ -179,8 +179,14 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		opcache \
 		zip \
 	; \
-	export MAKEFLAGS="-j$(nproc)"; \
+	\
+	# Ensure the PEAR Downloader.php is what we expect it to be for the next operation to make sense. Update accordingly when the file has changed.
+	echo '426ab5d7b1d7a3fecef05ba3a2cbb25ce60f631ea24b0eb88a571575caf92efa /usr/local/lib/php/PEAR/Downloader.php' | sha256sum --check; \
+	# PECL doesn't implement HTTP/1.1 chunked transfer encoding which is used on doc.php.net so we need to downgrade to HTTP/1.0
+	sed -i -e 's| HTTP/1\.1\\r\\n| HTTP/1.0\\r\\n|' /usr/local/lib/php/PEAR/Downloader.php; \
+	\
 	pecl update-channels; \
+	export MAKEFLAGS="-j$(nproc)"; \
 	pecl install \
 		--onlyreqdeps \
 		--configureoptions='enable-redis-igbinary="yes" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="yes" with-liblz4="yes"' \
