@@ -17,6 +17,9 @@ ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a
 # Download the deb.sury.org apt archive keyring
 ADD --checksum=sha256:d1df4b797498829bb4dbd23de7a88945924a0eac6bce9b6c68e6650c85187f5f --chmod=444 https://packages.sury.org/nginx/pool/main/d/debsuryorg-archive-keyring/debsuryorg-archive-keyring_2025.03.13_all.deb /tmp/debsuryorg-archive-keyring.deb
 
+# Download the latest CA Bundle from https://curl.se/docs/caextract.html
+ADD --checksum=sha256:ab3ee3651977a4178a702b0b828a4ee7b2bbb9127235b0ab740e2e15974bf5db --chmod=444 https://curl.se/ca/cacert-2025-05-20.pem /usr/local/share/ca-certificates/ca-bundle.crt
+
 # This can be used to force rebuild below while allowing use of cache mounts
 ARG BUILD_DATE="undefined"
 
@@ -30,6 +33,13 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=bind,source=./certbot-requirements.txt,target=/opt/certbot/requirements.txt \
 	\
 	set -eux; \
+	\
+	# Empty the conf file to remove all existing certificates
+	echo '' > /etc/ca-certificates.conf; \
+	# Regenerate /etc/ssl/certs/ca-certificates.crt to use the cURL.se provided CA bundle
+	update-ca-certificates --verbose --fresh; \
+	# Symlink the OpenSSL default cert file path to ca-certificates generated file path
+	ln -s /etc/ssl/certs/ca-certificates.crt /usr/lib/ssl/cert.pem; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
 	apt-get update; \
