@@ -34,12 +34,17 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	set -eux; \
 	\
-	# Empty the conf file to remove all existing certificates
-	echo '' > /etc/ca-certificates.conf; \
-	# Regenerate /etc/ssl/certs/ca-certificates.crt to use the cURL.se provided CA bundle
-	update-ca-certificates --verbose --fresh; \
-	# Symlink the OpenSSL default cert file path to ca-certificates generated file path
-	ln -vfs /etc/ssl/certs/ca-certificates.crt /usr/lib/ssl/cert.pem; \
+	flush_ca_certificates() { \
+		# Empty the conf file to remove all existing certificates
+		echo '' > /etc/ca-certificates.conf; \
+		# Regenerate /etc/ssl/certs/ca-certificates.crt to use the cURL.se provided CA bundle
+		update-ca-certificates --verbose --fresh; \
+		# Symlink the OpenSSL default cert file path to ca-certificates generated file path
+		ln -vfs /etc/ssl/certs/ca-certificates.crt /usr/lib/ssl/cert.pem; \
+	}; \
+	\
+	# Flush CA certificates first with our good bundle
+	flush_ca_certificates; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
 	apt-get update; \
@@ -85,6 +90,9 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	# Upgrade apt packages
 	apt-get upgrade -y; \
+	\
+	# Flush CA certificates again in case upgrade reset everything
+	flush_ca_certificates; \
 	\
 	# Install persistent apt packages
 	apt-get install -y --no-install-recommends \
