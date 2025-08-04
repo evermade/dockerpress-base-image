@@ -18,7 +18,7 @@ ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a
 ADD --checksum=sha256:d1df4b797498829bb4dbd23de7a88945924a0eac6bce9b6c68e6650c85187f5f --chmod=444 https://packages.sury.org/nginx/pool/main/d/debsuryorg-archive-keyring/debsuryorg-archive-keyring_2025.03.13_all.deb /tmp/debsuryorg-archive-keyring.deb
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ADD --checksum=sha256:ab3ee3651977a4178a702b0b828a4ee7b2bbb9127235b0ab740e2e15974bf5db --chmod=444 https://curl.se/ca/cacert-2025-05-20.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ADD --checksum=sha256:7430e90ee0cdca2d0f02b1ece46fbf255d5d0408111f009638e3b892d6ca089c --chmod=444 https://curl.se/ca/cacert-2025-07-15.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 # This can be used to force rebuild below while allowing use of cache mounts
 ARG BUILD_DATE="undefined"
