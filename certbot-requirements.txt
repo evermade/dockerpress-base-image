@@ -4,21 +4,22 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes certbot-requirements.in
 #
-acme==5.0.0 \
-    --hash=sha256:b701b23e66d3c58352896a72caa13523d9f72b183a0ba1cde93e6713a450a391 \
-    --hash=sha256:b7923d1105f3df7f0c94bab90fc3006e9a0de0597baf82dedfc8ed24889f56dc
+acme==4.2.0 \
+    --hash=sha256:0df68c0e1acb3824a2100013f8cd51bda2e1a56aa23447449d14c942959f0c41 \
+    --hash=sha256:6292011bbfa5f966521b2fb9469982c24ff4c58e240985f14564ccf35372e79a
     # via
+    #   -r certbot-requirements.in
     #   certbot
     #   certbot-nginx
-certbot==5.0.0 \
-    --hash=sha256:4e9e4680e812037b582cef7335570074390b455d24a3e09bcaa2fdc473dbcc0a \
-    --hash=sha256:6dd86a9a4f3890b02ff90f6b3d5063b80577082d1e067b6c55aa77399eb1f428
+certbot==4.2.0 \
+    --hash=sha256:8fcca0c1a06df9ce39e89b7d13c70506e1372823e8b5993633d21adb77581950 \
+    --hash=sha256:fb1e56ca8a072bec49ac0c7b5390a29cbf68c2c05f712259a9b3491de041c27b
     # via
     #   -r certbot-requirements.in
     #   certbot-nginx
-certbot-nginx==5.0.0 \
-    --hash=sha256:906975279c64c3df27cff917a9f280b4dad5182b5122930f9f22ae6b1cb6f559 \
-    --hash=sha256:c8e4b86d2537a5d9de5801a6e3a8cf17fa4f12777479192d0e2978cbc6b18305
+certbot-nginx==4.2.0 \
+    --hash=sha256:6fec99d3454babec31663cb80c219a1aa1eb37c5f745dfa2b334b80a8e143cb4 \
+    --hash=sha256:83ef0a9b16616b908905fb61fabbe49cebfc4c33cda1983347ed3ab570b4abf6
     # via -r certbot-requirements.in
 certifi==2025.8.3 \
     --hash=sha256:e564105f78ded564e3ae7c923924435e1daa7463faeab5bb932bc53ffae63407 \

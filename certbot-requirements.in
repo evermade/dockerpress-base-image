@@ -1,5 +1,6 @@
-certbot
-certbot-nginx
+acme>=4.2,<5.0
+certbot>=4.2,<5.0
+certbot-nginx>=4.2,<5.0
 
 # Additional dependencies required by certbot:
 #
