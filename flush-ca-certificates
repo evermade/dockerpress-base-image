@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+# Empty the conf file to remove all existing certificates
+echo '' > /etc/ca-certificates.conf
+
+# Regenerate /etc/ssl/certs/ca-certificates.crt to use the cURL.se provided CA bundle
+update-ca-certificates --verbose --fresh
+
+# Symlink the OpenSSL default cert file path to ca-certificates generated file path
+ln -vfs /etc/ssl/certs/ca-certificates.crt /usr/lib/ssl/cert.pem
