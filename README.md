@@ -92,6 +92,6 @@ If the signature cannot be verified, the file is not signed by a known good GPG 
 
 1. Additional dependencies may be added to the `certbot-requirements.in` file if required.
 
-2. `pip-compile --allow-unsafe --generate-hashes certbot-requirements.in`
+2. `pip-compile --generate-hashes certbot-requirements.in`
 
 3. Verify that the requirements are legit.
