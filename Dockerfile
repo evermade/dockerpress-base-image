@@ -15,7 +15,7 @@ ADD --checksum=sha256:ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b682
 ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a18a395 --chmod=444 https://raw.githubusercontent.com/wp-cli/wp-cli/v$WP_CLI_VERSION/utils/wp-completion.bash /etc/wp-completion.bash
 
 # Download the deb.sury.org apt archive keyring
-ADD --checksum=sha256:d1df4b797498829bb4dbd23de7a88945924a0eac6bce9b6c68e6650c85187f5f --chmod=444 https://packages.sury.org/nginx/pool/main/d/debsuryorg-archive-keyring/debsuryorg-archive-keyring_2025.03.13_all.deb /tmp/debsuryorg-archive-keyring.deb
+ADD --checksum=sha256:7511384559c9ddf1d5ce5f60be429ae9d4e7d01d9480d6f1b7a30c0810cf8b60 --chmod=444 https://packages.sury.org/nginx/pool/main/d/debsuryorg-archive-keyring/debsuryorg-archive-keyring_2025.11.18_all.deb /tmp/debsuryorg-archive-keyring.deb
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
 ADD --checksum=sha256:8ac40bdd3d3e151a6b4078d2b2029796e8f843e3f86fbf2adbc4dd9f05e79def --chmod=444 https://curl.se/ca/cacert-2025-11-04.pem /usr/local/share/ca-certificates/ca-bundle.crt
