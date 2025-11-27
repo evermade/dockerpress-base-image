@@ -21,9 +21,9 @@ certbot-nginx==4.2.0 \
     --hash=sha256:6fec99d3454babec31663cb80c219a1aa1eb37c5f745dfa2b334b80a8e143cb4 \
     --hash=sha256:83ef0a9b16616b908905fb61fabbe49cebfc4c33cda1983347ed3ab570b4abf6
     # via -r certbot-requirements.in
-certifi==2025.10.5 \
-    --hash=sha256:0f212c2744a9bb6de0c56639a6f68afe01ecd92d91f14ae897c4fe7bbeeef0de \
-    --hash=sha256:47c09d31ccf2acf0be3f701ea53595ee7e0b8fa08801c6624be771df09ae7b43
+certifi==2025.11.12 \
+    --hash=sha256:97de8790030bbd5c2d96b7ec782fc2f7820ef8dba6db909ccf95449f2d062d4b \
+    --hash=sha256:d8ab5478f2ecd78af242878415affce761ca6bc54a22a27e026d7c25357c3316
     # via requests
 cffi==2.0.0 \
     --hash=sha256:00bdf7acc5f795150faa6957054fbbca2439db2f775ce831222b66f192f03beb \
