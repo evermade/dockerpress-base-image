@@ -1,10 +1,6 @@
 # syntax=docker/dockerfile:1
 
-<<<<<<< HEAD
 FROM php:8.2.29-fpm-bookworm
-=======
-FROM php:8.3.28-fpm-bookworm
->>>>>>> php8.3
 
 LABEL maintainer="Evermade"
 
