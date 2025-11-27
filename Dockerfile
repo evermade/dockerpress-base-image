@@ -1,6 +1,10 @@
 # syntax=docker/dockerfile:1
 
+<<<<<<< HEAD
 FROM php:8.2.29-fpm-bookworm
+=======
+FROM php:8.3.28-fpm-bookworm
+>>>>>>> php8.3
 
 LABEL maintainer="Evermade"
 
@@ -18,7 +22,7 @@ ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a
 ADD --checksum=sha256:d1df4b797498829bb4dbd23de7a88945924a0eac6bce9b6c68e6650c85187f5f --chmod=444 https://packages.sury.org/nginx/pool/main/d/debsuryorg-archive-keyring/debsuryorg-archive-keyring_2025.03.13_all.deb /tmp/debsuryorg-archive-keyring.deb
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ADD --checksum=sha256:f290e6acaf904a4121424ca3ebdd70652780707e28e8af999221786b86bb1975 --chmod=444 https://curl.se/ca/cacert-2025-09-09.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ADD --checksum=sha256:8ac40bdd3d3e151a6b4078d2b2029796e8f843e3f86fbf2adbc4dd9f05e79def --chmod=444 https://curl.se/ca/cacert-2025-11-04.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates /usr/local/bin
 
