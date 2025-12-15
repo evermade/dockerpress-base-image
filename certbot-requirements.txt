@@ -4,21 +4,21 @@
 #
 #    pip-compile --generate-hashes certbot-requirements.in
 #
-acme==5.1.0 \
-    --hash=sha256:7b97820857d9baffed98bca50ab82bb6a636e447865d7a013a7bdd7972f03cda \
-    --hash=sha256:80e9c315d82302bb97279f4516ff31230d29195ab9d4a6c9411ceec20481b61e
+acme==5.2.2 \
+    --hash=sha256:354ef66cf226b2bef02006311778e97123237207b4febe8829ded9860784ee64 \
+    --hash=sha256:7702d5b99149d5cd9cd48a9270c04693e925730c023ca3e1b853ab43746a9d01
     # via
     #   certbot
     #   certbot-nginx
-certbot==5.1.0 \
-    --hash=sha256:9f1aa341af342c676cd356ca082a8fa15bb1edcbb7ced09a975224427e5ec9c6 \
-    --hash=sha256:d652a598f67af78ecf122860e85cd2e9c19a2bbe79a71775eccf6e8d642a4fca
+certbot==5.2.2 \
+    --hash=sha256:16cf7c83572796f1a86c685e4dd365f8f5b834541163cc2f242aa834e3849d2d \
+    --hash=sha256:28355cc3d63054aaf5a69710a87fb4459b0acc9bf26415bc2ccaac3992869cd8
     # via
     #   -r certbot-requirements.in
     #   certbot-nginx
-certbot-nginx==5.1.0 \
-    --hash=sha256:aa67f704adaac821a2f6bbf020b116e251cee4b05394ec3f6683c455db79b626 \
-    --hash=sha256:fe41cdd8f54b0587b65b686aa142191ad1bf4f7abaa708a79d5ad662757fb07a
+certbot-nginx==5.2.2 \
+    --hash=sha256:1146af9060d954559d90684f0495f1b0e5afb3d60b2251aa6d52d3b210621790 \
+    --hash=sha256:e5c2a8645390a81f179e3cb5d5185c42ab9f9e918b63da458d8b1406bd321017
     # via -r certbot-requirements.in
 certifi==2025.11.12 \
     --hash=sha256:97de8790030bbd5c2d96b7ec782fc2f7820ef8dba6db909ccf95449f2d062d4b \
@@ -345,9 +345,9 @@ typing-extensions==4.15.0 \
     # via
     #   cryptography
     #   pyopenssl
-urllib3==2.5.0 \
-    --hash=sha256:3fc47733c7e419d4bc3f6b3dc2b4f890bb743906a30d56ba4a5bfa4bbff92760 \
-    --hash=sha256:e6b01673c0fa6a13e374b50871808eb3bf7046c4b125b216f6bf1cc604cff0dc
+urllib3==2.6.2 \
+    --hash=sha256:016f9c98bb7e98085cb2b4b17b87d2c702975664e4f060c6532e64d1c1a5e797 \
+    --hash=sha256:ec21cddfe7724fc7cb4ba4bea7aa8e2ef36f607a4bab81aa6ce42a13dc3f03dd
     # via requests
 zipp==3.23.0 \
     --hash=sha256:071652d6115ed432f5ce1d34c336c0adfd6a884660d1e9712a256d3d3bd4b14e \
