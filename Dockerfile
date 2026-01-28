@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.5.2-fpm-bookworm
+FROM php:8.5.2-fpm-trixie
 
 LABEL maintainer="Evermade"
 
@@ -94,7 +94,8 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		\
 		# Nginx
 		nginx \
-		libnginx-mod-http-brotli \
+		libnginx-mod-http-brotli-filter \
+		libnginx-mod-http-brotli-static \
 		libnginx-mod-http-cache-purge \
 		libnginx-mod-http-geoip \
 		libnginx-mod-http-geoip2 \
