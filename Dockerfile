@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.3.29-fpm-bookworm
+FROM php:8.3.30-fpm-bookworm
 
 LABEL maintainer="Evermade"
 
