@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.5.2-fpm-trixie
+FROM php:8.5.5-fpm-trixie
 
 LABEL maintainer="Evermade"
 
