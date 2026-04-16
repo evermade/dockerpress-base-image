@@ -178,7 +178,6 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		gd \
 		intl \
 		mysqli \
-		opcache \
 		zip \
 	; \
 	\
