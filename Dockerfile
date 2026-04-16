@@ -18,7 +18,7 @@ ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a
 ADD --checksum=sha256:7511384559c9ddf1d5ce5f60be429ae9d4e7d01d9480d6f1b7a30c0810cf8b60 --chmod=444 https://packages.sury.org/nginx/pool/main/d/debsuryorg-archive-keyring/debsuryorg-archive-keyring_2025.11.18_all.deb /tmp/debsuryorg-archive-keyring.deb
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ADD --checksum=sha256:f1407d974c5ed87d544bd931a278232e13925177e239fca370619aba63c757b4 --chmod=444 https://curl.se/ca/cacert-2025-12-02.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ADD --checksum=sha256:b6e66569cc3d438dd5abe514d0df50005d570bfc96c14dca8f768d020cb96171 --chmod=444 https://curl.se/ca/cacert-2026-03-19.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates /usr/local/bin
 
