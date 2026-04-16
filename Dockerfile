@@ -92,6 +92,11 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		# PDF preview rendering for WordPress
 		ghostscript \
 		\
+		# pull in AV1 & HEVC image encoding (and not just decoding)
+		# https://github.com/docker-library/wordpress/issues/996
+		libheif-plugin-aomenc \
+		libheif-plugin-x265 \
+		\
 		# Nginx
 		nginx \
 		libnginx-mod-http-brotli-filter \
