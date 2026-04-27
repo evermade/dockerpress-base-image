@@ -14,9 +14,6 @@ ADD --checksum=sha256:ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b682
 # Download WP-CLI bash tab completions
 ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a18a395 --chmod=444 https://raw.githubusercontent.com/wp-cli/wp-cli/v$WP_CLI_VERSION/utils/wp-completion.bash /etc/wp-completion.bash
 
-# Download the deb.sury.org apt archive keyring
-ADD --checksum=sha256:7511384559c9ddf1d5ce5f60be429ae9d4e7d01d9480d6f1b7a30c0810cf8b60 --chmod=444 https://packages.sury.org/nginx/pool/main/d/debsuryorg-archive-keyring/debsuryorg-archive-keyring_2025.11.18_all.deb /tmp/debsuryorg-archive-keyring.deb
-
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
 ADD --checksum=sha256:b6e66569cc3d438dd5abe514d0df50005d570bfc96c14dca8f768d020cb96171 --chmod=444 https://curl.se/ca/cacert-2026-03-19.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
@@ -60,27 +57,6 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	apt-mark manual $savedAptMark > /dev/null; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
-	apt-get install -y --no-install-recommends \
-		# Nginx apt dependencies
-		apt-transport-https \
-		lsb-release \
-	; \
-	\
-	# This adds a more frequently updated nginx apt repository
-	dpkg -i /tmp/debsuryorg-archive-keyring.deb; \
-	rm /tmp/debsuryorg-archive-keyring.deb; \
-	{ \
-		echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main"; \
-		echo "deb-src [signed-by=/usr/share/keyrings/deb.sury.org-nginx.gpg] https://packages.sury.org/nginx/ $(lsb_release -sc) main"; \
-	} | tee /etc/apt/sources.list.d/nginx.list; \
-	{ \
-		echo 'Package: debsuryorg* nginx* libnginx-mod-*'; \
-		echo 'Pin: origin packages.sury.org'; \
-		echo 'Pin-Priority: 1001'; \
-	} | tee /etc/apt/preferences.d/nginx; \
-	\
-	apt-get update; \
-	\
 	# Upgrade apt packages
 	apt-get upgrade -y; \
 	\
@@ -94,7 +70,8 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		\
 		# Nginx
 		nginx \
-		libnginx-mod-http-brotli \
+		libnginx-mod-http-brotli-filter \
+		libnginx-mod-http-brotli-static \
 		libnginx-mod-http-cache-purge \
 		libnginx-mod-http-geoip \
 		libnginx-mod-http-geoip2 \
