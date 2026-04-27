@@ -70,8 +70,6 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		\
 		# Nginx
 		nginx \
-		libnginx-mod-http-brotli-filter \
-		libnginx-mod-http-brotli-static \
 		libnginx-mod-http-cache-purge \
 		libnginx-mod-http-geoip \
 		libnginx-mod-http-geoip2 \
@@ -212,9 +210,6 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	# Test nginx configuration for failures and print nginx config contents
 	nginx -T; \
-	\
-	# Create old brotli module config file for backwards compatibility
-	cat /etc/nginx/modules-enabled/50-mod-http-brotli-filter.conf /etc/nginx/modules-enabled/50-mod-http-brotli-static.conf > /etc/nginx/modules-enabled/50-mod-brotli.conf; \
 	\
 	# Install WP-CLI tab completions
 	echo 'source /etc/wp-completion.bash' >> /etc/bash.bashrc
