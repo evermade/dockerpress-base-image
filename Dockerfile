@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax=docker.io/docker/dockerfile-upstream:1.23-labs
 
 FROM php:8.3.31-fpm-bookworm AS base
 
