@@ -223,6 +223,9 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		\
 		# redis
 		liblz4-dev \
+		\
+		# soap
+		libxml2-dev \
 	; \
 	\
 	# Configure PHP GD extension
@@ -241,6 +244,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		intl \
 		mysqli \
 		opcache \
+		soap \
 		zip \
 	; \
 	\
