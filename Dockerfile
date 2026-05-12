@@ -24,8 +24,8 @@ ARG BUILD_DATE="undefined"
 # Builders aren't interactive
 ARG DEBIAN_FRONTEND="noninteractive"
 
-RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
-	--mount=type=cache,sharing=private,target=/var/lib/apt \
+RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
+	--mount=type=cache,sharing=locked,target=/var/lib/apt \
 	\
 	set -eux; \
 	\
@@ -89,8 +89,8 @@ ADD --checksum=sha256:b2e0a6195d184adfc9d38096438dc32aa2490c299f4b11371dfa36d7e8
 ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="812c1735d55817baa373afbcf6c4ce41f79033dd"
 ADD --checksum=sha256:cb67d8ebe58252e272bd7703de08a3789cc5c46d061f4d9d1b86e3e7bf0cfedc --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
-RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
-	--mount=type=cache,sharing=private,target=/var/lib/apt \
+RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
+	--mount=type=cache,sharing=locked,target=/var/lib/apt \
 	\
 	set -eux; \
 	\
@@ -143,10 +143,10 @@ ADD --checksum=sha256:b2c3d480a58f61f3a7dc61850b461e892e36f236317765a4f2f6d558c9
 # Copy built nginx dynamic modules into the final image
 COPY --from=build --chmod=444 /opt/nginx/modules/ /usr/lib/nginx/modules/
 
-RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
-	--mount=type=cache,sharing=private,target=/var/lib/apt \
-	--mount=type=cache,sharing=private,target=/tmp/pear \
-	--mount=type=cache,sharing=private,target=/tmp/pip \
+RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
+	--mount=type=cache,sharing=locked,target=/var/lib/apt \
+	--mount=type=cache,sharing=locked,target=/tmp/pear \
+	--mount=type=cache,sharing=locked,target=/tmp/pip \
 	--mount=type=bind,source=./certbot-requirements.txt,target=/opt/certbot/requirements.txt \
 	\
 	set -eux; \
