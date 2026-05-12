@@ -5,15 +5,16 @@ FROM php:8.3.31-fpm-bookworm AS base
 ENV WP_CLI_GPG_KEYS="63AF7AA15067C05616FDDD88A3A2E8F226F0BC06"
 ENV WP_CLI_VERSION="2.12.0"
 
-# Download WP-CLI binary and signature
+# Download WP-CLI binary and signature from https://github.com/wp-cli/wp-cli
 ADD --checksum=sha256:9c2f9d93968d68ad2a8fa60eaf8f916f163740977be031b38d9ca6202e82b5be --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
 ADD --checksum=sha256:ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c --chmod=555 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar /usr/local/bin/wp
 
-# Download the nginx keyring
+# Download the nginx keyring from https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ADD --checksum=sha256:b6e66569cc3d438dd5abe514d0df50005d570bfc96c14dca8f768d020cb96171 --chmod=444 https://curl.se/ca/cacert-2026-03-19.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ENV CA_BUNDLE_VERSION="2026-03-19"
+ADD --checksum=sha256:b6e66569cc3d438dd5abe514d0df50005d570bfc96c14dca8f768d020cb96171 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates /usr/local/bin
 
@@ -72,10 +73,21 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 
 FROM base AS build
 
-ADD --keep-git-dir https://github.com/google/ngx_brotli.git /opt/ngx_brotli
-ADD --keep-git-dir https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge.git /opt/libnginx-mod-http-cache-purge
-ADD --keep-git-dir https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2.git /opt/libnginx-mod-http-geoip2
-ADD --keep-git-dir https://github.com/openresty/headers-more-nginx-module.git /opt/headers-more-nginx-module
+# Download nginx brotli module from https://github.com/google/ngx_brotli
+ENV NGX_BROTLI_GIT_COMMIT="a71f9312c2deb28875acc7bacfdd5695a111aa53"
+ADD --checksum=$NGX_BROTLI_GIT_COMMIT --keep-git-dir https://github.com/google/ngx_brotli.git#master /opt/ngx_brotli
+
+# Download nginx cache purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge
+ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="847225d476013d80733730e08cecf58fa427249e"
+ADD --checksum=sha256:40c4e74aabfca3831924d03bac835ba6d778e0dca3d6ff7f1d222d82bb00abc8 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge/-/archive/$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT/libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT.tar.gz /opt/
+
+# Download nginx geoip2 purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2
+ENV LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT="d94e68ee1aed43a879d80d8081750a08027b9785"
+ADD --checksum=sha256:b2e0a6195d184adfc9d38096438dc32aa2490c299f4b11371dfa36d7e8a8b5a7 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2/-/archive/$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT/libnginx-mod-http-geoip2-$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT.tar.gz /opt/
+
+# Download nginx headers more module from https://github.com/openresty/headers-more-nginx-module
+ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="812c1735d55817baa373afbcf6c4ce41f79033dd"
+ADD --checksum=sha256:cb67d8ebe58252e272bd7703de08a3789cc5c46d061f4d9d1b86e3e7bf0cfedc --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
@@ -83,6 +95,10 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	set -eux; \
 	\
 	cd /opt; \
+	\
+	mv "libnginx-mod-http-cache-purge-${LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT}" libnginx-mod-http-cache-purge; \
+	mv "libnginx-mod-http-geoip2-${LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT}" libnginx-mod-http-geoip2; \
+	mv "headers-more-nginx-module-${HEADERS_MORE_NGINX_MODULE_GIT_COMMIT}" headers-more-nginx-module; \
 	\
 	apt-get build-dep -y nginx; \
 	apt-get install -y --no-install-recommends cmake git libmaxminddb-dev; \
@@ -124,6 +140,7 @@ ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a
 # Download the default nginx fastcgi.conf from repo
 ADD --checksum=sha256:b2c3d480a58f61f3a7dc61850b461e892e36f236317765a4f2f6d558c928fa57 --chmod=444 https://raw.githubusercontent.com/nginx/nginx/413158330abf082d1c0b48b264090f3bf4e4305e/conf/fastcgi.conf /etc/nginx/fastcgi.conf
 
+# Copy built nginx dynamic modules into the final image
 COPY --from=build --chmod=444 /opt/nginx/modules/ /usr/lib/nginx/modules/
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
@@ -271,13 +288,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	err="$(php --version 3>&1 1>&2 2>&3)"; \
 	[ -z "$err" ]; \
 	\
-	mkdir \
-		/etc/nginx/modules-available \
-		/etc/nginx/modules-enabled \
-		/etc/nginx/sites-available \
-		/etc/nginx/sites-enabled \
-		/etc/nginx/snippets \
-	; \
+	mkdir /etc/nginx/modules-available /etc/nginx/modules-enabled; \
 	\
 	echo "load_module /usr/lib/nginx/modules/ngx_http_acme_module.so;" | tee /etc/nginx/modules-available/mod-http-acme.conf; \
 	echo "load_module /usr/lib/nginx/modules/ngx_http_brotli_filter_module.so;" | tee /etc/nginx/modules-available/mod-http-brotli-filter.conf; \
@@ -301,14 +312,15 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	ln -s /etc/nginx/modules-available/mod-otel.conf /etc/nginx/modules-enabled/50-mod-otel.conf; \
 	ln -s /etc/nginx/modules-available/mod-stream-geoip.conf /etc/nginx/modules-enabled/70-mod-stream-geoip.conf; \
 	\
+	rm /usr/lib/nginx/modules/*-debug.so; \
+	\
 	# Various backwards compatibility additions that were present previously
+	chmod 755 /etc/nginx; \
+	mkdir /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/snippets; \
 	cat /etc/nginx/modules-enabled/50-mod-http-brotli-filter.conf /etc/nginx/modules-enabled/50-mod-http-brotli-static.conf | tee /etc/nginx/modules-enabled/50-mod-brotli.conf; \
-	\
 	echo 'fastcgi_param  REMOTE_USER        $remote_user;' | tee -a /etc/nginx/fastcgi_params; \
-	\
 	sed -i -e 's|}|    video/ogg                                        ogv;\n}|' /etc/nginx/mime.types; \
 	sed -i -e 's|}|    video/x-matroska                                 mkv;\n}|' /etc/nginx/mime.types; \
-	\
 	{ \
 		echo 'proxy_set_header Host $http_host;'; \
 		echo 'proxy_set_header X-Real-IP $remote_addr;'; \
