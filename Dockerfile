@@ -174,6 +174,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
 		# Tools
 		brotli \
 		cron \
+		gettext-base \
 		gnupg \
 		less \
 		mariadb-client \
