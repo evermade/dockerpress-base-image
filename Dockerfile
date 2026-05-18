@@ -13,8 +13,8 @@ ADD --checksum=sha256:ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b682
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ENV CA_BUNDLE_VERSION="2026-03-19"
-ADD --checksum=sha256:b6e66569cc3d438dd5abe514d0df50005d570bfc96c14dca8f768d020cb96171 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ENV CA_BUNDLE_VERSION="2026-05-14"
+ADD --checksum=sha256:86a1f3366afac7c6f8ae9f3c779ac221129328c43f0ab2b8817eb2f362a5025c --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates /usr/local/bin
 
