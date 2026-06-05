@@ -80,7 +80,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: library/{{ matrix.platform.debianVersion }}/{{ matrix.platform.phpVersion }}/Dockerfile
+          file: library/${{ matrix.platform.debianVersion }}/${{ matrix.platform.phpVersion }}/Dockerfile
           platforms: ${{ matrix.platform.platform }}
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}
