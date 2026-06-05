@@ -28,56 +28,56 @@ jobs:
 
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian11
-            phpVersion: 7.4
+            debianVersion: "debian11"
+            phpVersion: "7.4"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian11
-            phpVersion: 8.0
+            debianVersion: "debian11"
+            phpVersion: "8.0"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian11
-            phpVersion: 8.1
+            debianVersion: "debian11"
+            phpVersion: "8.1"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.1
+            debianVersion: "debian12"
+            phpVersion: "8.1"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.2
+            debianVersion: "debian12"
+            phpVersion: "8.2"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.3
+            debianVersion: "debian12"
+            phpVersion: "8.3"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.4
+            debianVersion: "debian12"
+            phpVersion: "8.4"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.5
+            debianVersion: "debian12"
+            phpVersion: "8.5"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.1
+            debianVersion: "debian13"
+            phpVersion: "8.1"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.2
+            debianVersion: "debian13"
+            phpVersion: "8.2"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.3
+            debianVersion: "debian13"
+            phpVersion: "8.3"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.4
+            debianVersion: "debian13"
+            phpVersion: "8.4"
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.5
+            debianVersion: "debian13"
+            phpVersion: "8.5"
 
     steps:
       - name: Checkout
@@ -124,7 +124,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: library/{{ matrix.platform.debianVersion }}/{{ matrix.platform.phpVersion }}/Dockerfile
+          file: library/${{ matrix.platform.debianVersion }}/${{ matrix.platform.phpVersion }}/Dockerfile
           platforms: ${{ matrix.platform.platform }}
           push: ${{ github.event_name != 'pull_request' }}
           labels: ${{ steps.meta.outputs.labels }}

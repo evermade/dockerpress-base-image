@@ -30,8 +30,8 @@ jobs:
           {%- for phpVersion, _ in phpVersions %}
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: {{ debianVersion }}
-            phpVersion: {{ phpVersion }}
+            debianVersion: "{{ debianVersion }}"
+            phpVersion: "{{ phpVersion }}"
           {%- endfor %}
           {%- endfor %}
 {% raw -%}
