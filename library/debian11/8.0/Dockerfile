@@ -208,8 +208,8 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pip \
 	/opt/supervisor/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --upgrade pip; \
 	/opt/supervisor/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --prefer-binary --require-hashes --requirement /opt/supervisor/requirements.txt; \
 	\
-	/opt/supervisor/bin/supervisord --help; \
-	/opt/supervisor/bin/supervisord --version
+	/opt/supervisor/bin/supervisord --version; \
+	/opt/supervisor/bin/supervisord --help
 
 FROM base AS build_certbot
 
@@ -229,8 +229,8 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pip \
 	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --upgrade pip; \
 	/opt/certbot/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --prefer-binary --require-hashes --requirement /opt/certbot/requirements.txt; \
 	\
-	/opt/certbot/bin/certbot --help all; \
 	/opt/certbot/bin/certbot --version; \
+	/opt/certbot/bin/certbot --help all; \
 	\
 	{ \
 		echo 'PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"'; \
@@ -267,7 +267,11 @@ RUN set -eux; \
 	chmod +x /usr/local/bin/wp
 
 USER www-data
-RUN wp --version
+
+RUN set -eux; \
+	\
+	wp help; \
+	wp --version
 
 FROM base AS build_php_exts
 
@@ -604,9 +608,13 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	pip3 --version; \
 	\
 	# Print supervisor version information
-	supervisord --help; \
 	supervisord --version; \
+	supervisord --help; \
 	\
 	# Print certbot version information
+	certbot --version; \
 	certbot --help all; \
-	certbot --version
+	\
+	# Print WP-CLI version information
+	wp --version; \
+	wp help
