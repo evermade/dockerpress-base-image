@@ -264,11 +264,9 @@ RUN set -eux; \
 	gpgconf --kill all; \
 	rm -rf "$GNUPGHOME"; \
 	\
-	chmod +x /usr/local/bin/wp
-
-USER www-data
-
-RUN wp --version
+	chmod +x /usr/local/bin/wp; \
+	\
+	wp --allow-root --version
 
 FROM base AS build_php_exts
 
@@ -616,4 +614,4 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	certbot --help all; \
 	\
 	# Print WP-CLI version information
-	wp --version
+	wp --allow-root --version
