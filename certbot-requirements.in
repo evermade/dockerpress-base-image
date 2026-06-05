@@ -1,2 +1,4 @@
+# docker run --rm -it -w / -v `pwd`/certbot-requirements.in:/certbot-requirements.in:ro -v `pwd`/certbot-requirements.txt:/certbot-requirements.txt python:3.14 sh -c 'pip install pip-tools; pip-compile --generate-hashes --strip-extras certbot-requirements.in > certbot-requirements.txt 2>&1'
+
 certbot-dns-cloudflare
 certbot-nginx

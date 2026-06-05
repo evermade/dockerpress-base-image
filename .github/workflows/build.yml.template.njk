@@ -1,4 +1,4 @@
-
+{% raw -%}
 #
 # NOTE: THIS FILE IS GENERATED VIA "generate-files.js"
 #
@@ -25,60 +25,16 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-
+{% endraw %}
+          {%- for debianVersion, phpVersions in versions %}
+          {%- for phpVersion, _ in phpVersions %}
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: debian11
-            phpVersion: 7.4
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian11
-            phpVersion: 8.0
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian11
-            phpVersion: 8.1
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.1
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.2
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.3
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.4
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian12
-            phpVersion: 8.5
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.1
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.2
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.3
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.4
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: debian13
-            phpVersion: 8.5
-
+            debianVersion: {{ debianVersion }}
+            phpVersion: {{ phpVersion }}
+          {%- endfor %}
+          {%- endfor %}
+{% raw -%}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -135,3 +91,4 @@ jobs:
           sbom: true
           build-args: |
             BUILD_DATE=${{ steps.set-env.outputs.build_date }}
+{% endraw %}

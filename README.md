@@ -4,13 +4,13 @@ A great base image for WordPress sites.
 
 ## Usage
 
-The base image is available on both [Docker Hub](https://hub.docker.com/r/evermadefi/dockerpress-base-image) and [GitHub Container Registry](https://github.com/evermade/dockerpress-base-image/pkgs/container/dockerpress-base-image).
+The base image is available on both [Docker Hub](https://hub.docker.com/r/evermadefi/dockerpress-base-image).
 
 We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:2.3.26
+FROM evermadefi/dockerpress-base-image:2.3.54
 
 # To use a specific semantic minor version
 FROM evermadefi/dockerpress-base-image:2.3
@@ -19,25 +19,18 @@ FROM evermadefi/dockerpress-base-image:2.3
 FROM evermadefi/dockerpress-base-image:2
 
 # To use a specific tag
-FROM evermadefi/dockerpress-base-image:v2.3.26
+FROM evermadefi/dockerpress-base-image:v2.3.54
 
 # To use a specific branch
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
-FROM evermadefi/dockerpress-base-image:203b531e9407aa90b4a20fc6d9e60117ee419f84
-
-# To use GitHub Container Registry instead of Docker Hub (you can use all the same tags described above)
-FROM ghcr.io/evermade/dockerpress-base-image:2.3.26
+FROM evermadefi/dockerpress-base-image:d005a63181510de433588c80a7fd0d729a8296a3
 ```
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:2.3.26`
-
-And for GitHub Container Registry, same thing:
-
-`docker pull ghcr.io/evermade/dockerpress-base-image:2.3.26`
+`docker pull evermadefi/dockerpress-base-image:2.3.54`
 
 And enjoy!
 
@@ -57,24 +50,15 @@ And enjoy!
 
 ## Publishing a new version
 
-1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.3.27). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
+1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.3.55). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
 
-2. Write a description with the changelog for the release using the following template:
-
-   ```md
-   # Changelog summary
-
-   - Updated PHP base image to [8.3.16](https://www.php.net/ChangeLog-8.php#8.3.16)
-
-   https://hub.docker.com/r/evermadefi/dockerpress-base-image/
-   https://github.com/evermade/dockerpress-base-image/pkgs/container/dockerpress-base-image
-   ```
+2. Write a description with the changelog for the release.
 
 3. Publish the new release
 
-4. This automatically triggers the image builder GitHub Workflow and will, eventually, after some 30 minutes, push the new images with the appropriate tags and labels to Docker Hub and GitHub Container Registry. So, go get a cup of ☕️ while you wait.
+4. This automatically triggers the image builder GitHub Workflow and will eventually, after some 30 minutes, push the new images with the appropriate tags and labels to Docker Hub. So, go get a cup of ☕️ while you wait.
 
-5. Once the build workflow is complete, you can pull the new image from either of the container registries as shown in the Usage section.
+5. Once the build is complete, you can pull the new image from either of the container registries as shown in the Usage section.
 
 ## Adding third party downloads
 
@@ -88,10 +72,12 @@ If the build is throwing a checksum mismatch error, the file contents must have 
 
 If the signature cannot be verified, the file is not signed by a known good GPG key. If the GPG key used to sign the file looks valid, you should add it to the GPG key list.
 
-## Updating certbot and its dependencies
+## Updating Python packages
 
-1. Additional dependencies may be added to the `certbot-requirements.in` file if required.
+Python is currently used by certbot (certbot-requirements.in) and supervisor (supervisor-requirements.in).
 
-2. `pip-compile --generate-hashes certbot-requirements.in`
+1. Additional dependencies may be added to the \*-requirements.in file if required.
 
-3. Verify that the requirements are legit.
+2. Run the Docker command commented in \*-requirements.in to generate the \*-requirements.txt file.
+
+3. Verify that the \*-requirements.txt is legit.
