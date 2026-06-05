@@ -268,10 +268,7 @@ RUN set -eux; \
 
 USER www-data
 
-RUN set -eux; \
-	\
-	wp help; \
-	wp --version
+RUN wp --version
 
 FROM base AS build_php_exts
 
@@ -619,5 +616,4 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	certbot --help all; \
 	\
 	# Print WP-CLI version information
-	wp --version; \
-	wp help
+	wp --version
