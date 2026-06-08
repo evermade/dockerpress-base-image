@@ -9,7 +9,7 @@
 #
 
 
-FROM docker.io/library/php:8.4.21-fpm-trixie@sha256:a716f65fe59bef017615761fd0147cebba3956d65879000aa4432180ae43ae47 AS base
+FROM docker.io/library/php:8.4.22-fpm-trixie@sha256:1b222a9493186c707cb15778b7fd0cf90b20ff54e826164faeb29150ea5f1391 AS base
 
 # Download the nginx keyring from https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key

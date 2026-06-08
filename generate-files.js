@@ -44,10 +44,10 @@ const versions = {
       version: "8.3.31",
     },
     8.4: {
-      // https://hub.docker.com/layers/library/php/8.4.21-fpm-bookworm/
+      // https://hub.docker.com/layers/library/php/8.4.22-fpm-bookworm/
       image:
-        "docker.io/library/php:8.4.21-fpm-bookworm@sha256:3c0ba05ebf0674d59d40e121391bd0568198386b01ea204211fb2506597d6d18",
-      version: "8.4.21",
+        "docker.io/library/php:8.4.22-fpm-bookworm@sha256:18ec123a3dc2758b3a98bf770aa3b2430371aade7b7e5f1ed1dacfbe31d205b7",
+      version: "8.4.22",
     },
     8.5: {
       // https://hub.docker.com/layers/library/php/8.5.7-fpm-bookworm/
@@ -76,10 +76,10 @@ const versions = {
       version: "8.3.31",
     },
     8.4: {
-      // https://hub.docker.com/layers/library/php/8.4.21-fpm-trixie/
+      // https://hub.docker.com/layers/library/php/8.4.22-fpm-trixie/
       image:
-        "docker.io/library/php:8.4.21-fpm-trixie@sha256:a716f65fe59bef017615761fd0147cebba3956d65879000aa4432180ae43ae47",
-      version: "8.4.21",
+        "docker.io/library/php:8.4.22-fpm-trixie@sha256:1b222a9493186c707cb15778b7fd0cf90b20ff54e826164faeb29150ea5f1391",
+      version: "8.4.22",
     },
     8.5: {
       // https://hub.docker.com/layers/library/php/8.5.7-fpm-trixie/
