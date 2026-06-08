@@ -63,8 +63,8 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
-            type=sha,format=long
+            type=sha,prefix=
+            type=sha,prefix=,format=long
 
       - name: Login to Docker Hub
         if: github.event_name != 'pull_request'
