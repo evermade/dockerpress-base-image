@@ -3,6 +3,9 @@ const path = require("node:path");
 
 const nunjucks = require("nunjucks");
 
+const defaultDebianVersion = "debian13";
+const defaultPHPVersion = "8.3";
+
 const versions = {
   debian11: {
     7.4: {
@@ -130,7 +133,7 @@ for (const debianVersion in versions) {
 // Generate build.yml that includes all of the PHP variants.
 nunjucks.render(
   path.resolve(__dirname, ".github/workflows/build.yml.template.njk"),
-  { versions },
+  { defaultDebianVersion, defaultPHPVersion, versions },
   (err, res) => {
     if (err) {
       throw err;
