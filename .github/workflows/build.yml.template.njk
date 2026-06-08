@@ -52,7 +52,7 @@ jobs:
         with:
           flavor: |
             latest=false
-            suffix=-${{ matrix.platform.phpVersion }}-${{ matrix.platform.debianVersion }}
+            suffix=-php${{ matrix.platform.phpVersion }}-${{ matrix.platform.debianVersion }}
           images: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dockerpress-base-image
           tags: |
