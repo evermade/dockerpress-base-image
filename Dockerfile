@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile-upstream:1.23-labs
 
-FROM php:8.3.31-fpm-bookworm AS base
+FROM php:8.3.32-fpm-bookworm AS base
 
 ENV WP_CLI_GPG_KEYS="63AF7AA15067C05616FDDD88A3A2E8F226F0BC06"
 ENV WP_CLI_VERSION="2.12.0"
