@@ -741,7 +741,10 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	nginx -T; \
 	cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak; \
 	mv /etc/nginx/modules-enabled/50-mod-brotli.conf /etc/nginx/modules-enabled/50-mod-brotli.conf.disabled; \
-	echo 'include /etc/nginx/modules-enabled/*.conf;' | cat - /etc/nginx/nginx.conf | tee /etc/nginx/nginx.conf; \
+	{ \
+		echo 'include /etc/nginx/modules-enabled/*.conf;'; \
+		cat /etc/nginx/nginx.conf; \
+	} | tee /etc/nginx/nginx.conf; \
 	nginx -T; \
 	mv /etc/nginx/nginx.conf.bak /etc/nginx/nginx.conf; \
 	mv /etc/nginx/modules-enabled/50-mod-brotli.conf.disabled /etc/nginx/modules-enabled/50-mod-brotli.conf; \
