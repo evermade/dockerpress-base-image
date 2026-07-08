@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile-upstream:1.24-labs
+# syntax=docker.io/docker/dockerfile-upstream:1.25.0
 # Syntax via https://github.com/moby/buildkit/releases
 
 
@@ -9,7 +9,7 @@
 #
 
 
-FROM docker.io/library/php:8.4.22-fpm-trixie@sha256:1b222a9493186c707cb15778b7fd0cf90b20ff54e826164faeb29150ea5f1391 AS base
+FROM docker.io/library/php:8.4.23-fpm-trixie@sha256:1c3585e1e99f3fd7fbfed9db21601534082c9e1def91aa02e06e85fff0bc57ae AS base
 
 # Download the nginx keyring from https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
@@ -70,10 +70,10 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 FROM base AS build_cosign
 
 # Download cosign from https://github.com/sigstore/cosign/releases and trusted root keys from https://github.com/sigstore/root-signing
-ARG COSIGN_VERSION="3.0.6"
+ARG COSIGN_VERSION="3.1.1"
 ADD --checksum=sha256:836bff947925edfc23eb9ce17af66fb1e43bb5e2bdd240520985ae52b585eae9 --chmod=444 https://raw.githubusercontent.com/sigstore/root-signing/refs/heads/main/metadata/root_history/10.root.json /tmp/sigstore-root.json
-ADD --checksum=sha256:9f2728c7876e82561d1f4d2837e2a14180ff0fba1aeffd59163c48aea68cd519 --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
-ADD --checksum=sha256:c956e5dfcac53d52bcf058360d579472f0c1d2d9b69f55209e256fe7783f4c74 --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 /tmp/cosign
+ADD --checksum=sha256:60e54a927cf14724d3fc03a2a0fe4cedefd3726ea50e06f2456c9d4dfccfb228 --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
+ADD --checksum=sha256:ae1ecd212663f3693ad9edf8b1a183900c9a52d3155ba6e354237f9a0f6463fc --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 /tmp/cosign
 
 # Download go from https://go.dev/dl/
 ARG GO_GPG_KEYS="EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796"
@@ -117,9 +117,9 @@ RUN --mount=type=cache,sharing=private,target=/root/go \
 FROM base AS build_python
 
 # Download the latest stable Python source from https://www.python.org/downloads/source/
-ENV PYTHON_VERSION="3.14.5"
-ADD --checksum=sha256:b8da8fd56e69a8579d783e361ce47159dee6a1599bb6eee1a22c7c31f27c28f7 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
-ADD --checksum=sha256:7e32597b99e5d9a39abed35de4693fa169df3e5850d4c334337ffd6a19a36db6 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
+ENV PYTHON_VERSION="3.14.6"
+ADD --checksum=sha256:237b33fd3dcdb3acbd060d21d63fcfd4c06e17e0b35878888b3d37e683a1c36e --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
+ADD --checksum=sha256:143b1dddefaec3bd2e21e3b839b34a2b7fb9842272883c576420d605e9f30c63 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
 
 COPY --from=build_cosign /usr/local/bin/cosign /usr/local/bin/cosign
 
@@ -241,7 +241,7 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pip \
 
 FROM base AS build_wp_cli
 
-# Download WP-CLI binary, signature and bash tab completions
+# Download WP-CLI binary, signature and bash tab completions from https://github.com/wp-cli/wp-cli/releases/
 ARG WP_CLI_GPG_KEYS="63AF7AA15067C05616FDDD88A3A2E8F226F0BC06"
 ARG WP_CLI_VERSION="2.12.0"
 ADD --checksum=sha256:9c2f9d93968d68ad2a8fa60eaf8f916f163740977be031b38d9ca6202e82b5be --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
@@ -375,8 +375,8 @@ ENV NGX_BROTLI_GIT_COMMIT="a71f9312c2deb28875acc7bacfdd5695a111aa53"
 ADD --checksum=$NGX_BROTLI_GIT_COMMIT --keep-git-dir https://github.com/google/ngx_brotli.git#master /opt/ngx_brotli
 
 # Download nginx cache purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge
-ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="847225d476013d80733730e08cecf58fa427249e"
-ADD --checksum=sha256:40c4e74aabfca3831924d03bac835ba6d778e0dca3d6ff7f1d222d82bb00abc8 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge/-/archive/$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT/libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT.tar.gz /opt/
+ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="e6d846dd5af274542f4ba73a9339ec33535a2ff2"
+ADD --checksum=sha256:15321309c1fe1f7eb8507f7da1b3bb91d4df33760948ea3f72678c0663ededea --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge/-/archive/$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT/libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT.tar.gz /opt/
 
 # Download nginx geoip2 purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2
 ENV LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT="d94e68ee1aed43a879d80d8081750a08027b9785"
