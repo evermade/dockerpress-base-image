@@ -747,6 +747,8 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		echo 'proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;'; \
 		echo 'proxy_set_header X-Forwarded-Proto $scheme;'; \
 	} | tee /etc/nginx/proxy_params; \
+	ln -s /usr/local/bin/supervisord /usr/bin/; \
+	ln -s /usr/local/bin/supervisorctl /usr/bin/; \
 	\
 	# Some misbehaving extensions end up outputting to stdout 🙈 (https://github.com/docker-library/wordpress/issues/669#issuecomment-993945967)
 	out="$(php -r 'exit(0);')"; \
