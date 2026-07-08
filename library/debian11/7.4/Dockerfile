@@ -740,7 +740,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	mv /etc/nginx/modules-enabled/50-mod-brotli.conf /etc/nginx/modules-enabled/50-mod-brotli.conf.disabled; \
 	{ \
 		echo 'include /etc/nginx/modules-enabled/*.conf;'; \
-		cat /etc/nginx/nginx.conf; \
+		cat /etc/nginx/nginx.conf.bak; \
 	} | tee /etc/nginx/nginx.conf; \
 	nginx -T; \
 	mv /etc/nginx/nginx.conf.bak /etc/nginx/nginx.conf; \
