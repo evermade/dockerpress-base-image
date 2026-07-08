@@ -1,0 +1,7 @@
+# docker run --rm -it -w / -v `pwd`/fail2ban-requirements.in:/fail2ban-requirements.in:ro -v `pwd`/fail2ban-requirements.txt:/fail2ban-requirements.txt python:3.14 sh -c 'pip install pip-tools; pip-compile --generate-hashes --strip-extras --allow-unsafe fail2ban-requirements.in > fail2ban-requirements.txt 2>&1'
+
+setuptools
+pyinotify
+dnspython
+pyasyncore
+pyasynchat

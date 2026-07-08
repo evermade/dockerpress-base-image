@@ -211,6 +211,43 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pip \
 	/opt/supervisor/bin/supervisord --version; \
 	/opt/supervisor/bin/supervisord --help
 
+FROM base AS build_fail2ban
+
+COPY --from=build_python /usr/local/bin/pip3.14 /usr/local/bin/pip3.14
+COPY --from=build_python /usr/local/bin/python3.14 /usr/local/bin/python3.14
+COPY --from=build_python /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
+
+# Download the fail2ban source (tag: 1.1.0) from https://github.com/fail2ban/fail2ban/releases
+ARG FAIL2BAN_CHECKOUT="61799e15e1dd4389dea0cc7595da0a287835a177"
+ADD --checksum=sha256:51d892640cb01e826404b01b61818160a9e6b46fe68e589bcbc4f42c45053e56 --chmod=444 https://github.com/fail2ban/fail2ban/archive/$FAIL2BAN_CHECKOUT.tar.gz /usr/src/fail2ban.tar.gz
+
+ARG DEBIAN_FRONTEND="noninteractive"
+
+RUN --mount=type=cache,sharing=private,target=/tmp/pip \
+	--mount=type=bind,source=./fail2ban-requirements.txt,target=/opt/fail2ban/requirements.txt \
+	\
+	set -eux; \
+	\
+	/usr/local/bin/python3.14 -m venv /opt/fail2ban/; \
+	\
+	tar --extract --directory /opt/fail2ban --strip-components=1 --file /usr/src/fail2ban.tar.gz; \
+	\
+	/opt/fail2ban/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --upgrade pip; \
+	/opt/fail2ban/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --prefer-binary --require-hashes --requirement /opt/fail2ban/requirements.txt; \
+	\
+	cd /opt/fail2ban; \
+	\
+	/opt/fail2ban/bin/python setup.py install; \
+	\
+	/opt/fail2ban/bin/fail2ban-client --help; \
+	/opt/fail2ban/bin/fail2ban-client --version; \
+	/opt/fail2ban/bin/fail2ban-regex --help; \
+	/opt/fail2ban/bin/fail2ban-regex --version; \
+	/opt/fail2ban/bin/fail2ban-server --help; \
+	/opt/fail2ban/bin/fail2ban-server --version; \
+	/opt/fail2ban/bin/fail2ban-testcases --help; \
+	/opt/fail2ban/bin/fail2ban-testcases --version
+
 FROM base AS build_certbot
 
 COPY --from=build_python /usr/local/bin/pip3.14 /usr/local/bin/pip3.14
@@ -268,6 +305,19 @@ RUN set -eux; \
 	\
 	wp --allow-root --version
 
+FROM base AS build_crs
+
+# Download the coreruleset from https://github.com/coreruleset/coreruleset
+ARG MODSEC_CRS_COMMIT="a19c6fa104ee1e757f25d0a378b8d346122b7305"
+ADD --checksum=sha256:04aa85bbbdedbf05d0e9c2519b293dce80d05e84f9fc2572befcdc770c3f1672 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+
+RUN set -eux; \
+	\
+	mv "/usr/local/share/coreruleset-${MODSEC_CRS_COMMIT}" /usr/local/share/coreruleset; \
+	cp /usr/local/share/coreruleset/crs-setup.conf.example /usr/local/share/coreruleset/crs-setup.conf; \
+	find /usr/local/share/coreruleset \! -name '*.conf' -type f -mindepth 1 -maxdepth 1 -delete; \
+	find /usr/local/share/coreruleset \! -name 'rules' -type d -mindepth 1 -maxdepth 1 | xargs rm -rf
+
 FROM base AS build_php_exts
 
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -322,7 +372,6 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 		zip \
 	; \
 	\
-	\
 	pecl update-channels; \
 	export MAKEFLAGS="-j$(nproc)"; \
 	pecl install \
@@ -368,6 +417,39 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 	err="$(php --version 3>&1 1>&2 2>&3)"; \
 	[ -z "$err" ]
 
+FROM base AS build_modsec
+
+# Download the ModSecurity Git repository (branch: v3/master)
+ARG MODSEC_CHECKOUT="7ea9fefbe0ba409d8733b4d682c8c4c059cd028d"
+ADD --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
+
+ARG DEBIAN_FRONTEND="noninteractive"
+
+RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
+	--mount=type=cache,sharing=private,target=/var/lib/apt \
+	\
+	set -eux; \
+	\
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		dh-autoreconf \
+		git \
+		\
+		# ModSecurity dependencies
+		liblmdb-dev \
+		libpcre2-dev \
+		libyajl-dev \
+	; \
+	\
+	cd /usr/src/ModSecurity; \
+	./build.sh; \
+	./configure --with-lmdb --with-yajl --enable-examples=no; \
+	make -j$(nproc); \
+	make -j$(nproc) install; \
+	find /usr/local/modsecurity/bin -type f -exec sh -c 'file {} | grep "not stripped" && strip {} || true' \;; \
+	find /usr/local/modsecurity/lib -type f -exec sh -c 'file {} | grep "not stripped" && strip {} || true' \;; \
+	rm -rf /usr/local/modsecurity/lib/libmodsecurity.a /usr/local/modsecurity/lib/libmodsecurity.la /usr/local/modsecurity/lib/pkgconfig
+
 FROM base AS build_nginx
 
 # Download nginx brotli module from https://github.com/google/ngx_brotli
@@ -386,6 +468,13 @@ ADD --checksum=sha256:b2e0a6195d184adfc9d38096438dc32aa2490c299f4b11371dfa36d7e8
 ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="812c1735d55817baa373afbcf6c4ce41f79033dd"
 ADD --checksum=sha256:cb67d8ebe58252e272bd7703de08a3789cc5c46d061f4d9d1b86e3e7bf0cfedc --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
+# Download the ModSecurity-nginx module from https://github.com/owasp-modsecurity/ModSecurity-nginx
+ARG MODSEC_NGX_CHECKOUT="9eb44fd9ab0988756e1ab8ce5aa5548ddbe57846"
+ADD --checksum=sha256:3565e87e01c2dfee72cc9a769b671c667efe3c440e02d3b200c206296f2257c6 --unpack=true https://github.com/owasp-modsecurity/ModSecurity-nginx/archive/$MODSEC_NGX_CHECKOUT.tar.gz /opt/
+
+# Copy built ModSecurity libs
+COPY --from=build_modsec /usr/local/modsecurity/ /usr/local/modsecurity/
+
 # Download the default nginx fastcgi.conf from repo
 ADD --checksum=sha256:b2c3d480a58f61f3a7dc61850b461e892e36f236317765a4f2f6d558c928fa57 --chmod=444 https://raw.githubusercontent.com/nginx/nginx/413158330abf082d1c0b48b264090f3bf4e4305e/conf/fastcgi.conf /opt/fastcgi.conf
 
@@ -401,10 +490,22 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	mv "libnginx-mod-http-cache-purge-${LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT}" libnginx-mod-http-cache-purge; \
 	mv "libnginx-mod-http-geoip2-${LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT}" libnginx-mod-http-geoip2; \
 	mv "headers-more-nginx-module-${HEADERS_MORE_NGINX_MODULE_GIT_COMMIT}" headers-more-nginx-module; \
+	mv "ModSecurity-nginx-${MODSEC_NGX_CHECKOUT}" ModSecurity-nginx; \
 	\
 	apt-get update; \
 	apt-get build-dep -y nginx; \
-	apt-get install -y --no-install-recommends cmake git libmaxminddb-dev; \
+	apt-get install -y --no-install-recommends \
+		cmake \
+		git \
+		\
+		# geoip2 dependencies
+		libmaxminddb-dev \
+		\
+		# ModSecurity dependencies
+		liblmdb-dev \
+		libpcre2-dev \
+		libyajl-dev \
+	; \
 	\
 	apt-get source nginx; \
 	\
@@ -428,10 +529,13 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		--add-dynamic-module=/opt/libnginx-mod-http-cache-purge \
 		--add-dynamic-module=/opt/libnginx-mod-http-geoip2 \
 		--add-dynamic-module=/opt/headers-more-nginx-module \
+		--add-dynamic-module=/opt/ModSecurity-nginx \
 	; \
 	make -j"$(nproc)" modules; \
 	mkdir -p /opt/nginx/modules; \
-	mv objs/*.so /opt/nginx/modules/
+	mv objs/*.so /opt/nginx/modules/; \
+	\
+	find /opt/nginx/modules -type f -exec sh -c 'file {} | grep "not stripped" && strip {} || true' \;
 
 FROM base AS final
 
@@ -454,12 +558,29 @@ COPY --from=build_supervisor /opt/supervisor/bin/ /opt/supervisor/bin/
 COPY --from=build_supervisor /opt/supervisor/lib/ /opt/supervisor/lib/
 COPY --from=build_supervisor /opt/supervisor/pyvenv.cfg /opt/supervisor/pyvenv.cfg
 
+# Copy fail2ban into the final image
+COPY --from=build_fail2ban /etc/fail2ban/ /etc/fail2ban/
+COPY --from=build_fail2ban /opt/fail2ban/bin/ /opt/fail2ban/bin/
+COPY --from=build_fail2ban /opt/fail2ban/lib/ /opt/fail2ban/lib/
+COPY --from=build_fail2ban /opt/fail2ban/pyvenv.cfg /opt/fail2ban/pyvenv.cfg
+COPY --from=build_fail2ban /usr/share/doc/fail2ban/ /usr/share/doc/fail2ban/
+COPY --from=build_fail2ban /var/lib/fail2ban/ /var/lib/fail2ban/
+
 # Copy certbot into the final image
 COPY --from=build_certbot /etc/letsencrypt/ /etc/letsencrypt/
 COPY --from=build_certbot /opt/certbot/cron /etc/cron.d/certbot
 COPY --from=build_certbot /opt/certbot/bin/ /opt/certbot/bin/
 COPY --from=build_certbot /opt/certbot/lib/ /opt/certbot/lib/
 COPY --from=build_certbot /opt/certbot/pyvenv.cfg /opt/certbot/pyvenv.cfg
+
+# Copy coreruleset into the final image
+COPY --from=build_crs --chmod=444 /usr/local/share/coreruleset/ /usr/local/share/coreruleset/
+
+# @todo Copy built ModSecurity-nginx dynamic module into the final image
+COPY --from=build_modsec /usr/src/ModSecurity/modsecurity.conf-recommended /etc/nginx/modsecurity/modsecurity.conf
+COPY --from=build_modsec /usr/src/ModSecurity/unicode.mapping /etc/nginx/modsecurity/unicode.mapping
+COPY --from=build_modsec /usr/local/modsecurity/bin/ /usr/local/modsecurity/bin/
+COPY --from=build_modsec /usr/local/modsecurity/lib/ /usr/local/modsecurity/lib/
 
 # Copy built nginx dynamic modules and fastcgi.conf into the final image
 COPY --from=build_nginx --chmod=444 /opt/nginx/modules/ /usr/lib/nginx/modules/
@@ -488,6 +609,15 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	# Create symlinks for supervisor
 	ln -s /opt/supervisor/bin/supervisord /usr/local/bin/; \
 	ln -s /opt/supervisor/bin/supervisorctl /usr/local/bin/; \
+	\
+	# Create symlinks for fail2ban
+	ln -s /opt/fail2ban/bin/fail2ban-client /usr/local/bin/; \
+	ln -s /opt/fail2ban/bin/fail2ban-regex /usr/local/bin/; \
+	ln -s /opt/fail2ban/bin/fail2ban-server /usr/local/bin/; \
+	ln -s /opt/fail2ban/bin/fail2ban-testcases /usr/local/bin/; \
+	\
+	# Create symlink for the modsec-rules-check binary
+	ln -s /usr/local/modsecurity/bin/modsec-rules-check /usr/local/sbin/; \
 	\
 	# Create symlink for certbot
 	ln -s /opt/certbot/bin/certbot /usr/local/bin/; \
@@ -526,6 +656,11 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		moreutils \
 		rsyslog \
 		\
+		# ModSecurity dependencies
+		liblmdb0 \
+		libpcre2-32-0 \
+		libyajl2 \
+		\
 		# gd PHP extension dependencies
 		libavif16 \
 		\
@@ -552,6 +687,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	echo "load_module /usr/lib/nginx/modules/ngx_http_geoip2_module.so;" | tee /etc/nginx/modules-available/mod-http-geoip2.conf; \
 	echo "load_module /usr/lib/nginx/modules/ngx_http_headers_more_filter_module.so;" | tee /etc/nginx/modules-available/mod-http-headers-more-filter.conf; \
 	echo "load_module /usr/lib/nginx/modules/ngx_http_image_filter_module.so;" | tee /etc/nginx/modules-available/mod-http-image-filter.conf; \
+	echo 'load_module /usr/lib/nginx/modules/ngx_http_modsecurity_module.so;' | tee /etc/nginx/modules-available/mod-http-modsecurity.conf; \
 	echo "load_module /usr/lib/nginx/modules/ngx_otel_module.so;" | tee /etc/nginx/modules-available/mod-otel.conf; \
 	echo "load_module /usr/lib/nginx/modules/ngx_stream_geoip_module.so;" | tee /etc/nginx/modules-available/mod-stream-geoip.conf; \
 	\
@@ -563,6 +699,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	ln -s /etc/nginx/modules-available/mod-http-geoip2.conf /etc/nginx/modules-enabled/50-mod-http-geoip2.conf; \
 	ln -s /etc/nginx/modules-available/mod-http-headers-more-filter.conf /etc/nginx/modules-enabled/50-mod-http-headers-more-filter.conf; \
 	ln -s /etc/nginx/modules-available/mod-http-image-filter.conf /etc/nginx/modules-enabled/50-mod-http-image-filter.conf; \
+	ln -s /etc/nginx/modules-available/mod-http-modsecurity.conf /etc/nginx/modules-enabled/50-mod-http-modsecurity.conf; \
 	ln -s /etc/nginx/modules-available/mod-otel.conf /etc/nginx/modules-enabled/50-mod-otel.conf; \
 	ln -s /etc/nginx/modules-available/mod-stream-geoip.conf /etc/nginx/modules-enabled/70-mod-stream-geoip.conf; \
 	\
@@ -608,6 +745,16 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	# Print supervisor version information
 	supervisord --version; \
 	supervisord --help; \
+	\
+	# Print fail2ban version information
+	fail2ban-client --version; \
+	fail2ban-client --help; \
+	fail2ban-regex --version; \
+	fail2ban-regex --help; \
+	fail2ban-server --version; \
+	fail2ban-server --help; \
+	fail2ban-testcases --version; \
+	fail2ban-testcases --help; \
 	\
 	# Print certbot version information
 	certbot --version; \
