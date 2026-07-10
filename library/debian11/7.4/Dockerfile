@@ -557,12 +557,12 @@ COPY --from=build_supervisor /opt/supervisor/lib/ /opt/supervisor/lib/
 COPY --from=build_supervisor /opt/supervisor/pyvenv.cfg /opt/supervisor/pyvenv.cfg
 
 # Copy fail2ban into the final image
-COPY --from=build_fail2ban /etc/fail2ban/ /etc/fail2ban/
-COPY --from=build_fail2ban /opt/fail2ban/bin/ /opt/fail2ban/bin/
-COPY --from=build_fail2ban /opt/fail2ban/lib/ /opt/fail2ban/lib/
-COPY --from=build_fail2ban /opt/fail2ban/pyvenv.cfg /opt/fail2ban/pyvenv.cfg
-COPY --from=build_fail2ban /usr/share/doc/fail2ban/ /usr/share/doc/fail2ban/
-COPY --from=build_fail2ban /var/lib/fail2ban/ /var/lib/fail2ban/
+# COPY --from=build_fail2ban /etc/fail2ban/ /etc/fail2ban/
+# COPY --from=build_fail2ban /opt/fail2ban/bin/ /opt/fail2ban/bin/
+# COPY --from=build_fail2ban /opt/fail2ban/lib/ /opt/fail2ban/lib/
+# COPY --from=build_fail2ban /opt/fail2ban/pyvenv.cfg /opt/fail2ban/pyvenv.cfg
+# COPY --from=build_fail2ban /usr/share/doc/fail2ban/ /usr/share/doc/fail2ban/
+# COPY --from=build_fail2ban /var/lib/fail2ban/ /var/lib/fail2ban/
 
 # Copy certbot into the final image
 COPY --from=build_certbot /etc/letsencrypt/ /etc/letsencrypt/
@@ -609,10 +609,10 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	ln -s /opt/supervisor/bin/supervisorctl /usr/local/bin/; \
 	\
 	# Create symlinks for fail2ban
-	ln -s /opt/fail2ban/bin/fail2ban-client /usr/local/bin/; \
-	ln -s /opt/fail2ban/bin/fail2ban-regex /usr/local/bin/; \
-	ln -s /opt/fail2ban/bin/fail2ban-server /usr/local/bin/; \
-	ln -s /opt/fail2ban/bin/fail2ban-testcases /usr/local/bin/; \
+	# ln -s /opt/fail2ban/bin/fail2ban-client /usr/local/bin/; \
+	# ln -s /opt/fail2ban/bin/fail2ban-regex /usr/local/bin/; \
+	# ln -s /opt/fail2ban/bin/fail2ban-server /usr/local/bin/; \
+	# ln -s /opt/fail2ban/bin/fail2ban-testcases /usr/local/bin/; \
 	\
 	# Create symlink for the modsec-rules-check binary
 	ln -s /usr/local/modsecurity/bin/modsec-rules-check /usr/local/sbin/; \
@@ -755,14 +755,14 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	supervisord --help; \
 	\
 	# Print fail2ban version information
-	fail2ban-client --version; \
-	fail2ban-client --help; \
-	fail2ban-regex --version; \
-	fail2ban-regex --help; \
-	fail2ban-server --version; \
-	fail2ban-server --help; \
-	fail2ban-testcases --version; \
-	fail2ban-testcases --help; \
+	# fail2ban-client --version; \
+	# fail2ban-client --help; \
+	# fail2ban-regex --version; \
+	# fail2ban-regex --help; \
+	# fail2ban-server --version; \
+	# fail2ban-server --help; \
+	# fail2ban-testcases --version; \
+	# fail2ban-testcases --help; \
 	\
 	# Print certbot version information
 	certbot --version; \
