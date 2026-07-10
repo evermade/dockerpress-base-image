@@ -80,3 +80,38 @@ Python is currently used by certbot (certbot-requirements.in) and supervisor (su
 2. Run the Docker command commented in \*-requirements.in to generate the \*-requirements.txt file.
 
 3. Verify that the \*-requirements.txt is legit.
+
+## Dependency checklist
+
+The following dependencies should be checked every so often for updates.
+
+### Actions
+
+- https://github.com/actions/checkout
+- https://github.com/docker/metadata-action
+- https://github.com/docker/login-action
+- https://github.com/docker/setup-buildx-action
+- https://github.com/docker/build-push-action
+
+### Dockerfile
+
+- Dockerfile syntax: https://github.com/moby/buildkit
+- Base image
+    - PHP base image: https://hub.docker.com/_/php
+    - wordpress base image (for reference): https://github.com/docker-library/wordpress
+- CA certificates: https://curl.se/docs/caextract.html
+- Cosign: https://github.com/sigstore/cosign
+- Go: https://go.dev/dl/
+- Python: https://www.python.org/downloads/source/
+- WP-CLI: https://github.com/wp-cli/wp-cli
+- Core Rule Set: https://github.com/coreruleset/coreruleset
+- ModSecurity: https://github.com/owasp-modsecurity/ModSecurity
+- Nginx modules
+    - ngx_brotli: https://github.com/google/ngx_brotli
+    - libnginx-mod-http-cache-purge: https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge
+    - libnginx-mod-http-geoip2: https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2
+    - headers-more-nginx-module: https://github.com/openresty/headers-more-nginx-module
+    - ModSecurity-nginx: https://github.com/owasp-modsecurity/ModSecurity-nginx
+- Python dependencies
+    - [certbot-requirements.in](/certbot-requirements.in)
+    - [supervisor-requirements.in](/supervisor-requirements.in)
