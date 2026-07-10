@@ -97,8 +97,8 @@ The following dependencies should be checked every so often for updates.
 
 - Dockerfile syntax: https://github.com/moby/buildkit
 - Base image
-    - PHP base image: https://hub.docker.com/_/php
-    - wordpress base image (for reference): https://github.com/docker-library/wordpress
+    - Official PHP Docker base image: https://hub.docker.com/_/php
+    - Official WordPress Docker base image (for reference): https://github.com/docker-library/wordpress
 - CA certificates: https://curl.se/docs/caextract.html
 - Cosign: https://github.com/sigstore/cosign
 - Go: https://go.dev/dl/
