@@ -77,9 +77,9 @@ ADD --checksum=sha256:ae1ecd212663f3693ad9edf8b1a183900c9a52d3155ba6e354237f9a0f
 
 # Download go from https://go.dev/dl/
 ARG GO_GPG_KEYS="EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796"
-ARG GO_VERSION="1.26.4"
-ADD --checksum=sha256:6ca78e8304ce56dbdad1a25260c66385c0c5c2acbcc7bec7d7c2dbd1b8be9576 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:1153d3d50e0ac764b447adfe05c2bcf08e889d42a02e0fe0259bd47f6733ad7f --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
+ARG GO_VERSION="1.26.5"
+ADD --checksum=sha256:d0d73b7af22674ed1b66736b06973afd5892b48d3aa50f55478a706658581178 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:5c2c3b16caefa1d968a94c1daca04a7ca301a496d9b086e17ad77bb81393f053 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -278,7 +278,7 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pip \
 
 FROM base AS build_wp_cli
 
-# Download WP-CLI binary, signature and bash tab completions from https://github.com/wp-cli/wp-cli/releases/
+# Download WP-CLI binary, signature and bash tab completions from https://github.com/wp-cli/wp-cli/releases
 ARG WP_CLI_GPG_KEYS="63AF7AA15067C05616FDDD88A3A2E8F226F0BC06"
 ARG WP_CLI_VERSION="2.12.0"
 ADD --checksum=sha256:9c2f9d93968d68ad2a8fa60eaf8f916f163740977be031b38d9ca6202e82b5be --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
