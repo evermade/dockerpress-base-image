@@ -21,7 +21,6 @@ jobs:
 
     env:
       DEFAULT_DEBIAN_VERSION: "debian13"
-      DEFAULT_PHP_VERSION: "8.3"
 
     timeout-minutes: 30
 
@@ -32,54 +31,67 @@ jobs:
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian11"
+            defaultPHPVersion: "8.1"
             phpVersion: "7.4"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian11"
+            defaultPHPVersion: "8.1"
             phpVersion: "8.0"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian11"
+            defaultPHPVersion: "8.1"
             phpVersion: "8.1"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.1"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.2"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.3"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.4"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.5"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.1"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.2"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.3"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.4"
           - os: ubuntu-latest
             platform: linux/amd64
             debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
             phpVersion: "8.5"
 
     steps:
@@ -121,23 +133,23 @@ jobs:
             type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},pattern={{major}},suffix=-php${{ matrix.platform.phpVersion }}
             type=sha,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},prefix=,format=long,suffix=-php${{ matrix.platform.phpVersion }}
 
-            type=schedule,enable=${{ case(matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},suffix=-${{ matrix.platform.debianVersion }}
-            type=ref,enable=${{ case(matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},event=branch,suffix=-${{ matrix.platform.debianVersion }}
-            type=ref,enable=${{ case(matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},event=pr,suffix=-${{ matrix.platform.debianVersion }}
-            type=ref,enable=${{ case(matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},event=tag,suffix=-${{ matrix.platform.debianVersion }}
-            type=semver,enable=${{ case(matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},pattern={{version}},suffix=-${{ matrix.platform.debianVersion }}
-            type=semver,enable=${{ case(matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},pattern={{major}}.{{minor}},suffix=-${{ matrix.platform.debianVersion }}
-            type=semver,enable=${{ case(matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},pattern={{major}},suffix=-${{ matrix.platform.debianVersion }}
-            type=sha,enable=${{ case(matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},prefix=,format=long,suffix=-${{ matrix.platform.debianVersion }}
+            type=schedule,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},suffix=-${{ matrix.platform.debianVersion }}
+            type=ref,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=branch,suffix=-${{ matrix.platform.debianVersion }}
+            type=ref,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=pr,suffix=-${{ matrix.platform.debianVersion }}
+            type=ref,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=tag,suffix=-${{ matrix.platform.debianVersion }}
+            type=semver,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{version}},suffix=-${{ matrix.platform.debianVersion }}
+            type=semver,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{major}}.{{minor}},suffix=-${{ matrix.platform.debianVersion }}
+            type=semver,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{major}},suffix=-${{ matrix.platform.debianVersion }}
+            type=sha,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},prefix=,format=long,suffix=-${{ matrix.platform.debianVersion }}
 
-            type=schedule,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},suffix=
-            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},event=branch,suffix=
-            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},event=pr,suffix=
-            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},event=tag,suffix=
-            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},pattern={{version}},suffix=
-            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},pattern={{major}}.{{minor}},suffix=
-            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},pattern={{major}},suffix=
-            type=sha,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == env.DEFAULT_PHP_VERSION, true, false) }},prefix=,format=long,suffix=
+            type=schedule,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},suffix=
+            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=branch,suffix=
+            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=pr,suffix=
+            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=tag,suffix=
+            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{version}},suffix=
+            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{major}}.{{minor}},suffix=
+            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{major}},suffix=
+            type=sha,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},prefix=,format=long,suffix=
 
       - name: Login to Docker Hub
         if: github.event_name != 'pull_request'
