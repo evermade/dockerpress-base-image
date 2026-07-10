@@ -57,7 +57,7 @@ And enjoy!
 
 4. This automatically triggers the image builder GitHub Workflow and will eventually, after some 30 minutes, push the new images with the appropriate tags and labels to Docker Hub. So, go get a cup of ☕️ while you wait.
 
-5. Once the build is complete, you can pull the new image as shown in the Usage section.
+5. Once the build is complete, you can pull the new image as shown in the Usage section. Sometimes a build may fail due to rate limiting. You should trigger a rebuild for a failed build manually. You don't need to rebuild everything, just the failed builds.
 
 ## Adding third party downloads
 
