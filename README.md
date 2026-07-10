@@ -10,18 +10,17 @@ We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:2.3.54
+FROM evermadefi/dockerpress-base-image:3.0.0
+FROM evermadefi/dockerpress-base-image:3.0
+FROM evermadefi/dockerpress-base-image:3
 
-# To use a specific semantic minor version
-FROM evermadefi/dockerpress-base-image:2.3
+# You can specify the Debian and PHP versions as well
+FROM evermadefi/dockerpress-base-image:3.0.0-php8.3-debian13
+FROM evermadefi/dockerpress-base-image:3.0.0-php8.3
+FROM evermadefi/dockerpress-base-image:3.0.0-debian13
 
-# To use a specific semantic major version
-FROM evermadefi/dockerpress-base-image:2
-
-# To use a specific tag
-FROM evermadefi/dockerpress-base-image:v2.3.54
-
-# To use a specific branch
+# To use a specific tag or branch
+FROM evermadefi/dockerpress-base-image:v3.0.0
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
@@ -30,7 +29,7 @@ FROM evermadefi/dockerpress-base-image:d005a63181510de433588c80a7fd0d729a8296a3
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:2.3.54`
+`docker pull evermadefi/dockerpress-base-image:3.0.0`
 
 And enjoy!
 
@@ -50,7 +49,7 @@ And enjoy!
 
 ## Publishing a new version
 
-1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v2.3.55). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
+1. [Draft a new release on GitHub](https://github.com/evermade/dockerpress-base-image/releases/new) using the MAJOR.MINOR.PATCH semantic versioning scheme for the new tag with the "v" prefix (e.g. v3.0.99). You can also create and push a tag separately using your preferred Git client, but GitHub allows you to do this all at once, so it is not necessary.
 
 2. Write a description with the changelog for the release.
 
