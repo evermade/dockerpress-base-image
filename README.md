@@ -61,7 +61,7 @@ And enjoy!
 
 ## Templates
 
-The Dockerfiles and GitHub Actions are templated with Nunjucks (.njk files).
+The Dockerfiles and GitHub Actions are templated with [Nunjucks](https://github.com/mozilla/nunjucks) (.njk files).
 
 If you want to edit a Dockerfile or Action please edit the corresponding template file and then run `node generate-files.js` to generate the final files. Do not edit any generated files directly.
 
