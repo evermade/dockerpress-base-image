@@ -59,6 +59,12 @@ And enjoy!
 
 5. Once the build is complete, you can pull the new image as shown in the Usage section. Sometimes a build may fail due to rate limiting. You should trigger a rebuild for a failed build manually. You don't need to rebuild everything, just the failed builds.
 
+## Templates
+
+The Dockerfiles and GitHub Actions are templated with Nunjucks (.njk files).
+
+If you want to edit a Dockerfile or Action please edit the corresponding template file and then run `node generate-files.js` to generate the final files. Do not edit any generated files directly.
+
 ## Adding third party downloads
 
 1. Check the integrity of the source yourself, that the contents are correct.
