@@ -57,7 +57,7 @@ And enjoy!
 
 4. This automatically triggers the image builder GitHub Workflow and will eventually, after some 30 minutes, push the new images with the appropriate tags and labels to Docker Hub. So, go get a cup of ☕️ while you wait.
 
-5. Once the build is complete, you can pull the new image from either of the container registries as shown in the Usage section.
+5. Once the build is complete, you can pull the new image as shown in the Usage section.
 
 ## Adding third party downloads
 
