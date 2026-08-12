@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile-upstream:1.25.0
+# syntax=docker.io/docker/dockerfile-upstream:1.26.0
 # Syntax via https://github.com/moby/buildkit/releases
 
 
@@ -15,8 +15,8 @@ FROM docker.io/library/php:8.4.23-fpm-trixie@sha256:1c3585e1e99f3fd7fbfed9db2160
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ENV CA_BUNDLE_VERSION="2026-05-14"
-ADD --checksum=sha256:86a1f3366afac7c6f8ae9f3c779ac221129328c43f0ab2b8817eb2f362a5025c --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ENV CA_BUNDLE_VERSION="2026-07-16"
+ADD --checksum=sha256:3ff344e30b9b1ed2971044eabb438a08f2e2245ddb5f8ab1a3ad8b63ab4eaf91 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates /usr/local/bin
 
@@ -70,10 +70,10 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 FROM base AS build_cosign
 
 # Download cosign from https://github.com/sigstore/cosign/releases and trusted root keys from https://github.com/sigstore/root-signing
-ARG COSIGN_VERSION="3.1.1"
+ARG COSIGN_VERSION="3.1.3"
 ADD --checksum=sha256:836bff947925edfc23eb9ce17af66fb1e43bb5e2bdd240520985ae52b585eae9 --chmod=444 https://raw.githubusercontent.com/sigstore/root-signing/refs/heads/main/metadata/root_history/10.root.json /tmp/sigstore-root.json
-ADD --checksum=sha256:60e54a927cf14724d3fc03a2a0fe4cedefd3726ea50e06f2456c9d4dfccfb228 --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
-ADD --checksum=sha256:ae1ecd212663f3693ad9edf8b1a183900c9a52d3155ba6e354237f9a0f6463fc --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 /tmp/cosign
+ADD --checksum=sha256:9c0e569b65883ac5ccf6e079989355832a3ee083b8cb991b3482d963e97896d9 --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
+ADD --checksum=sha256:4629c757b7618056f8ddd7e2625ae9fdd94c0372a65049520bc7d9df9efc7f71 --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 /tmp/cosign
 
 # Download go from https://go.dev/dl/
 ARG GO_GPG_KEYS="EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796"
@@ -117,9 +117,9 @@ RUN --mount=type=cache,sharing=private,target=/root/go \
 FROM base AS build_python
 
 # Download the latest stable Python source from https://www.python.org/downloads/source/
-ENV PYTHON_VERSION="3.14.6"
-ADD --checksum=sha256:237b33fd3dcdb3acbd060d21d63fcfd4c06e17e0b35878888b3d37e683a1c36e --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
-ADD --checksum=sha256:143b1dddefaec3bd2e21e3b839b34a2b7fb9842272883c576420d605e9f30c63 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
+ENV PYTHON_VERSION="3.14.7"
+ADD --checksum=sha256:6f41efc358b146b5548dbfc0414e9247441f8524fb6ef59f1c4ca946ffc70701 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
+ADD --checksum=sha256:3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
 
 COPY --from=build_cosign /usr/local/bin/cosign /usr/local/bin/cosign
 
@@ -308,8 +308,8 @@ RUN set -eux; \
 FROM base AS build_crs
 
 # Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="a19c6fa104ee1e757f25d0a378b8d346122b7305"
-ADD --checksum=sha256:04aa85bbbdedbf05d0e9c2519b293dce80d05e84f9fc2572befcdc770c3f1672 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+ARG MODSEC_CRS_COMMIT="096f6890cbbd1037c56b28602942e7ee731f41ec"
+ADD --checksum=sha256:06bfcafae1a7bea531d2b1bcca6291358f30c564fc236e346c36e051ff555b96 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
 
 RUN set -eux; \
 	\
