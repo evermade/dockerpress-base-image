@@ -9,7 +9,7 @@
 #
 
 
-FROM docker.io/library/php:8.3.32-fpm-bookworm@sha256:1e01582867762752354f3f4befb53a3108e46d41cefb026fd789f6083d9e61a9 AS base
+FROM docker.io/library/php:8.3.33-fpm-bookworm@sha256:78a4d3237f558785f4345538354470c4a736d2ffc05e6e8ee30cea161045a865 AS base
 
 # Download the nginx keyring from https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
