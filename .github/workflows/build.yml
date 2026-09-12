@@ -30,21 +30,6 @@ jobs:
         platform:
           - os: ubuntu-latest
             platform: linux/amd64
-            debianVersion: "debian11"
-            defaultPHPVersion: "8.1"
-            phpVersion: "7.4"
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: "debian11"
-            defaultPHPVersion: "8.1"
-            phpVersion: "8.0"
-          - os: ubuntu-latest
-            platform: linux/amd64
-            debianVersion: "debian11"
-            defaultPHPVersion: "8.1"
-            phpVersion: "8.1"
-          - os: ubuntu-latest
-            platform: linux/amd64
             debianVersion: "debian12"
             defaultPHPVersion: "8.3"
             phpVersion: "8.1"

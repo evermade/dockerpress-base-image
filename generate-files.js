@@ -6,29 +6,6 @@ const nunjucks = require("nunjucks");
 const defaultDebianVersion = "debian13";
 
 const versions = {
-	debian11: {
-		defaultPHPVersion: "8.1",
-		phpVersions: {
-			7.4: {
-				// https://hub.docker.com/layers/library/php/7.4.33-fpm-bullseye/
-				image:
-					"docker.io/library/php:7.4.33-fpm-bullseye@sha256:3ac7c8c74b2b047c7cb273469d74fc0d59b857aa44043e6ea6a0084372811d5b",
-				version: "7.4.33",
-			},
-			"8.0": {
-				// https://hub.docker.com/layers/library/php/8.0.30-fpm-bullseye/
-				image:
-					"docker.io/library/php:8.0.30-fpm-bullseye@sha256:b07b8df17506cdb370945d942c5f12356af2d078005ded8b195f7e17129de9d1",
-				version: "8.0.30",
-			},
-			8.1: {
-				// https://hub.docker.com/layers/library/php/8.1.33-fpm-bullseye/
-				image:
-					"docker.io/library/php:8.1.33-fpm-bullseye@sha256:bf963a103241b5f9db812bacc101022d3af7584054e865c9cc13f597f3a3e252",
-				version: "8.1.33",
-			},
-		},
-	},
 	debian12: {
 		defaultPHPVersion: "8.3",
 		phpVersions: {

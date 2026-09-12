@@ -35,11 +35,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	apt-get update; \
 	\
-{%- if debianVersion == "debian11" %}
-	apt-get upgrade -y || true; \
-{%- else %}
 	apt-get upgrade -y; \
-{%- endif %}
 	\
 	flush-ca-certificates; \
 	\
@@ -673,9 +669,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		\
 		# gd PHP extension dependencies
 {%- if phpMajorMinorVersion > "8.0" %}
-{%- if debianVersion == "debian11" %}
-		libavif9 \
-{%- elif debianVersion == "debian12" %}
+{%- if debianVersion == "debian12" %}
 		libavif15 \
 {%- else %}
 		libavif16 \
@@ -692,9 +686,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 {%- endif %}
 		\
 		# intl PHP extension dependencies
-{%- if debianVersion == "debian11" %}
-		libicu67 \
-{%- elif debianVersion == "debian12" %}
+{%- if debianVersion == "debian12" %}
 		libicu72 \
 {%- else %}
 		libicu76 \
