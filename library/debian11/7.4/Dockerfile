@@ -35,7 +35,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	apt-get update; \
 	\
-	apt-get upgrade -y; \
+	apt-get upgrade -y || true; \
 	\
 	flush-ca-certificates; \
 	\

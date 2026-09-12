@@ -35,7 +35,11 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	apt-get update; \
 	\
+{%- if debianVersion == "debian11" %}
+	apt-get upgrade -y || true; \
+{%- else %}
 	apt-get upgrade -y; \
+{%- endif %}
 	\
 	flush-ca-certificates; \
 	\
