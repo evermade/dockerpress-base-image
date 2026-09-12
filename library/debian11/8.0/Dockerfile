@@ -15,8 +15,8 @@ FROM docker.io/library/php:8.0.30-fpm-bullseye@sha256:b07b8df17506cdb370945d942c
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ENV CA_BUNDLE_VERSION="2026-07-16"
-ADD --checksum=sha256:3ff344e30b9b1ed2971044eabb438a08f2e2245ddb5f8ab1a3ad8b63ab4eaf91 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ENV CA_BUNDLE_VERSION="2026-08-13"
+ADD --checksum=sha256:f66dff1bdf8f96060b8177976f8b7d9254bc89bc4db933d769f7384d28480bc9 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates /usr/local/bin
 
@@ -72,14 +72,14 @@ FROM base AS build_cosign
 # Download cosign from https://github.com/sigstore/cosign/releases and trusted root keys from https://github.com/sigstore/root-signing
 ARG COSIGN_VERSION="3.1.3"
 ADD --checksum=sha256:836bff947925edfc23eb9ce17af66fb1e43bb5e2bdd240520985ae52b585eae9 --chmod=444 https://raw.githubusercontent.com/sigstore/root-signing/refs/heads/main/metadata/root_history/10.root.json /tmp/sigstore-root.json
-ADD --checksum=sha256:9c0e569b65883ac5ccf6e079989355832a3ee083b8cb991b3482d963e97896d9 --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
-ADD --checksum=sha256:4629c757b7618056f8ddd7e2625ae9fdd94c0372a65049520bc7d9df9efc7f71 --chmod=444 https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 /tmp/cosign
+ADD --checksum=sha256:9c0e569b65883ac5ccf6e079989355832a3ee083b8cb991b3482d963e97896d9 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
+ADD --checksum=sha256:4629c757b7618056f8ddd7e2625ae9fdd94c0372a65049520bc7d9df9efc7f71 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64 /tmp/cosign
 
 # Download go from https://go.dev/dl/
 ARG GO_GPG_KEYS="EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796"
-ARG GO_VERSION="1.26.5"
-ADD --checksum=sha256:d0d73b7af22674ed1b66736b06973afd5892b48d3aa50f55478a706658581178 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:5c2c3b16caefa1d968a94c1daca04a7ca301a496d9b086e17ad77bb81393f053 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
+ARG GO_VERSION="1.27.1"
+ADD --checksum=sha256:de4e02ef1d22f93b992e4e768c9067fa0648c476572235d2f3065375587676df --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -217,9 +217,9 @@ COPY --from=build_python /usr/local/bin/pip3.14 /usr/local/bin/pip3.14
 COPY --from=build_python /usr/local/bin/python3.14 /usr/local/bin/python3.14
 COPY --from=build_python /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
 
-# Download the fail2ban source (tag: 1.1.0) from https://github.com/fail2ban/fail2ban/releases
-ARG FAIL2BAN_CHECKOUT="61799e15e1dd4389dea0cc7595da0a287835a177"
-ADD --checksum=sha256:51d892640cb01e826404b01b61818160a9e6b46fe68e589bcbc4f42c45053e56 --chmod=444 https://github.com/fail2ban/fail2ban/archive/$FAIL2BAN_CHECKOUT.tar.gz /usr/src/fail2ban.tar.gz
+# Download the fail2ban source (tag: 1.1.1) from https://github.com/fail2ban/fail2ban/releases
+ARG FAIL2BAN_CHECKOUT="f60978618a101427b06924fc932b44350fec2b63"
+ADD --checksum=sha256:0a089e14d452e90a62f9f9fd1b7414d8bfb38f2997a11fee971cfd6d491fa48c --chmod=444 https://github.com/fail2ban/fail2ban/archive/$FAIL2BAN_CHECKOUT.tar.gz /usr/src/fail2ban.tar.gz
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -308,8 +308,8 @@ RUN set -eux; \
 FROM base AS build_crs
 
 # Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="096f6890cbbd1037c56b28602942e7ee731f41ec"
-ADD --checksum=sha256:06bfcafae1a7bea531d2b1bcca6291358f30c564fc236e346c36e051ff555b96 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+ARG MODSEC_CRS_COMMIT="87de6a8e04c774533e6e939323588a61cca46a6a"
+ADD --checksum=sha256:41b4200cd8b4f2e8c8ac7559fe048923ba8a6c955e3a739d524bcd02d95c8008 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
 
 RUN set -eux; \
 	\
@@ -455,16 +455,16 @@ ENV NGX_BROTLI_GIT_COMMIT="a71f9312c2deb28875acc7bacfdd5695a111aa53"
 ADD --checksum=$NGX_BROTLI_GIT_COMMIT --keep-git-dir https://github.com/google/ngx_brotli.git#master /opt/ngx_brotli
 
 # Download nginx cache purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge
-ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="e6d846dd5af274542f4ba73a9339ec33535a2ff2"
-ADD --checksum=sha256:15321309c1fe1f7eb8507f7da1b3bb91d4df33760948ea3f72678c0663ededea --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge/-/archive/$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT/libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT.tar.gz /opt/
+ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="80255be5df7d002e4151b94936055d5055ef371d"
+ADD --checksum=sha256:d02008e533780eae5c162b968a2d3316a938386f915c6556e533eff9c93a01d5 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge/-/archive/$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT/libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT.tar.gz /opt/
 
 # Download nginx geoip2 purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2
-ENV LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT="d94e68ee1aed43a879d80d8081750a08027b9785"
-ADD --checksum=sha256:b2e0a6195d184adfc9d38096438dc32aa2490c299f4b11371dfa36d7e8a8b5a7 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2/-/archive/$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT/libnginx-mod-http-geoip2-$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT.tar.gz /opt/
+ENV LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT="17a5e04cc1ea18ecbdbdfc3bdd1504bc434fe0bf"
+ADD --checksum=sha256:63e5a39c50ec03ee39eb32adef3e0273a42d4c61843b6a15acdf1a79bda45f07 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2/-/archive/$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT/libnginx-mod-http-geoip2-$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT.tar.gz /opt/
 
 # Download nginx headers more module from https://github.com/openresty/headers-more-nginx-module
-ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="812c1735d55817baa373afbcf6c4ce41f79033dd"
-ADD --checksum=sha256:cb67d8ebe58252e272bd7703de08a3789cc5c46d061f4d9d1b86e3e7bf0cfedc --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
+ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="5ed726de873b1cd44ae8f4bd06c4ccfaf0b3570f"
+ADD --checksum=sha256:7844ae77415bb2df241cffd7f5965871618c60c8c8e0841b55c517b7b63fd6a0 --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
 # Download the ModSecurity-nginx module from https://github.com/owasp-modsecurity/ModSecurity-nginx
 ARG MODSEC_NGX_CHECKOUT="9eb44fd9ab0988756e1ab8ce5aa5548ddbe57846"
