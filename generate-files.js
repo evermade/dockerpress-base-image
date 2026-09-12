@@ -41,26 +41,26 @@ const versions = {
 			8.2: {
 				// https://hub.docker.com/layers/library/php/8.2.33-fpm-bookworm/
 				image:
-					"docker.io/library/php:8.2.33-fpm-bookworm@sha256:5623a1f394cfc9ec9710efc975db6d746618f1c3e047649232d5432a0b2f942c",
+					"docker.io/library/php:8.2.33-fpm-bookworm@sha256:cf628d5395be83cadf709178525db7e541217032c122a0db008085ee2a7dba74",
 				version: "8.2.33",
 			},
 			8.3: {
 				// https://hub.docker.com/layers/library/php/8.3.33-fpm-bookworm/
 				image:
-					"docker.io/library/php:8.3.33-fpm-bookworm@sha256:78a4d3237f558785f4345538354470c4a736d2ffc05e6e8ee30cea161045a865",
+					"docker.io/library/php:8.3.33-fpm-bookworm@sha256:84ffb6f84362cd0cc74d6dea47cc1b376b4d7477f97c84b0e5bb287ab9df056c",
 				version: "8.3.33",
 			},
 			8.4: {
-				// https://hub.docker.com/layers/library/php/8.4.24-fpm-bookworm/
+				// https://hub.docker.com/layers/library/php/8.4.25-fpm-bookworm/
 				image:
-					"docker.io/library/php:8.4.24-fpm-bookworm@sha256:c5fb7a0c02f4efe280691910c8b734995fa83598cdcf3115ef5dcb2e4617681c",
-				version: "8.4.24",
+					"docker.io/library/php:8.4.25-fpm-bookworm@sha256:075b11566518bfa979bb9f2fe2e5359148326d659b15a2f414c2c305a0479a4e",
+				version: "8.4.25",
 			},
 			8.5: {
-				// https://hub.docker.com/layers/library/php/8.5.9-fpm-bookworm/
+				// https://hub.docker.com/layers/library/php/8.5.10-fpm-bookworm/
 				image:
-					"docker.io/library/php:8.5.9-fpm-bookworm@sha256:7b1deadd1d73c72d2eb952ebb494cd3e902d7b6ae4e4b3cd1113a1041b530c2c",
-				version: "8.5.9",
+					"docker.io/library/php:8.5.10-fpm-bookworm@sha256:81b9c405b013ebda0c9b8cd7a1a61424cf3627ca96348d93752a9b0539ce9a25",
+				version: "8.5.10",
 			},
 		},
 	},
@@ -76,26 +76,26 @@ const versions = {
 			8.2: {
 				// https://hub.docker.com/layers/library/php/8.2.33-fpm-trixie/
 				image:
-					"docker.io/library/php:8.2.33-fpm-trixie@sha256:07da04f452476c49f810c2081a2ce38536003041d5b70383350c66e49e4485f8",
+					"docker.io/library/php:8.2.33-fpm-trixie@sha256:596175799ca76a93d5d0c3cda7d5f70fccfc86dfdaf97580c1c27e665aba991f",
 				version: "8.2.33",
 			},
 			8.3: {
 				// https://hub.docker.com/layers/library/php/8.3.33-fpm-trixie/
 				image:
-					"docker.io/library/php:8.3.33-fpm-trixie@sha256:b7b2846437277f3d0a6f43161e4e91f82f3649c3e773d36509d53ca6519e2446",
+					"docker.io/library/php:8.3.33-fpm-trixie@sha256:5ad27201cf5cdf1704e147218e64fa0db2155ecda26edbe2b3eeb7b90cbf9328",
 				version: "8.3.33",
 			},
 			8.4: {
-				// https://hub.docker.com/layers/library/php/8.4.24-fpm-trixie/
+				// https://hub.docker.com/layers/library/php/8.4.25-fpm-trixie/
 				image:
-					"docker.io/library/php:8.4.24-fpm-trixie@sha256:9467f10bf42897dec0abb73ee20c747ebd45463ec9d6fcc4044cb83eba6dade7",
-				version: "8.4.24",
+					"docker.io/library/php:8.4.25-fpm-trixie@sha256:59fa733c9af643a122f8a9976119460e35ce76dd0a3f2b9c8f75af8e361a54e2",
+				version: "8.4.25",
 			},
 			8.5: {
-				// https://hub.docker.com/layers/library/php/8.5.9-fpm-trixie/
+				// https://hub.docker.com/layers/library/php/8.5.10-fpm-trixie/
 				image:
-					"docker.io/library/php:8.5.9-fpm-trixie@sha256:32ef9f35b567a741f24c5d2c3312f803fe6c9e34b7db46212f95fce675e1d13f",
-				version: "8.5.9",
+					"docker.io/library/php:8.5.10-fpm-trixie@sha256:70076c1cae0cd0ba6761832417e3a1df3e5560f0544eb0fe40357373e54420fe",
+				version: "8.5.10",
 			},
 		},
 	},
