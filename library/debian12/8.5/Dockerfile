@@ -368,6 +368,7 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 		gd \
 		intl \
 		mysqli \
+		soap \
 		zip \
 	; \
 	\

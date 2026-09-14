@@ -375,6 +375,7 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 {%- if phpMajorMinorVersion < "8.5" %}
 		opcache \
 {%- endif %}
+		soap \
 		zip \
 	; \
 	\

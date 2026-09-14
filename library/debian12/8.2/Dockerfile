@@ -369,6 +369,7 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 		intl \
 		mysqli \
 		opcache \
+		soap \
 		zip \
 	; \
 	\
