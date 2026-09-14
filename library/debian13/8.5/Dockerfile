@@ -351,6 +351,9 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 		\
 		# redis
 		liblz4-dev \
+		\
+		# soap
+		libxml2-dev \
 	; \
 	\
 	# Configure PHP GD extension
@@ -673,6 +676,9 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		\
 		# zip PHP extension dependencies
 		libzip5 \
+		\
+		# soap PHP extension dependencies
+		libxml2 \
 	; \
 	apt-get clean; \
 	rm -rf /var/lib/apt/lists/*; \
