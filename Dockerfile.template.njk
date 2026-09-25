@@ -271,8 +271,8 @@ RUN set -eux; \
 FROM base AS build_crs
 
 # Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="87de6a8e04c774533e6e939323588a61cca46a6a"
-ADD --checksum=sha256:41b4200cd8b4f2e8c8ac7559fe048923ba8a6c955e3a739d524bcd02d95c8008 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+ARG MODSEC_CRS_COMMIT="a017c3f4162308a645aaa9ad96da90ac5e6723b3"
+ADD --checksum=sha256:bdc2839f47cd8f4bbc9ba13114ef338c1d58f5901fd26b22c43a0daec1a8a4b6 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
 
 RUN set -eux; \
 	\
@@ -393,7 +393,7 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 FROM base AS build_modsec
 
 # Download the ModSecurity Git repository (branch: v3/master)
-ARG MODSEC_CHECKOUT="7ea9fefbe0ba409d8733b4d682c8c4c059cd028d"
+ARG MODSEC_CHECKOUT="2dada4ce3d44f438519fa5f1cd52c31848da0589"
 ADD --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
 
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -442,8 +442,8 @@ ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="5ed726de873b1cd44ae8f4bd06c4ccfaf0b357
 ADD --checksum=sha256:7844ae77415bb2df241cffd7f5965871618c60c8c8e0841b55c517b7b63fd6a0 --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
 # Download the ModSecurity-nginx module from https://github.com/owasp-modsecurity/ModSecurity-nginx
-ARG MODSEC_NGX_CHECKOUT="9eb44fd9ab0988756e1ab8ce5aa5548ddbe57846"
-ADD --checksum=sha256:3565e87e01c2dfee72cc9a769b671c667efe3c440e02d3b200c206296f2257c6 --unpack=true https://github.com/owasp-modsecurity/ModSecurity-nginx/archive/$MODSEC_NGX_CHECKOUT.tar.gz /opt/
+ARG MODSEC_NGX_CHECKOUT="6b47cbb01c002ece5e8e5e0be14d34df16d8e479"
+ADD --checksum=sha256:fb8633a4fa2d0dbe86fb7d0a8823f5091fd9bdc9885b764a9d99cc7360be8780 --unpack=true https://github.com/owasp-modsecurity/ModSecurity-nginx/archive/$MODSEC_NGX_CHECKOUT.tar.gz /opt/
 
 # Copy built ModSecurity libs
 COPY --from=build_modsec /usr/local/modsecurity/ /usr/local/modsecurity/

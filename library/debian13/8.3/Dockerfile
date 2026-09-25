@@ -211,43 +211,6 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pip \
 	/opt/supervisor/bin/supervisord --version; \
 	/opt/supervisor/bin/supervisord --help
 
-FROM base AS build_fail2ban
-
-COPY --from=build_python /usr/local/bin/pip3.14 /usr/local/bin/pip3.14
-COPY --from=build_python /usr/local/bin/python3.14 /usr/local/bin/python3.14
-COPY --from=build_python /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
-
-# Download the fail2ban source (tag: 1.1.1) from https://github.com/fail2ban/fail2ban/releases
-ARG FAIL2BAN_CHECKOUT="f60978618a101427b06924fc932b44350fec2b63"
-ADD --checksum=sha256:0a089e14d452e90a62f9f9fd1b7414d8bfb38f2997a11fee971cfd6d491fa48c --chmod=444 https://github.com/fail2ban/fail2ban/archive/$FAIL2BAN_CHECKOUT.tar.gz /usr/src/fail2ban.tar.gz
-
-ARG DEBIAN_FRONTEND="noninteractive"
-
-RUN --mount=type=cache,sharing=private,target=/tmp/pip \
-	--mount=type=bind,source=./fail2ban-requirements.txt,target=/opt/fail2ban/requirements.txt \
-	\
-	set -eux; \
-	\
-	/usr/local/bin/python3.14 -m venv /opt/fail2ban/; \
-	\
-	tar --extract --directory /opt/fail2ban --strip-components=1 --file /usr/src/fail2ban.tar.gz; \
-	\
-	/opt/fail2ban/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --only-binary :all: --upgrade pip; \
-	/opt/fail2ban/bin/pip install --cache-dir /tmp/pip --isolated --require-virtualenv --prefer-binary --require-hashes --requirement /opt/fail2ban/requirements.txt; \
-	\
-	cd /opt/fail2ban; \
-	\
-	/opt/fail2ban/bin/python setup.py install; \
-	\
-	/opt/fail2ban/bin/fail2ban-client --help; \
-	/opt/fail2ban/bin/fail2ban-client --version; \
-	/opt/fail2ban/bin/fail2ban-regex --help; \
-	/opt/fail2ban/bin/fail2ban-regex --version; \
-	/opt/fail2ban/bin/fail2ban-server --help; \
-	/opt/fail2ban/bin/fail2ban-server --version; \
-	/opt/fail2ban/bin/fail2ban-testcases --help; \
-	/opt/fail2ban/bin/fail2ban-testcases --version
-
 FROM base AS build_certbot
 
 COPY --from=build_python /usr/local/bin/pip3.14 /usr/local/bin/pip3.14
@@ -308,8 +271,8 @@ RUN set -eux; \
 FROM base AS build_crs
 
 # Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="87de6a8e04c774533e6e939323588a61cca46a6a"
-ADD --checksum=sha256:41b4200cd8b4f2e8c8ac7559fe048923ba8a6c955e3a739d524bcd02d95c8008 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+ARG MODSEC_CRS_COMMIT="a017c3f4162308a645aaa9ad96da90ac5e6723b3"
+ADD --checksum=sha256:bdc2839f47cd8f4bbc9ba13114ef338c1d58f5901fd26b22c43a0daec1a8a4b6 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
 
 RUN set -eux; \
 	\
@@ -424,7 +387,7 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 FROM base AS build_modsec
 
 # Download the ModSecurity Git repository (branch: v3/master)
-ARG MODSEC_CHECKOUT="7ea9fefbe0ba409d8733b4d682c8c4c059cd028d"
+ARG MODSEC_CHECKOUT="2dada4ce3d44f438519fa5f1cd52c31848da0589"
 ADD --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
 
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -473,8 +436,8 @@ ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="5ed726de873b1cd44ae8f4bd06c4ccfaf0b357
 ADD --checksum=sha256:7844ae77415bb2df241cffd7f5965871618c60c8c8e0841b55c517b7b63fd6a0 --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
 # Download the ModSecurity-nginx module from https://github.com/owasp-modsecurity/ModSecurity-nginx
-ARG MODSEC_NGX_CHECKOUT="9eb44fd9ab0988756e1ab8ce5aa5548ddbe57846"
-ADD --checksum=sha256:3565e87e01c2dfee72cc9a769b671c667efe3c440e02d3b200c206296f2257c6 --unpack=true https://github.com/owasp-modsecurity/ModSecurity-nginx/archive/$MODSEC_NGX_CHECKOUT.tar.gz /opt/
+ARG MODSEC_NGX_CHECKOUT="6b47cbb01c002ece5e8e5e0be14d34df16d8e479"
+ADD --checksum=sha256:fb8633a4fa2d0dbe86fb7d0a8823f5091fd9bdc9885b764a9d99cc7360be8780 --unpack=true https://github.com/owasp-modsecurity/ModSecurity-nginx/archive/$MODSEC_NGX_CHECKOUT.tar.gz /opt/
 
 # Copy built ModSecurity libs
 COPY --from=build_modsec /usr/local/modsecurity/ /usr/local/modsecurity/
@@ -562,14 +525,6 @@ COPY --from=build_supervisor /opt/supervisor/bin/ /opt/supervisor/bin/
 COPY --from=build_supervisor /opt/supervisor/lib/ /opt/supervisor/lib/
 COPY --from=build_supervisor /opt/supervisor/pyvenv.cfg /opt/supervisor/pyvenv.cfg
 
-# Copy fail2ban into the final image
-# COPY --from=build_fail2ban /etc/fail2ban/ /etc/fail2ban/
-# COPY --from=build_fail2ban /opt/fail2ban/bin/ /opt/fail2ban/bin/
-# COPY --from=build_fail2ban /opt/fail2ban/lib/ /opt/fail2ban/lib/
-# COPY --from=build_fail2ban /opt/fail2ban/pyvenv.cfg /opt/fail2ban/pyvenv.cfg
-# COPY --from=build_fail2ban /usr/share/doc/fail2ban/ /usr/share/doc/fail2ban/
-# COPY --from=build_fail2ban /var/lib/fail2ban/ /var/lib/fail2ban/
-
 # Copy certbot into the final image
 COPY --from=build_certbot /etc/letsencrypt/ /etc/letsencrypt/
 COPY --from=build_certbot /opt/certbot/cron /etc/cron.d/certbot
@@ -613,12 +568,6 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	# Create symlinks for supervisor
 	ln -s /opt/supervisor/bin/supervisord /usr/local/bin/; \
 	ln -s /opt/supervisor/bin/supervisorctl /usr/local/bin/; \
-	\
-	# Create symlinks for fail2ban
-	# ln -s /opt/fail2ban/bin/fail2ban-client /usr/local/bin/; \
-	# ln -s /opt/fail2ban/bin/fail2ban-regex /usr/local/bin/; \
-	# ln -s /opt/fail2ban/bin/fail2ban-server /usr/local/bin/; \
-	# ln -s /opt/fail2ban/bin/fail2ban-testcases /usr/local/bin/; \
 	\
 	# Create symlink for the modsec-rules-check binary
 	ln -s /usr/local/modsecurity/bin/modsec-rules-check /usr/local/sbin/; \
@@ -763,16 +712,6 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	# Print supervisor version information
 	supervisord --version; \
 	supervisord --help; \
-	\
-	# Print fail2ban version information
-	# fail2ban-client --version; \
-	# fail2ban-client --help; \
-	# fail2ban-regex --version; \
-	# fail2ban-regex --help; \
-	# fail2ban-server --version; \
-	# fail2ban-server --help; \
-	# fail2ban-testcases --version; \
-	# fail2ban-testcases --help; \
 	\
 	# Print certbot version information
 	certbot --version; \
