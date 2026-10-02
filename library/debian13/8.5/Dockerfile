@@ -117,9 +117,9 @@ RUN --mount=type=cache,sharing=private,target=/root/go \
 FROM base AS build_python
 
 # Download the latest stable Python source from https://www.python.org/downloads/source/
-ENV PYTHON_VERSION="3.14.7"
-ADD --checksum=sha256:6f41efc358b146b5548dbfc0414e9247441f8524fb6ef59f1c4ca946ffc70701 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
-ADD --checksum=sha256:3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
+ENV PYTHON_VERSION="3.14.8"
+ADD --checksum=sha256:717dc4647497932e50c5596236de67445812ee1deed4e58f90d8e25bdb0ba7f2 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
+ADD --checksum=sha256:c2215904f02b175596dc49351585104f4bc20341e1c47378b26a2c274360ce73 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
 
 COPY --from=build_cosign /usr/local/bin/cosign /usr/local/bin/cosign
 
@@ -271,8 +271,8 @@ RUN set -eux; \
 FROM base AS build_crs
 
 # Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="a017c3f4162308a645aaa9ad96da90ac5e6723b3"
-ADD --checksum=sha256:bdc2839f47cd8f4bbc9ba13114ef338c1d58f5901fd26b22c43a0daec1a8a4b6 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+ARG MODSEC_CRS_COMMIT="8e78e03f8531c4c5884ba87603361f487e91e434"
+ADD --checksum=sha256:db691f6b7ac60412dc56a5d48b3d918a843d8a35f4dc3ec941df9845ff0b85b2 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
 
 RUN set -eux; \
 	\
@@ -386,7 +386,7 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 FROM base AS build_modsec
 
 # Download the ModSecurity Git repository (branch: v3/master)
-ARG MODSEC_CHECKOUT="2dada4ce3d44f438519fa5f1cd52c31848da0589"
+ARG MODSEC_CHECKOUT="e1ccfffb7ef3853cecf008e841053cae17560e8e"
 ADD --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
 
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -423,8 +423,8 @@ ENV NGX_BROTLI_GIT_COMMIT="a71f9312c2deb28875acc7bacfdd5695a111aa53"
 ADD --checksum=$NGX_BROTLI_GIT_COMMIT --keep-git-dir https://github.com/google/ngx_brotli.git#master /opt/ngx_brotli
 
 # Download nginx cache purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge
-ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="80255be5df7d002e4151b94936055d5055ef371d"
-ADD --checksum=sha256:d02008e533780eae5c162b968a2d3316a938386f915c6556e533eff9c93a01d5 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge/-/archive/$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT/libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT.tar.gz /opt/
+ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="daae85d8bcfb1b36922580f6acf0b6bae58ce529"
+ADD --checksum=sha256:b56f3802627f772bb019a4ca05d0f81d2ef96019ff6eb8ea194c1c389e8924f6 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge/-/archive/$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT/libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT.tar.gz /opt/
 
 # Download nginx geoip2 purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2
 ENV LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT="17a5e04cc1ea18ecbdbdfc3bdd1504bc434fe0bf"
@@ -435,8 +435,8 @@ ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="5ed726de873b1cd44ae8f4bd06c4ccfaf0b357
 ADD --checksum=sha256:7844ae77415bb2df241cffd7f5965871618c60c8c8e0841b55c517b7b63fd6a0 --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
 # Download the ModSecurity-nginx module from https://github.com/owasp-modsecurity/ModSecurity-nginx
-ARG MODSEC_NGX_CHECKOUT="6b47cbb01c002ece5e8e5e0be14d34df16d8e479"
-ADD --checksum=sha256:fb8633a4fa2d0dbe86fb7d0a8823f5091fd9bdc9885b764a9d99cc7360be8780 --unpack=true https://github.com/owasp-modsecurity/ModSecurity-nginx/archive/$MODSEC_NGX_CHECKOUT.tar.gz /opt/
+ARG MODSEC_NGX_CHECKOUT="b7cf44e57bc386bc5c15e5c9319e6b6b719357f2"
+ADD --checksum=sha256:16f190ae434bf060dcaf5163d8272ba8dce859406c40af3aa2d5d2ab458527fe --unpack=true https://github.com/owasp-modsecurity/ModSecurity-nginx/archive/$MODSEC_NGX_CHECKOUT.tar.gz /opt/
 
 # Copy built ModSecurity libs
 COPY --from=build_modsec /usr/local/modsecurity/ /usr/local/modsecurity/
