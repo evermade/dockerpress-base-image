@@ -5,6 +5,12 @@ const nunjucks = require("nunjucks");
 
 const defaultDebianVersion = "debian13";
 
+// Each architecture is built on a native runner and merged into a single multi-arch tag.
+const architectures = [
+	{ name: "amd64", os: "ubuntu-latest", platform: "linux/amd64" },
+	{ name: "arm64", os: "ubuntu-24.04-arm", platform: "linux/arm64" },
+];
+
 const versions = {
 	debian12: {
 		defaultPHPVersion: "8.3",
@@ -126,6 +132,7 @@ for (const debianVersion in versions) {
 nunjucks.render(
 	path.resolve(__dirname, ".github/workflows/build.yml.template.njk"),
 	{
+		architectures,
 		defaultDebianVersion,
 		phpVersions,
 		versions,

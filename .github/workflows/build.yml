@@ -19,9 +19,6 @@ jobs:
   build:
     runs-on: ${{ matrix.platform.os }}
 
-    env:
-      DEFAULT_DEBIAN_VERSION: "debian13"
-
     timeout-minutes: 30
 
     strategy:
@@ -30,55 +27,104 @@ jobs:
         platform:
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
+            phpVersion: "8.1"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian12"
             phpVersion: "8.1"
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
+            phpVersion: "8.2"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian12"
             phpVersion: "8.2"
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
+            phpVersion: "8.3"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian12"
             phpVersion: "8.3"
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
+            phpVersion: "8.4"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian12"
             phpVersion: "8.4"
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
+            phpVersion: "8.5"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian12"
             phpVersion: "8.5"
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian13"
-            defaultPHPVersion: "8.3"
+            phpVersion: "8.1"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian13"
             phpVersion: "8.1"
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian13"
-            defaultPHPVersion: "8.3"
+            phpVersion: "8.2"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian13"
             phpVersion: "8.2"
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian13"
-            defaultPHPVersion: "8.3"
+            phpVersion: "8.3"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian13"
             phpVersion: "8.3"
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian13"
-            defaultPHPVersion: "8.3"
+            phpVersion: "8.4"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian13"
             phpVersion: "8.4"
           - os: ubuntu-latest
             platform: linux/amd64
+            arch: amd64
             debianVersion: "debian13"
-            defaultPHPVersion: "8.3"
             phpVersion: "8.5"
-
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian13"
+            phpVersion: "8.5"
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -90,13 +136,116 @@ jobs:
           echo "BUILD_DATE=${BUILD_DATE}" >> $GITHUB_ENV
           echo "build_date=${BUILD_DATE}" >> $GITHUB_OUTPUT
 
+      # Tags are applied in the merge job, here we only need the labels.
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/dockerpress-base-image
+
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: library/${{ matrix.platform.debianVersion }}/${{ matrix.platform.phpVersion }}/Dockerfile
+          platforms: ${{ matrix.platform.platform }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/dockerpress-base-image
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
+          cache-from: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform.platform }}-${{ matrix.platform.debianVersion }}-${{ matrix.platform.phpVersion }}
+          cache-to: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform.platform }}-${{ matrix.platform.debianVersion }}-${{ matrix.platform.phpVersion }},mode=max
+          provenance: true
+          sbom: true
+          build-args: |
+            BUILD_DATE=${{ steps.set-env.outputs.build_date }}
+
+      - name: Export digest
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: digests-${{ matrix.platform.debianVersion }}-${{ matrix.platform.phpVersion }}-${{ matrix.platform.arch }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+
+    env:
+      DEFAULT_DEBIAN_VERSION: "debian13"
+
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        variant:
+          - debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.1"
+          - debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.2"
+          - debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.3"
+          - debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.4"
+          - debianVersion: "debian12"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.5"
+          - debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.1"
+          - debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.2"
+          - debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.3"
+          - debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.4"
+          - debianVersion: "debian13"
+            defaultPHPVersion: "8.3"
+            phpVersion: "8.5"
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v8
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-${{ matrix.variant.debianVersion }}-${{ matrix.variant.phpVersion }}-*
+          merge-multiple: true
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v6
         with:
           flavor: |
             latest=false
-            suffix=-php${{ matrix.platform.phpVersion }}-${{ matrix.platform.debianVersion }}
+            suffix=-php${{ matrix.variant.phpVersion }}-${{ matrix.variant.debianVersion }}
           images: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dockerpress-base-image
           tags: |
@@ -109,35 +258,34 @@ jobs:
             type=semver,pattern={{major}}
             type=sha,prefix=,format=long
 
-            type=schedule,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},suffix=-php${{ matrix.platform.phpVersion }}
-            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},event=branch,suffix=-php${{ matrix.platform.phpVersion }}
-            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},event=pr,suffix=-php${{ matrix.platform.phpVersion }}
-            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},event=tag,suffix=-php${{ matrix.platform.phpVersion }}
-            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},pattern={{version}},suffix=-php${{ matrix.platform.phpVersion }}
-            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},pattern={{major}}.{{minor}},suffix=-php${{ matrix.platform.phpVersion }}
-            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},pattern={{major}},suffix=-php${{ matrix.platform.phpVersion }}
-            type=sha,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},prefix=,format=long,suffix=-php${{ matrix.platform.phpVersion }}
+            type=schedule,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},suffix=-php${{ matrix.variant.phpVersion }}
+            type=ref,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},event=branch,suffix=-php${{ matrix.variant.phpVersion }}
+            type=ref,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},event=pr,suffix=-php${{ matrix.variant.phpVersion }}
+            type=ref,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},event=tag,suffix=-php${{ matrix.variant.phpVersion }}
+            type=semver,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},pattern={{version}},suffix=-php${{ matrix.variant.phpVersion }}
+            type=semver,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},pattern={{major}}.{{minor}},suffix=-php${{ matrix.variant.phpVersion }}
+            type=semver,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},pattern={{major}},suffix=-php${{ matrix.variant.phpVersion }}
+            type=sha,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION, true, false) }},prefix=,format=long,suffix=-php${{ matrix.variant.phpVersion }}
 
-            type=schedule,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},suffix=-${{ matrix.platform.debianVersion }}
-            type=ref,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=branch,suffix=-${{ matrix.platform.debianVersion }}
-            type=ref,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=pr,suffix=-${{ matrix.platform.debianVersion }}
-            type=ref,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=tag,suffix=-${{ matrix.platform.debianVersion }}
-            type=semver,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{version}},suffix=-${{ matrix.platform.debianVersion }}
-            type=semver,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{major}}.{{minor}},suffix=-${{ matrix.platform.debianVersion }}
-            type=semver,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{major}},suffix=-${{ matrix.platform.debianVersion }}
-            type=sha,enable=${{ case(matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},prefix=,format=long,suffix=-${{ matrix.platform.debianVersion }}
+            type=schedule,enable=${{ case(matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},suffix=-${{ matrix.variant.debianVersion }}
+            type=ref,enable=${{ case(matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},event=branch,suffix=-${{ matrix.variant.debianVersion }}
+            type=ref,enable=${{ case(matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},event=pr,suffix=-${{ matrix.variant.debianVersion }}
+            type=ref,enable=${{ case(matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},event=tag,suffix=-${{ matrix.variant.debianVersion }}
+            type=semver,enable=${{ case(matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},pattern={{version}},suffix=-${{ matrix.variant.debianVersion }}
+            type=semver,enable=${{ case(matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},pattern={{major}}.{{minor}},suffix=-${{ matrix.variant.debianVersion }}
+            type=semver,enable=${{ case(matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},pattern={{major}},suffix=-${{ matrix.variant.debianVersion }}
+            type=sha,enable=${{ case(matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},prefix=,format=long,suffix=-${{ matrix.variant.debianVersion }}
 
-            type=schedule,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},suffix=
-            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=branch,suffix=
-            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=pr,suffix=
-            type=ref,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},event=tag,suffix=
-            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{version}},suffix=
-            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{major}}.{{minor}},suffix=
-            type=semver,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},pattern={{major}},suffix=
-            type=sha,enable=${{ case(matrix.platform.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.platform.phpVersion == matrix.platform.defaultPHPVersion, true, false) }},prefix=,format=long,suffix=
+            type=schedule,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},suffix=
+            type=ref,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},event=branch,suffix=
+            type=ref,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},event=pr,suffix=
+            type=ref,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},event=tag,suffix=
+            type=semver,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},pattern={{version}},suffix=
+            type=semver,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},pattern={{major}}.{{minor}},suffix=
+            type=semver,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},pattern={{major}},suffix=
+            type=sha,enable=${{ case(matrix.variant.debianVersion == env.DEFAULT_DEBIAN_VERSION && matrix.variant.phpVersion == matrix.variant.defaultPHPVersion, true, false) }},prefix=,format=long,suffix=
 
       - name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -146,19 +294,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
-      - name: Build and push
-        id: build
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: library/${{ matrix.platform.debianVersion }}/${{ matrix.platform.phpVersion }}/Dockerfile
-          platforms: ${{ matrix.platform.platform }}
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform.platform }}-${{ matrix.platform.debianVersion }}-${{ matrix.platform.phpVersion }}
-          cache-to: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform.platform }}-${{ matrix.platform.debianVersion }}-${{ matrix.platform.phpVersion }},mode=max
-          provenance: true
-          sbom: true
-          build-args: |
-            BUILD_DATE=${{ steps.set-env.outputs.build_date }}
+      - name: Create manifest list and push
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ secrets.DOCKERHUB_USERNAME }}/dockerpress-base-image@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ secrets.DOCKERHUB_USERNAME }}/dockerpress-base-image:${{ steps.meta.outputs.version }}
+

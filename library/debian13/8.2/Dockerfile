@@ -9,6 +9,10 @@
 #
 
 
+# Versions of tools downloaded in architecture specific stages
+ARG COSIGN_VERSION="3.1.3"
+ARG GO_VERSION="1.27.1"
+
 FROM docker.io/library/php:8.2.34-fpm-trixie@sha256:826288d9afa65c1d0774769db02bd8b54afe35ad68bcc56eaf035c620c1b9386 AS base
 
 # Download the nginx keyring from https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
@@ -67,19 +71,37 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	apt-get update
 
-FROM base AS build_cosign
+# Architecture specific downloads, the matching stage is selected via TARGETARCH.
+FROM base AS fetch_cosign_amd64
 
-# Download cosign from https://github.com/sigstore/cosign/releases and trusted root keys from https://github.com/sigstore/root-signing
-ARG COSIGN_VERSION="3.1.3"
-ADD --checksum=sha256:836bff947925edfc23eb9ce17af66fb1e43bb5e2bdd240520985ae52b585eae9 --chmod=444 https://raw.githubusercontent.com/sigstore/root-signing/refs/heads/main/metadata/root_history/10.root.json /tmp/sigstore-root.json
+# Download cosign from https://github.com/sigstore/cosign/releases
+ARG COSIGN_VERSION
 ADD --checksum=sha256:9c0e569b65883ac5ccf6e079989355832a3ee083b8cb991b3482d963e97896d9 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
 ADD --checksum=sha256:4629c757b7618056f8ddd7e2625ae9fdd94c0372a65049520bc7d9df9efc7f71 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64 /tmp/cosign
 
 # Download go from https://go.dev/dl/
-ARG GO_GPG_KEYS="EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796"
-ARG GO_VERSION="1.27.1"
+ARG GO_VERSION
 ADD --checksum=sha256:de4e02ef1d22f93b992e4e768c9067fa0648c476572235d2f3065375587676df --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
 ADD --checksum=sha256:63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
+
+FROM base AS fetch_cosign_arm64
+
+# Download cosign from https://github.com/sigstore/cosign/releases
+ARG COSIGN_VERSION
+ADD --checksum=sha256:8ebcfebf8fa452270c3e0e88c54b442141afa49b0a9057046ec420abd0101c13 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
+ADD --checksum=sha256:c5d324e091826b0d7a78eb16fef316450b4eb9aaec045611c08ba06f5e73220a --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64 /tmp/cosign
+
+# Download go from https://go.dev/dl/
+ARG GO_VERSION
+ADD --checksum=sha256:6a48b86d9dafa14c08e48135b33c2357907ac33d1f8b7160f256e5a9833b1aff --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
+
+FROM fetch_cosign_${TARGETARCH} AS build_cosign
+
+# Download trusted root keys from https://github.com/sigstore/root-signing
+ADD --checksum=sha256:836bff947925edfc23eb9ce17af66fb1e43bb5e2bdd240520985ae52b585eae9 --chmod=444 https://raw.githubusercontent.com/sigstore/root-signing/refs/heads/main/metadata/root_history/10.root.json /tmp/sigstore-root.json
+
+ARG GO_GPG_KEYS="EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796"
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
