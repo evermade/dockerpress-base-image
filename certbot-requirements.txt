@@ -319,9 +319,9 @@ charset-normalizer==3.5.2 \
     --hash=sha256:fd1fbe0f116b6e55da77aca2c6ddcddcfac2186cbf78bdebf40fc156efca389d \
     --hash=sha256:fe9753dfee015c570d73df76f899f18444d41388bffcde097deba51c4fadbb9f
     # via requests
-cloudflare==5.8.0 \
-    --hash=sha256:d6537b331f0d061ccafd21501741b812d4f458d76f7ea62ce13f080126c4f0a6 \
-    --hash=sha256:d7ad46ae33f6641b951c2a385e0e68aa92ecc2c2fc61e3668e739d63e7f30c0f
+cloudflare==5.9.0 \
+    --hash=sha256:1c9b9e243602c754e03636204272422dc45776f3babdc67f8341ca4d559d49e8 \
+    --hash=sha256:70f0c966c26802837fe7ebe95a7b4a14c723159e742bc49d34642b21a2dc11b5
     # via certbot-dns-cloudflare
 configargparse==1.8.0 \
     --hash=sha256:22a417f4d7b00149f0af82ef7c491f8ecc4b1d5454633fd319b386f5eb806f92 \
