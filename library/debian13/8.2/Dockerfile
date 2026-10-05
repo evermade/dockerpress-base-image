@@ -293,8 +293,8 @@ RUN set -eux; \
 FROM base AS build_crs
 
 # Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="8e78e03f8531c4c5884ba87603361f487e91e434"
-ADD --checksum=sha256:db691f6b7ac60412dc56a5d48b3d918a843d8a35f4dc3ec941df9845ff0b85b2 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+ARG MODSEC_CRS_COMMIT="27a79b4ae2a7189e2ac0cedd5956c05e4f830150"
+ADD --checksum=sha256:f7c655fd25faf33a6c71cd5acffc15903fbfdedeffc4b9c409f79ab3fedf767c --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
 
 RUN set -eux; \
 	\
