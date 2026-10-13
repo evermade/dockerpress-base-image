@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile-upstream:1.27.0
+# syntax=docker.io/docker/dockerfile-upstream:1.28.0
 # Syntax via https://github.com/moby/buildkit/releases
 
 
@@ -11,7 +11,7 @@
 
 # Versions of tools downloaded in architecture specific stages
 ARG COSIGN_VERSION="3.1.3"
-ARG GO_VERSION="1.27.1"
+ARG GO_VERSION="1.27.2"
 
 FROM docker.io/library/php:8.1.34-fpm-bookworm@sha256:e3893eeb8f6fb719b6efa7e011e76a65cb1322054226250cedac1138b406aba4 AS base
 
@@ -19,8 +19,8 @@ FROM docker.io/library/php:8.1.34-fpm-bookworm@sha256:e3893eeb8f6fb719b6efa7e011
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ENV CA_BUNDLE_VERSION="2026-08-13"
-ADD --checksum=sha256:f66dff1bdf8f96060b8177976f8b7d9254bc89bc4db933d769f7384d28480bc9 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ENV CA_BUNDLE_VERSION="2026-09-25"
+ADD --checksum=sha256:a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates /usr/local/bin
 
@@ -81,8 +81,8 @@ ADD --checksum=sha256:4629c757b7618056f8ddd7e2625ae9fdd94c0372a65049520bc7d9df9e
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
-ADD --checksum=sha256:de4e02ef1d22f93b992e4e768c9067fa0648c476572235d2f3065375587676df --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
+ADD --checksum=sha256:05e85e1b5af323a99bb5a92a3a0c8a2ee5d74879727dea0dfb6fba9008ae236c --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:ecbadb99091a3f46e31f5f934b068b1864eafa7995211b39eaddf76996045fe5 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
 
 FROM base AS fetch_cosign_arm64
 
@@ -93,8 +93,8 @@ ADD --checksum=sha256:c5d324e091826b0d7a78eb16fef316450b4eb9aaec045611c08ba06f5e
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
-ADD --checksum=sha256:6a48b86d9dafa14c08e48135b33c2357907ac33d1f8b7160f256e5a9833b1aff --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
+ADD --checksum=sha256:7bd7e40536e32748cf8bc1a59b9b04fb771a3c3268af45f86e32073b8840e767 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:94f3e30b8e374bc285e7dadc11e0865726b9bc6e85b841ccceaabc0214c6b7c8 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
 
 FROM fetch_cosign_${TARGETARCH} AS build_cosign
 
@@ -293,8 +293,8 @@ RUN set -eux; \
 FROM base AS build_crs
 
 # Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="27a79b4ae2a7189e2ac0cedd5956c05e4f830150"
-ADD --checksum=sha256:f7c655fd25faf33a6c71cd5acffc15903fbfdedeffc4b9c409f79ab3fedf767c --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+ARG MODSEC_CRS_COMMIT="d5cb9da4522c1a1e20e0e393bc992b506adb8c55"
+ADD --checksum=sha256:3190c067e382b3f07f28945907dc7efa725bc3d10cd5a51a17b8a78d37c6641e --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
 
 RUN set -eux; \
 	\
