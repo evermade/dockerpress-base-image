@@ -293,8 +293,8 @@ RUN set -eux; \
 FROM base AS build_crs
 
 # Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="d5cb9da4522c1a1e20e0e393bc992b506adb8c55"
-ADD --checksum=sha256:3190c067e382b3f07f28945907dc7efa725bc3d10cd5a51a17b8a78d37c6641e --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+ARG MODSEC_CRS_COMMIT="30cb436b261a9f5ec32a5a0677e17f3cfa1a8739"
+ADD --checksum=sha256:a1244346d027378f8183d4eea71c5bbf8d3cebc1e8e2c6f4de43f88985913064 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
 
 RUN set -eux; \
 	\
@@ -409,7 +409,7 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 FROM base AS build_modsec
 
 # Download the ModSecurity Git repository (branch: v3/master)
-ARG MODSEC_CHECKOUT="e1ccfffb7ef3853cecf008e841053cae17560e8e"
+ARG MODSEC_CHECKOUT="84b599623ebea596c72ddda9809298fc601d6f4f"
 ADD --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
 
 ARG DEBIAN_FRONTEND="noninteractive"
