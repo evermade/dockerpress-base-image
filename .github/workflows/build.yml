@@ -30,9 +30,19 @@ jobs:
             arch: amd64
             debianVersion: "debian12"
             phpVersion: "8.1"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian12"
+            phpVersion: "8.1"
           - os: ubuntu-latest
             platform: linux/amd64
             arch: amd64
+            debianVersion: "debian12"
+            phpVersion: "8.2"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
             debianVersion: "debian12"
             phpVersion: "8.2"
           - os: ubuntu-latest
@@ -40,9 +50,19 @@ jobs:
             arch: amd64
             debianVersion: "debian12"
             phpVersion: "8.3"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian12"
+            phpVersion: "8.3"
           - os: ubuntu-latest
             platform: linux/amd64
             arch: amd64
+            debianVersion: "debian12"
+            phpVersion: "8.4"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
             debianVersion: "debian12"
             phpVersion: "8.4"
           - os: ubuntu-latest
@@ -50,9 +70,19 @@ jobs:
             arch: amd64
             debianVersion: "debian12"
             phpVersion: "8.5"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian12"
+            phpVersion: "8.5"
           - os: ubuntu-latest
             platform: linux/amd64
             arch: amd64
+            debianVersion: "debian13"
+            phpVersion: "8.1"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
             debianVersion: "debian13"
             phpVersion: "8.1"
           - os: ubuntu-latest
@@ -60,9 +90,19 @@ jobs:
             arch: amd64
             debianVersion: "debian13"
             phpVersion: "8.2"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian13"
+            phpVersion: "8.2"
           - os: ubuntu-latest
             platform: linux/amd64
             arch: amd64
+            debianVersion: "debian13"
+            phpVersion: "8.3"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
             debianVersion: "debian13"
             phpVersion: "8.3"
           - os: ubuntu-latest
@@ -70,9 +110,19 @@ jobs:
             arch: amd64
             debianVersion: "debian13"
             phpVersion: "8.4"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+            debianVersion: "debian13"
+            phpVersion: "8.4"
           - os: ubuntu-latest
             platform: linux/amd64
             arch: amd64
+            debianVersion: "debian13"
+            phpVersion: "8.5"
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
             debianVersion: "debian13"
             phpVersion: "8.5"
     steps:
