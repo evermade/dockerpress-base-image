@@ -76,8 +76,8 @@ FROM base AS fetch_cosign_amd64
 
 # Download cosign from https://github.com/sigstore/cosign/releases
 ARG COSIGN_VERSION
-ADD --checksum=sha256:9c0e569b65883ac5ccf6e079989355832a3ee083b8cb991b3482d963e97896d9 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
-ADD --checksum=sha256:4629c757b7618056f8ddd7e2625ae9fdd94c0372a65049520bc7d9df9efc7f71 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64 /tmp/cosign
+ADD --checksum=sha256:b1282021bf1d6f1031d5df46cba12386c9b438d56d276d72f4df184a0008512b --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
+ADD --checksum=sha256:424e2c97d0b45fd7a6b608a87f090f35633f4c23ece5f092d48bba11aaf4bbfa --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64 /tmp/cosign
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
@@ -88,8 +88,8 @@ FROM base AS fetch_cosign_arm64
 
 # Download cosign from https://github.com/sigstore/cosign/releases
 ARG COSIGN_VERSION
-ADD --checksum=sha256:8ebcfebf8fa452270c3e0e88c54b442141afa49b0a9057046ec420abd0101c13 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
-ADD --checksum=sha256:c5d324e091826b0d7a78eb16fef316450b4eb9aaec045611c08ba06f5e73220a --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64 /tmp/cosign
+ADD --checksum=sha256:844c90077824f8134a8ef5c0d13f60ce4b2942d97e072d7e4c211e9f1d495f76 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
+ADD --checksum=sha256:ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64 /tmp/cosign
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
