@@ -10,7 +10,7 @@
 
 
 # Versions of tools downloaded in architecture specific stages
-ARG COSIGN_VERSION="3.1.3"
+ARG COSIGN_VERSION="3.1.4"
 ARG GO_VERSION="1.27.2"
 
 FROM docker.io/library/php:8.3.35-fpm-trixie@sha256:e436b5b6ce4a4e632f97a66ea0ea14c5d001e229e2adc5c8ed2f7b5b5fe5c989 AS base

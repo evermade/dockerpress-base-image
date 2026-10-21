@@ -10,7 +10,7 @@
 
 
 # Versions of tools downloaded in architecture specific stages
-ARG COSIGN_VERSION="3.1.3"
+ARG COSIGN_VERSION="3.1.4"
 ARG GO_VERSION="1.27.2"
 
 FROM docker.io/library/php:8.4.26-fpm-bookworm@sha256:43e1ac38217031dbbecae60e84ccf8593722031559178d199bf56adb0145d5d0 AS base
