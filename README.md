@@ -10,26 +10,26 @@ We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:3.0.0
+FROM evermadefi/dockerpress-base-image:3.0.14
 FROM evermadefi/dockerpress-base-image:3.0
 FROM evermadefi/dockerpress-base-image:3
 
 # You can specify the Debian and PHP versions as well
-FROM evermadefi/dockerpress-base-image:3.0.0-php8.3-debian13
-FROM evermadefi/dockerpress-base-image:3.0.0-php8.3
-FROM evermadefi/dockerpress-base-image:3.0.0-debian13
+FROM evermadefi/dockerpress-base-image:3.0.14-php8.3-debian13
+FROM evermadefi/dockerpress-base-image:3.0.14-php8.3
+FROM evermadefi/dockerpress-base-image:3.0.14-debian13
 
 # To use a specific tag or branch
-FROM evermadefi/dockerpress-base-image:v3.0.0
+FROM evermadefi/dockerpress-base-image:v3.0.14
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
-FROM evermadefi/dockerpress-base-image:d005a63181510de433588c80a7fd0d729a8296a3
+FROM evermadefi/dockerpress-base-image:deadbeefdeadbeefdeadbeefdeadbeefdeadbeef
 ```
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:3.0.0`
+`docker pull evermadefi/dockerpress-base-image:3.0.14`
 
 And enjoy!
 
@@ -112,6 +112,7 @@ The following dependencies should be checked every so often for updates.
 - WP-CLI: https://github.com/wp-cli/wp-cli
 - Core Rule Set: https://github.com/coreruleset/coreruleset
 - ModSecurity: https://github.com/owasp-modsecurity/ModSecurity
+- PIE: https://github.com/php/pie
 - Nginx modules
     - ngx_brotli: https://github.com/google/ngx_brotli
     - libnginx-mod-http-cache-purge: https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge
