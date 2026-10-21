@@ -81,8 +81,8 @@ ADD --checksum=sha256:424e2c97d0b45fd7a6b608a87f090f35633f4c23ece5f092d48bba11aa
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
-ADD --checksum=sha256:d63436ac4982dd7df633baf6c8bb138aa376b2aa218a43b5c2e6fafec45c7983 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:44639d223f448077893451cbb7dda762d85906186842a2f16868c65a5c940db2 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
+ADD --checksum=sha256:dd3a224bd98af9f050015d3f713b6f49a4cc2ba9d4b05d0b556ad419ed7dcf33 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
 
 FROM base AS fetch_cosign_arm64
 
@@ -93,8 +93,8 @@ ADD --checksum=sha256:ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
-ADD --checksum=sha256:27d0da0d87c11dc81ba8d903b652c6383c7ed2c8b4b3d659d5dcdc0ce5964f39 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:9177723539cb4894898f6d8d76ac6cf0d2cf979d6509265a04852b126fb846ed --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
+ADD --checksum=sha256:8de840c3f62a028f9e7285d287ddbb480401ba52f921c7f1cf4dd230fb2dd7aa --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:a06e99309dbcbdca1a8ccd2282c3ee146e55930886e26b4f1193269587165f49 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
 
 FROM fetch_cosign_${TARGETARCH} AS build_cosign
 
