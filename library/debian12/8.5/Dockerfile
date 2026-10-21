@@ -305,10 +305,13 @@ RUN set -eux; \
 
 FROM base AS build_php_exts
 
+# Download PIE from https://github.com/php/pie/releases
+ARG PIE_VERSION="1.5.2"
+ADD --checksum=sha256:fe70c59738cf56ec00a818cf9cb9593da171aac86f5f1f859995b8839dfd2cc7 --chmod=555 https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar /usr/local/bin/pie
+
 ARG DEBIAN_FRONTEND="noninteractive"
 
-RUN --mount=type=cache,sharing=private,target=/tmp/pear \
-	--mount=type=cache,sharing=private,target=/var/cache/apt \
+RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
 	\
 	set -eux; \
@@ -360,22 +363,16 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pear \
 		zip \
 	; \
 	\
-	pecl update-channels; \
-	export MAKEFLAGS="-j$(nproc)"; \
-	pecl install \
-		--onlyreqdeps \
-		--configureoptions='enable-redis-igbinary="yes" enable-redis-lzf="no" enable-redis-zstd="no" enable-redis-msgpack="no" enable-redis-lz4="yes" with-liblz4="yes"' \
-		\
-		igbinary \
-		imagick \
-		redis \
+	# Compile, install and enable PECL extensions via PIE (igbinary must come before redis)
+	# igbinary only has an RC with PIE support on Packagist so far, allow it until a stable is published
+	pie install --no-build-tools-check --no-system-dependencies-check "igbinary/igbinary:^3.2@RC"; \
+	pie install --no-build-tools-check --no-system-dependencies-check imagick/imagick; \
+	pie install --no-build-tools-check --no-system-dependencies-check phpredis/phpredis \
+		--enable-redis-igbinary \
+		--enable-redis-lz4 \
+		--with-liblz4=yes \
 	; \
 	find /usr/local/lib/php/extensions -type f -name '*.so' -exec strip {} \;; \
-	docker-php-ext-enable \
-		igbinary \
-		imagick \
-		redis \
-	; \
 	\
 	# Some misbehaving extensions end up outputting to stdout 🙈 (https://github.com/docker-library/wordpress/issues/669#issuecomment-993945967)
 	out="$(php -r 'exit(0);')"; \
