@@ -11,7 +11,7 @@
 
 # Versions of tools downloaded in architecture specific stages
 ARG COSIGN_VERSION="3.1.4"
-ARG GO_VERSION="1.27.2"
+ARG GO_VERSION="1.27.3"
 
 FROM docker.io/library/php:8.4.27-fpm-bookworm@sha256:6d2c08c2ce0548e9bc55e21aab68f5a2613e635e4225fdea84290459728995e7 AS base
 
@@ -81,8 +81,8 @@ ADD --checksum=sha256:424e2c97d0b45fd7a6b608a87f090f35633f4c23ece5f092d48bba11aa
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
-ADD --checksum=sha256:05e85e1b5af323a99bb5a92a3a0c8a2ee5d74879727dea0dfb6fba9008ae236c --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:ecbadb99091a3f46e31f5f934b068b1864eafa7995211b39eaddf76996045fe5 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
+ADD --checksum=sha256:d63436ac4982dd7df633baf6c8bb138aa376b2aa218a43b5c2e6fafec45c7983 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:44639d223f448077893451cbb7dda762d85906186842a2f16868c65a5c940db2 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
 
 FROM base AS fetch_cosign_arm64
 
@@ -93,8 +93,8 @@ ADD --checksum=sha256:ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
-ADD --checksum=sha256:7bd7e40536e32748cf8bc1a59b9b04fb771a3c3268af45f86e32073b8840e767 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:94f3e30b8e374bc285e7dadc11e0865726b9bc6e85b841ccceaabc0214c6b7c8 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
+ADD --checksum=sha256:27d0da0d87c11dc81ba8d903b652c6383c7ed2c8b4b3d659d5dcdc0ce5964f39 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:9177723539cb4894898f6d8d76ac6cf0d2cf979d6509265a04852b126fb846ed --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
 
 FROM fetch_cosign_${TARGETARCH} AS build_cosign
 
@@ -139,9 +139,9 @@ RUN --mount=type=cache,sharing=private,target=/root/go \
 FROM base AS build_python
 
 # Download the latest stable Python source from https://www.python.org/downloads/source/
-ENV PYTHON_VERSION="3.14.8"
-ADD --checksum=sha256:717dc4647497932e50c5596236de67445812ee1deed4e58f90d8e25bdb0ba7f2 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
-ADD --checksum=sha256:c2215904f02b175596dc49351585104f4bc20341e1c47378b26a2c274360ce73 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
+ENV PYTHON_VERSION="3.14.9"
+ADD --checksum=sha256:6e6c26f5f06c42efb353a378c6a271cc836f6ef8461af482cac2c2e0c048876f --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
+ADD --checksum=sha256:e02d9ac21cebda6e46435369744a92c65cc7cd8669697694122cf97ffacd1e53 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
 
 COPY --from=build_cosign /usr/local/bin/cosign /usr/local/bin/cosign
 
@@ -443,8 +443,8 @@ ENV NGX_BROTLI_GIT_COMMIT="a71f9312c2deb28875acc7bacfdd5695a111aa53"
 ADD --checksum=$NGX_BROTLI_GIT_COMMIT --keep-git-dir https://github.com/google/ngx_brotli.git#master /opt/ngx_brotli
 
 # Download nginx cache purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge
-ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="daae85d8bcfb1b36922580f6acf0b6bae58ce529"
-ADD --checksum=sha256:b56f3802627f772bb019a4ca05d0f81d2ef96019ff6eb8ea194c1c389e8924f6 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge/-/archive/$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT/libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT.tar.gz /opt/
+ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="1933c6474d9de118e7efbbd495c845ea4cde27ec"
+ADD --checksum=sha256:aacf667d791e8c0e905c24d90330c4e3bafb0d56404b61ba584b85b6c28af868 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge/-/archive/$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT/libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT.tar.gz /opt/
 
 # Download nginx geoip2 purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2
 ENV LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT="17a5e04cc1ea18ecbdbdfc3bdd1504bc434fe0bf"
