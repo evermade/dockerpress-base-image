@@ -13,7 +13,7 @@
 ARG COSIGN_VERSION="3.1.4"
 ARG GO_VERSION="1.27.2"
 
-FROM docker.io/library/php:8.2.34-fpm-trixie@sha256:826288d9afa65c1d0774769db02bd8b54afe35ad68bcc56eaf035c620c1b9386 AS base
+FROM docker.io/library/php:8.2.35-fpm-trixie@sha256:c4790315a6c550b759f971677deaca83bbd7543dd3d233fbd920e529b1fe4ddb AS base
 
 # Download the nginx keyring from https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
