@@ -708,6 +708,12 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	rm /usr/lib/nginx/modules/*-debug.so; \
 	\
+	{ \
+		echo '[Session]'; \
+		echo 'session.upload_progress.enabled = 0'; \
+		echo 'session.use_strict_mode = 1'; \
+	} | tee /usr/local/etc/php/conf.d/zz-patches.ini; \
+	\
 	# Various backwards compatibility additions that were present previously
 	chmod 755 /etc/nginx; \
 	mkdir /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/snippets; \
