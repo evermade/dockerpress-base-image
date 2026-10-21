@@ -19,8 +19,8 @@ FROM docker.io/library/php:8.2.34-fpm-bookworm@sha256:deaf4ad0247d3b1581432245a0
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ENV CA_BUNDLE_VERSION="2026-09-25"
-ADD --checksum=sha256:a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ENV CA_BUNDLE_VERSION="2026-10-20"
+ADD --checksum=sha256:796f1389bfea13c0ed78f663b765baaff54a508e5483786bd6ece73c5e3e3cbe --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates /usr/local/bin
 
