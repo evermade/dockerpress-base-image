@@ -406,7 +406,7 @@ FROM base AS build_modsec
 
 # Download the ModSecurity Git repository (branch: v3/master)
 ARG MODSEC_CHECKOUT="84b599623ebea596c72ddda9809298fc601d6f4f"
-ADD --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
+ADD --checksum=$MODSEC_CHECKOUT --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -438,8 +438,8 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 FROM base AS build_nginx
 
 # Download nginx brotli module from https://github.com/google/ngx_brotli
-ENV NGX_BROTLI_GIT_COMMIT="a71f9312c2deb28875acc7bacfdd5695a111aa53"
-ADD --checksum=$NGX_BROTLI_GIT_COMMIT --keep-git-dir https://github.com/google/ngx_brotli.git#master /opt/ngx_brotli
+ENV NGX_BROTLI_GIT_COMMIT="53e0fb55f250f48fe80c0ddbf6c0f7103cdbaae1"
+ADD --checksum=$NGX_BROTLI_GIT_COMMIT --keep-git-dir https://github.com/google/ngx_brotli.git#$NGX_BROTLI_GIT_COMMIT /opt/ngx_brotli
 
 # Download nginx cache purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge
 ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="1933c6474d9de118e7efbbd495c845ea4cde27ec"
