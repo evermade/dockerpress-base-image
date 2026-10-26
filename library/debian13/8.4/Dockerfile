@@ -139,9 +139,9 @@ RUN --mount=type=cache,sharing=private,target=/root/go \
 FROM base AS build_python
 
 # Download the latest stable Python source from https://www.python.org/downloads/source/
-ENV PYTHON_VERSION="3.14.9"
-ADD --checksum=sha256:6e6c26f5f06c42efb353a378c6a271cc836f6ef8461af482cac2c2e0c048876f --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
-ADD --checksum=sha256:e02d9ac21cebda6e46435369744a92c65cc7cd8669697694122cf97ffacd1e53 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
+ENV PYTHON_VERSION="3.14.10"
+ADD --checksum=sha256:9d7c82682555f5be998a41f90c52b96e8605ba96cab61590a8ee29ebdeb24b0e --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
+ADD --checksum=sha256:de414a57119abef52784d8993e341d53aed635fc2b05c2607d9f98a2c5b72032 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
 
 COPY --from=build_cosign /usr/local/bin/cosign /usr/local/bin/cosign
 
@@ -293,8 +293,8 @@ RUN set -eux; \
 FROM base AS build_crs
 
 # Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="30cb436b261a9f5ec32a5a0677e17f3cfa1a8739"
-ADD --checksum=sha256:a1244346d027378f8183d4eea71c5bbf8d3cebc1e8e2c6f4de43f88985913064 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+ARG MODSEC_CRS_COMMIT="58ff33b52e2a94493c64cbb7ab4fdc1aff0f82a0"
+ADD --checksum=sha256:64c1bd1a0edda8bf70375f99c14179cc94df5fda94244455dc65d44c270ec088 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
 
 RUN set -eux; \
 	\
@@ -306,8 +306,8 @@ RUN set -eux; \
 FROM base AS build_php_exts
 
 # Download PIE from https://github.com/php/pie/releases
-ARG PIE_VERSION="1.5.2"
-ADD --checksum=sha256:fe70c59738cf56ec00a818cf9cb9593da171aac86f5f1f859995b8839dfd2cc7 --chmod=555 https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar /usr/local/bin/pie
+ARG PIE_VERSION="1.5.3"
+ADD --checksum=sha256:34a1315073b6089d4cdf4cc5a8295ecc6d36cfde683ef785582f7da0d74f127b --chmod=555 https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar /usr/local/bin/pie
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -451,8 +451,8 @@ ENV LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT="17a5e04cc1ea18ecbdbdfc3bdd1504bc434fe0b
 ADD --checksum=sha256:63e5a39c50ec03ee39eb32adef3e0273a42d4c61843b6a15acdf1a79bda45f07 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2/-/archive/$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT/libnginx-mod-http-geoip2-$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT.tar.gz /opt/
 
 # Download nginx headers more module from https://github.com/openresty/headers-more-nginx-module
-ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="5ed726de873b1cd44ae8f4bd06c4ccfaf0b3570f"
-ADD --checksum=sha256:7844ae77415bb2df241cffd7f5965871618c60c8c8e0841b55c517b7b63fd6a0 --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
+ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="21066f7eed72e4de4f6ec47b93e8d5f36c38b84a"
+ADD --checksum=sha256:52f3f4dc1b34efa887155e92398052bf477702b2753585fe3482e2dd0136ea62 --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
 # Download the ModSecurity-nginx module from https://github.com/owasp-modsecurity/ModSecurity-nginx
 ARG MODSEC_NGX_CHECKOUT="b7cf44e57bc386bc5c15e5c9319e6b6b719357f2"
