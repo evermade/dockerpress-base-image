@@ -462,6 +462,7 @@ COPY --from=build_modsec /usr/local/modsecurity/ /usr/local/modsecurity/
 
 # Download the default nginx fastcgi.conf from repo
 ADD --checksum=sha256:b2c3d480a58f61f3a7dc61850b461e892e36f236317765a4f2f6d558c928fa57 --chmod=444 https://raw.githubusercontent.com/nginx/nginx/413158330abf082d1c0b48b264090f3bf4e4305e/conf/fastcgi.conf /opt/fastcgi.conf
+ADD --checksum=sha256:4bd3df7435a47cf1034d0d6385f4d32e1da18e08acbe3894fb10e511414dba9d --chmod=555 https://github.com/gordalina/cachetool/releases/download/12.0.0/cachetool.phar /usr/local/bin/cachetool
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
