@@ -15,12 +15,6 @@ const versions = {
 	debian12: {
 		defaultPHPVersion: "8.3",
 		phpVersions: {
-			8.1: {
-				// https://hub.docker.com/layers/library/php/8.1.34-fpm-bookworm/
-				image:
-					"docker.io/library/php:8.1.34-fpm-bookworm@sha256:e3893eeb8f6fb719b6efa7e011e76a65cb1322054226250cedac1138b406aba4",
-				version: "8.1.34",
-			},
 			8.2: {
 				// https://hub.docker.com/layers/library/php/8.2.35-fpm-bookworm/
 				image:
@@ -50,12 +44,6 @@ const versions = {
 	debian13: {
 		defaultPHPVersion: "8.3",
 		phpVersions: {
-			8.1: {
-				// https://hub.docker.com/layers/library/php/8.1.34-fpm-trixie/
-				image:
-					"docker.io/library/php:8.1.34-fpm-trixie@sha256:a3118db1911fdd3b3ac66605122ddc859286688ced86fc860fec6d19cc2d6c55",
-				version: "8.1.34",
-			},
 			8.2: {
 				// https://hub.docker.com/layers/library/php/8.2.35-fpm-trixie/
 				image:
