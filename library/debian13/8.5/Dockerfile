@@ -306,8 +306,8 @@ RUN set -eux; \
 FROM base AS build_php_exts
 
 # Download PIE from https://github.com/php/pie/releases
-ARG PIE_VERSION="1.5.3"
-ADD --checksum=sha256:34a1315073b6089d4cdf4cc5a8295ecc6d36cfde683ef785582f7da0d74f127b --chmod=555 https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar /usr/local/bin/pie
+ARG PIE_VERSION="1.5.5"
+ADD --checksum=sha256:2ca0dff6868f1b53c095625674deef38ac698588e0a25e4321cd834a5b7553bc --chmod=555 https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar /usr/local/bin/pie
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -405,7 +405,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 FROM base AS build_modsec
 
 # Download the ModSecurity Git repository (branch: v3/master)
-ARG MODSEC_CHECKOUT="84b599623ebea596c72ddda9809298fc601d6f4f"
+ARG MODSEC_CHECKOUT="1ebdc390b47ab033c8267130ce83130f235aed20"
 ADD --checksum=$MODSEC_CHECKOUT --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
 
 ARG DEBIAN_FRONTEND="noninteractive"
