@@ -293,7 +293,7 @@ ADD --checksum=sha256:a4bb3688ef6205b64471a9ccbf0d7b024eb8edf39b97c6f6c0006e7a94
 RUN set -eux; \
 	\
 	export GNUPGHOME="$(mktemp -d)"; \
-	GPG_KEYS="$WP_CLI_GPG_KEYS"; \
+	GPG_KEYS="$MODSEC_CRS_GPG_KEYS"; \
 	for key in $GPG_KEYS; do \
 		gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
 	done; \
