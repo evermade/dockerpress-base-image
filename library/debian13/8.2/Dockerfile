@@ -16,13 +16,13 @@ ARG GO_VERSION="1.27.4"
 FROM docker.io/library/php:8.2.35-fpm-trixie@sha256:9df26a5a4ead75adc0a2e688716588c5109e55dd840c7b97208a696373d261eb AS base
 
 # Download the nginx keyring from https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
-ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
+ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /usr/share/keyrings/nginx-archive-keyring.asc
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
 ENV CA_BUNDLE_VERSION="2026-11-05"
 ADD --checksum=sha256:427c064216761a1e72a8b30f0d954d08cb6e4435a82091fb865afd20c8497285 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
-COPY --chmod=555 flush-ca-certificates /usr/local/bin
+COPY --chmod=555 flush-ca-certificates gpg-verify /usr/local/bin/
 
 # This can be used to force rebuild below while allowing use of cache mounts
 ARG BUILD_DATE="undefined"
@@ -50,17 +50,9 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		lsb-release \
 	; \
 	\
-	export GNUPGHOME="$(mktemp -d)"; \
-	\
-	cat /tmp/nginx_signing.key | gpg --dearmor | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null; \
-	rm /tmp/nginx_signing.key; \
-	\
-	gpgconf --kill all; \
-	rm -rf "$GNUPGHOME"; \
-	\
 	{ \
-		echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/debian $(lsb_release -cs) nginx"; \
-		echo "deb-src [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/debian $(lsb_release -cs) nginx"; \
+		echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.asc] https://nginx.org/packages/debian $(lsb_release -cs) nginx"; \
+		echo "deb-src [signed-by=/usr/share/keyrings/nginx-archive-keyring.asc] https://nginx.org/packages/debian $(lsb_release -cs) nginx"; \
 	} | tee /etc/apt/sources.list.d/nginx.list; \
 	{ \
 		echo 'Package: nginx*'; \
@@ -96,29 +88,20 @@ ARG GO_VERSION
 ADD --checksum=sha256:560d3e9154e52cc9e206472c3636d9bed5573cb7cf8c17c0feba2612e6ff5e8b --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
 ADD --checksum=sha256:3392582988a273a87ab5043ee1b2c9c17a2c3c00580bf9326c47a2e0aaaeac92 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
 
-FROM fetch_cosign_${TARGETARCH} AS build_cosign
+FROM fetch_cosign_$TARGETARCH AS build_cosign
 
 # Download trusted root keys from https://github.com/sigstore/root-signing
 ADD --checksum=sha256:836bff947925edfc23eb9ce17af66fb1e43bb5e2bdd240520985ae52b585eae9 --chmod=444 https://raw.githubusercontent.com/sigstore/root-signing/refs/heads/main/metadata/root_history/10.root.json /tmp/sigstore-root.json
 
-ARG GO_GPG_KEYS="EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796"
+# Download the Go signing key, fingerprint EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796
+ADD --checksum=sha256:54dea5f6c2a26091578cf52a999cebc6b64df478d37ad4dce96376b711e3b27c --chmod=444 https://dl.google.com/dl/linux/linux_signing_key.pub /tmp/go-key.asc
 
 RUN --mount=type=cache,sharing=private,target=/root/go \
 	--mount=type=cache,sharing=private,target=/usr/local/go \
 	\
 	set -eux; \
 	\
-	export GNUPGHOME="$(mktemp -d)"; \
-	GPG_KEYS="$GO_GPG_KEYS"; \
-	for key in $GPG_KEYS; do \
-		gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
-	done; \
-	\
-	# Verify signature of Go binary archive
-	gpg --batch --verify /tmp/go.tar.gz.asc /tmp/go.tar.gz; \
-	\
-	gpgconf --kill all; \
-	rm -rf "$GNUPGHOME"; \
+	gpg-verify /tmp/go-key.asc /tmp/go.tar.gz.asc /tmp/go.tar.gz; \
 	\
 	# https://docs.sigstore.dev/cosign/system_config/installation/
 	cd /tmp; \
@@ -257,8 +240,10 @@ RUN --mount=type=cache,sharing=private,target=/tmp/pip \
 
 FROM base AS build_wp_cli
 
+# Download the WP-CLI signing key, fingerprint 63AF7AA15067C05616FDDD88A3A2E8F226F0BC06
+ADD --checksum=sha256:69b4633330b4a4bc7ac4de4981b43d3e60d9a3438a2d5246b8e3a0899000dc7c --chmod=444 https://raw.githubusercontent.com/wp-cli/builds/64482c7ceaca9253828b1efef392f6297cf89d8e/wp-cli.pgp /tmp/wp-cli-key.asc
+
 # Download WP-CLI binary, signature and bash tab completions from https://github.com/wp-cli/wp-cli/releases
-ARG WP_CLI_GPG_KEYS="63AF7AA15067C05616FDDD88A3A2E8F226F0BC06"
 ARG WP_CLI_VERSION="2.12.0"
 ADD --checksum=sha256:9c2f9d93968d68ad2a8fa60eaf8f916f163740977be031b38d9ca6202e82b5be --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar.asc /usr/local/bin/wp.asc
 ADD --checksum=sha256:ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar /usr/local/bin/wp
@@ -266,17 +251,7 @@ ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a
 
 RUN set -eux; \
 	\
-	export GNUPGHOME="$(mktemp -d)"; \
-	GPG_KEYS="$WP_CLI_GPG_KEYS"; \
-	for key in $GPG_KEYS; do \
-		gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
-	done; \
-	\
-	# Verify signature of WP-CLI binary
-	gpg --batch --verify /usr/local/bin/wp.asc /usr/local/bin/wp; \
-	\
-	gpgconf --kill all; \
-	rm -rf "$GNUPGHOME"; \
+	gpg-verify /tmp/wp-cli-key.asc /usr/local/bin/wp.asc /usr/local/bin/wp; \
 	\
 	chmod +x /usr/local/bin/wp; \
 	\
@@ -284,30 +259,23 @@ RUN set -eux; \
 
 FROM base AS build_crs
 
-# Download coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_GPG_KEYS="36006F0E0BA167832158821138EEACA1AB8A6E72"
+# Download the coreruleset signing key, fingerprint 36006F0E0BA167832158821138EEACA1AB8A6E72
+ADD --checksum=sha256:b3ea4d3014e9386b61a12cadd986360b358996624b26f9fb6be0fc8a219873ca --chmod=444 https://coreruleset.org/security.asc /tmp/crs-key.asc
+
+# Download coreruleset from https://github.com/coreruleset/coreruleset/releases
 ARG MODSEC_CRS_VERSION="4.30.0"
-ADD --checksum=sha256:33dd84732950708fc1944b698e1fe963d1216eccf58b90fbdd1678759810ad7b --chmod=444 https://github.com/coreruleset/coreruleset/releases/download/v$MODSEC_CRS_VERSION/coreruleset-$MODSEC_CRS_VERSION.tar.gz.asc /usr/local/share/crs.tar.gz.asc
-ADD --checksum=sha256:a4bb3688ef6205b64471a9ccbf0d7b024eb8edf39b97c6f6c0006e7a948f8550 --chmod=444 https://github.com/coreruleset/coreruleset/archive/refs/tags/v$MODSEC_CRS_VERSION.tar.gz /usr/local/share/crs.tar.gz
+ADD --checksum=sha256:dfd8c998d9c1759a3bbb080534fd220177ae1e9213867b91dc33ad74e2e71eb4 --chmod=444 https://github.com/coreruleset/coreruleset/releases/download/v$MODSEC_CRS_VERSION/coreruleset-$MODSEC_CRS_VERSION-minimal.tar.gz.asc /tmp/crs.tar.gz.asc
+ADD --checksum=sha256:3d678a41fd5aade34760127fef5dd64fd7a77848913fc0f70dde0cf467c94427 --chmod=444 https://github.com/coreruleset/coreruleset/releases/download/v$MODSEC_CRS_VERSION/coreruleset-$MODSEC_CRS_VERSION-minimal.tar.gz /tmp/crs.tar.gz
 
 RUN set -eux; \
 	\
-	export GNUPGHOME="$(mktemp -d)"; \
-	GPG_KEYS="$MODSEC_CRS_GPG_KEYS"; \
-	for key in $GPG_KEYS; do \
-		gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
-	done; \
+	gpg-verify /tmp/crs-key.asc /tmp/crs.tar.gz.asc /tmp/crs.tar.gz; \
 	\
-	# Verify signature of the archive
-	gpg --batch --verify /usr/local/share/crs.tar.gz.asc /usr/local/share/crs.tar.gz; \
-	\
-	gpgconf --kill all; \
-	rm -rf "$GNUPGHOME"; \
-	\
-	mv "/usr/local/share/coreruleset-${MODSEC_CRS_VERSION}" /usr/local/share/coreruleset; \
-	cp /usr/local/share/coreruleset/crs-setup.conf.example /usr/local/share/coreruleset/crs-setup.conf; \
-	find /usr/local/share/coreruleset \! -name '*.conf' -type f -mindepth 1 -maxdepth 1 -delete; \
-	find /usr/local/share/coreruleset \! -name 'rules' -type d -mindepth 1 -maxdepth 1 | xargs rm -rf
+	mkdir /usr/local/share/coreruleset; \
+	tar --extract --gzip --file /tmp/crs.tar.gz --directory /usr/local/share/coreruleset --strip-components=1 \
+		"coreruleset-$MODSEC_CRS_VERSION/crs-setup.conf.example" \
+		"coreruleset-$MODSEC_CRS_VERSION/rules"; \
+	mv /usr/local/share/coreruleset/crs-setup.conf.example /usr/local/share/coreruleset/crs-setup.conf
 
 FROM base AS build_php_exts
 
@@ -470,7 +438,7 @@ COPY --from=build_modsec /usr/local/modsecurity/ /usr/local/modsecurity/
 # Download the default nginx fastcgi.conf from repo
 ADD --checksum=sha256:b2c3d480a58f61f3a7dc61850b461e892e36f236317765a4f2f6d558c928fa57 --chmod=444 https://raw.githubusercontent.com/nginx/nginx/413158330abf082d1c0b48b264090f3bf4e4305e/conf/fastcgi.conf /opt/fastcgi.conf
 
-# Download cachetool from https://github.com/gordalina/cachetool
+# Download cachetool from https://github.com/gordalina/cachetool/releases
 ADD --checksum=sha256:16c2b56d61b71bca639ca9dc74763668bea32dbe52215f49828ac4a333ee9abd --chmod=555 https://github.com/gordalina/cachetool/releases/download/11.0.0/cachetool.phar /usr/local/bin/cachetool
 
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -482,10 +450,10 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	cd /opt; \
 	\
-	mv "libnginx-mod-http-cache-purge-${LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT}" libnginx-mod-http-cache-purge; \
-	mv "libnginx-mod-http-geoip2-${LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT}" libnginx-mod-http-geoip2; \
-	mv "headers-more-nginx-module-${HEADERS_MORE_NGINX_MODULE_GIT_COMMIT}" headers-more-nginx-module; \
-	mv "ModSecurity-nginx-${MODSEC_NGX_CHECKOUT}" ModSecurity-nginx; \
+	mv "libnginx-mod-http-cache-purge-$LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT" libnginx-mod-http-cache-purge; \
+	mv "libnginx-mod-http-geoip2-$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT" libnginx-mod-http-geoip2; \
+	mv "headers-more-nginx-module-$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT" headers-more-nginx-module; \
+	mv "ModSecurity-nginx-$MODSEC_NGX_CHECKOUT" ModSecurity-nginx; \
 	\
 	apt-get update; \
 	apt-get build-dep -y nginx; \
