@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile-upstream:1.28.0
+# syntax=docker.io/docker/dockerfile-upstream:1.29.0
 # Syntax via https://github.com/moby/buildkit/releases
 
 {% raw %}
@@ -11,7 +11,7 @@
 
 # Versions of tools downloaded in architecture specific stages
 ARG COSIGN_VERSION="3.1.4"
-ARG GO_VERSION="1.27.3"
+ARG GO_VERSION="1.27.4"
 
 FROM {{ baseImage }} AS base
 
@@ -19,8 +19,8 @@ FROM {{ baseImage }} AS base
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /tmp/nginx_signing.key
 
 # Download the latest CA Bundle from https://curl.se/docs/caextract.html
-ENV CA_BUNDLE_VERSION="2026-10-20"
-ADD --checksum=sha256:796f1389bfea13c0ed78f663b765baaff54a508e5483786bd6ece73c5e3e3cbe --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
+ENV CA_BUNDLE_VERSION="2026-11-05"
+ADD --checksum=sha256:427c064216761a1e72a8b30f0d954d08cb6e4435a82091fb865afd20c8497285 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates /usr/local/bin
 
@@ -81,8 +81,8 @@ ADD --checksum=sha256:424e2c97d0b45fd7a6b608a87f090f35633f4c23ece5f092d48bba11aa
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
-ADD --checksum=sha256:dd3a224bd98af9f050015d3f713b6f49a4cc2ba9d4b05d0b556ad419ed7dcf33 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
+ADD --checksum=sha256:f8a184c1bdff47904fe93d616f9196a6baeb01fb932740f6b8bafaa547797bd4 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:7226736c2339719cda28fbf3a54d71aa63bcefe376e98cef00034268dab24840 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz /tmp/go.tar.gz
 
 FROM base AS fetch_cosign_arm64
 
@@ -93,8 +93,8 @@ ADD --checksum=sha256:ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
-ADD --checksum=sha256:8de840c3f62a028f9e7285d287ddbb480401ba52f921c7f1cf4dd230fb2dd7aa --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
-ADD --checksum=sha256:a06e99309dbcbdca1a8ccd2282c3ee146e55930886e26b4f1193269587165f49 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
+ADD --checksum=sha256:560d3e9154e52cc9e206472c3636d9bed5573cb7cf8c17c0feba2612e6ff5e8b --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz.asc /tmp/go.tar.gz.asc
+ADD --checksum=sha256:3392582988a273a87ab5043ee1b2c9c17a2c3c00580bf9326c47a2e0aaaeac92 --chmod=444 https://go.dev/dl/go$GO_VERSION.linux-arm64.tar.gz /tmp/go.tar.gz
 
 FROM fetch_cosign_${TARGETARCH} AS build_cosign
 
@@ -102,8 +102,6 @@ FROM fetch_cosign_${TARGETARCH} AS build_cosign
 ADD --checksum=sha256:836bff947925edfc23eb9ce17af66fb1e43bb5e2bdd240520985ae52b585eae9 --chmod=444 https://raw.githubusercontent.com/sigstore/root-signing/refs/heads/main/metadata/root_history/10.root.json /tmp/sigstore-root.json
 
 ARG GO_GPG_KEYS="EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796"
-
-ARG DEBIAN_FRONTEND="noninteractive"
 
 RUN --mount=type=cache,sharing=private,target=/root/go \
 	--mount=type=cache,sharing=private,target=/usr/local/go \
@@ -218,8 +216,6 @@ COPY --from=build_python /usr/local/bin/pip3.14 /usr/local/bin/pip3.14
 COPY --from=build_python /usr/local/bin/python3.14 /usr/local/bin/python3.14
 COPY --from=build_python /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
 
-ARG DEBIAN_FRONTEND="noninteractive"
-
 RUN --mount=type=cache,sharing=private,target=/tmp/pip \
 	--mount=type=bind,source=./supervisor-requirements.txt,target=/opt/supervisor/requirements.txt \
 	\
@@ -238,8 +234,6 @@ FROM base AS build_certbot
 COPY --from=build_python /usr/local/bin/pip3.14 /usr/local/bin/pip3.14
 COPY --from=build_python /usr/local/bin/python3.14 /usr/local/bin/python3.14
 COPY --from=build_python /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
-
-ARG DEBIAN_FRONTEND="noninteractive"
 
 RUN --mount=type=cache,sharing=private,target=/tmp/pip \
 	--mount=type=bind,source=./certbot-requirements.txt,target=/opt/certbot/requirements.txt \
@@ -270,8 +264,6 @@ ADD --checksum=sha256:9c2f9d93968d68ad2a8fa60eaf8f916f163740977be031b38d9ca6202e
 ADD --checksum=sha256:ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c --chmod=444 https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION/wp-cli-$WP_CLI_VERSION.phar /usr/local/bin/wp
 ADD --checksum=sha256:443ca0610ccae8d2d6aceba0ec4aa7929b87ed6cf54f666afed18d663a18a395 --chmod=444 https://raw.githubusercontent.com/wp-cli/wp-cli/v$WP_CLI_VERSION/utils/wp-completion.bash /etc/wp-completion.bash
 
-ARG DEBIAN_FRONTEND="noninteractive"
-
 RUN set -eux; \
 	\
 	export GNUPGHOME="$(mktemp -d)"; \
@@ -292,13 +284,27 @@ RUN set -eux; \
 
 FROM base AS build_crs
 
-# Download the coreruleset from https://github.com/coreruleset/coreruleset
-ARG MODSEC_CRS_COMMIT="58ff33b52e2a94493c64cbb7ab4fdc1aff0f82a0"
-ADD --checksum=sha256:64c1bd1a0edda8bf70375f99c14179cc94df5fda94244455dc65d44c270ec088 --unpack=true https://github.com/coreruleset/coreruleset/archive/$MODSEC_CRS_COMMIT.tar.gz /usr/local/share/
+# Download coreruleset from https://github.com/coreruleset/coreruleset
+ARG MODSEC_CRS_GPG_KEYS="36006F0E0BA167832158821138EEACA1AB8A6E72"
+ARG MODSEC_CRS_VERSION="4.30.0"
+ADD --checksum=sha256:33dd84732950708fc1944b698e1fe963d1216eccf58b90fbdd1678759810ad7b --chmod=444 https://github.com/coreruleset/coreruleset/releases/download/v$MODSEC_CRS_VERSION/coreruleset-$MODSEC_CRS_VERSION.tar.gz.asc /usr/local/share/crs.tar.gz.asc
+ADD --checksum=sha256:a4bb3688ef6205b64471a9ccbf0d7b024eb8edf39b97c6f6c0006e7a948f8550 --chmod=444 https://github.com/coreruleset/coreruleset/archive/refs/tags/v$MODSEC_CRS_VERSION.tar.gz /usr/local/share/crs.tar.gz
 
 RUN set -eux; \
 	\
-	mv "/usr/local/share/coreruleset-${MODSEC_CRS_COMMIT}" /usr/local/share/coreruleset; \
+	export GNUPGHOME="$(mktemp -d)"; \
+	GPG_KEYS="$WP_CLI_GPG_KEYS"; \
+	for key in $GPG_KEYS; do \
+		gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
+	done; \
+	\
+	# Verify signature of the archive
+	gpg --batch --verify /usr/local/share/crs.tar.gz.asc /usr/local/share/crs.tar.gz; \
+	\
+	gpgconf --kill all; \
+	rm -rf "$GNUPGHOME"; \
+	\
+	mv "/usr/local/share/coreruleset-${MODSEC_CRS_VERSION}" /usr/local/share/coreruleset; \
 	cp /usr/local/share/coreruleset/crs-setup.conf.example /usr/local/share/coreruleset/crs-setup.conf; \
 	find /usr/local/share/coreruleset \! -name '*.conf' -type f -mindepth 1 -maxdepth 1 -delete; \
 	find /usr/local/share/coreruleset \! -name 'rules' -type d -mindepth 1 -maxdepth 1 | xargs rm -rf
@@ -412,7 +418,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 FROM base AS build_modsec
 
 # Download the ModSecurity Git repository (branch: v3/master)
-ARG MODSEC_CHECKOUT="1ebdc390b47ab033c8267130ce83130f235aed20"
+ARG MODSEC_CHECKOUT="eb91c99663bf0ee9e71e286c93e84a0b7e3f1c27"
 ADD --checksum=$MODSEC_CHECKOUT --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
 
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -470,6 +476,7 @@ COPY --from=build_modsec /usr/local/modsecurity/ /usr/local/modsecurity/
 # Download the default nginx fastcgi.conf from repo
 ADD --checksum=sha256:b2c3d480a58f61f3a7dc61850b461e892e36f236317765a4f2f6d558c928fa57 --chmod=444 https://raw.githubusercontent.com/nginx/nginx/413158330abf082d1c0b48b264090f3bf4e4305e/conf/fastcgi.conf /opt/fastcgi.conf
 
+# Download cachetool from https://github.com/gordalina/cachetool
 {%- if phpMajorMinorVersion >= "8.4" %}
 ADD --checksum=sha256:4bd3df7435a47cf1034d0d6385f4d32e1da18e08acbe3894fb10e511414dba9d --chmod=555 https://github.com/gordalina/cachetool/releases/download/12.0.0/cachetool.phar /usr/local/bin/cachetool
 {%- elif phpMajorMinorVersion >= "8.2" %}
