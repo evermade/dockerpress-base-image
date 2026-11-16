@@ -1,0 +1,36 @@
+name: Rebuild latest release
+
+on:
+  schedule:
+    - cron: "0 5 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 5
+
+    steps:
+      - name: Dispatch build for latest release tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/git/matching-refs/tags/v" --jq '.[].ref' \
+            | sed 's|^refs/tags/||' \
+            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+            | sort -V \
+            | tail -n 1)"
+
+          if [ -z "$tag" ]; then
+            echo "::error::No release tag found"
+            exit 1
+          fi
+
+          echo "Dispatching build.yml for ${tag}"
+          gh workflow run build.yml --repo "$GITHUB_REPOSITORY" --ref "$tag"
+          echo "Dispatched build for \`${tag}\`" >> "$GITHUB_STEP_SUMMARY"
