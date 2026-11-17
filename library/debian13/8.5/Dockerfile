@@ -615,6 +615,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		# imagick PHP extension dependencies
 		libmagickcore-7.q16-10 \
 		libmagickwand-7.q16-10 \
+		libheif-plugin-aomenc \
 		\
 		# intl PHP extension dependencies
 		libicu76 \
