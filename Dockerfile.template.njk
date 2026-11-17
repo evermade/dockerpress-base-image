@@ -386,7 +386,7 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 FROM base AS build_modsec
 
 # Download the ModSecurity Git repository (branch: v3/master)
-ARG MODSEC_CHECKOUT="eb91c99663bf0ee9e71e286c93e84a0b7e3f1c27"
+ARG MODSEC_CHECKOUT="3921e8e50f8d9f24b5ff7052e77887c8ce0ffefb"
 ADD --checksum=$MODSEC_CHECKOUT --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
 
 ARG DEBIAN_FRONTEND="noninteractive"

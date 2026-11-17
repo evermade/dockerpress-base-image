@@ -323,9 +323,9 @@ cloudflare==5.10.0 \
     --hash=sha256:3e1ac8f71f5098dc3541bfd77ae0d3abd710aebef48093021e7d37f6bb584ca0 \
     --hash=sha256:a5441bf00050e35fcf589123ecbfb740c22b54207d3ee27b0b1857fc7427e525
     # via certbot-dns-cloudflare
-configargparse==1.9.0 \
-    --hash=sha256:48d9c22affe4ac419b4dd0691fa929d759e1f99574be41826785f2dbf3da63a5 \
-    --hash=sha256:e4ecc54d821ca97c43e6152403f40e158aff79d809c3447746fa92b136dc1e31
+configargparse==1.10.1 \
+    --hash=sha256:148ffe1ba93304bbcb4a832f513e6d51c08d214215f1e943954f6d01f2394621 \
+    --hash=sha256:8ee7c4429e6402b881c9a85569eb9484db2f63260718b45c67c59625284371c8
     # via certbot
 configobj==5.0.9 \
     --hash=sha256:03c881bbf23aa07bccf1b837005975993c4ab4427ba57f959afdd9d1a2386848 \
