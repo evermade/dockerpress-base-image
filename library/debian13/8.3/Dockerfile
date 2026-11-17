@@ -512,7 +512,8 @@ COPY --from=build_python /usr/local/bin/pip3.14 /usr/local/bin/pip3.14
 COPY --from=build_python /usr/local/bin/python3.14 /usr/local/bin/python3.14
 COPY --from=build_python /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
 
-# Copy built PHP extensions into the final image
+# Copy PIE and built PHP extensions into the final image
+COPY --from=build_php_exts /usr/local/bin/pie /usr/local/bin/pie
 COPY --from=build_php_exts /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=build_php_exts /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 
