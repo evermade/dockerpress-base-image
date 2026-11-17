@@ -15,6 +15,12 @@ ARG GO_VERSION="1.27.4"
 
 FROM docker.io/library/php:8.4.27-fpm-trixie@sha256:070c5a1dac19c108905c09093e3f5cf228ece8feaea84e33135b3da99de32946 AS base
 
+# This can be used to force rebuild below while allowing use of cache mounts
+ARG BUILD_DATE="undefined"
+
+# Builders aren't interactive
+ARG DEBIAN_FRONTEND="noninteractive"
+
 # Download the nginx keyring from https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
 ADD --checksum=sha256:55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a --chmod=444 https://nginx.org/keys/nginx_signing.key /usr/share/keyrings/nginx-archive-keyring.asc
 
@@ -23,12 +29,6 @@ ENV CA_BUNDLE_VERSION="2026-11-05"
 ADD --checksum=sha256:427c064216761a1e72a8b30f0d954d08cb6e4435a82091fb865afd20c8497285 --chmod=444 https://curl.se/ca/cacert-$CA_BUNDLE_VERSION.pem /usr/local/share/ca-certificates/ca-bundle.crt
 
 COPY --chmod=555 flush-ca-certificates gpg-verify /usr/local/bin/
-
-# This can be used to force rebuild below while allowing use of cache mounts
-ARG BUILD_DATE="undefined"
-
-# Builders aren't interactive
-ARG DEBIAN_FRONTEND="noninteractive"
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
@@ -119,14 +119,14 @@ RUN --mount=type=cache,sharing=private,target=/root/go \
 
 FROM base AS build_python
 
+ARG DEBIAN_FRONTEND="noninteractive"
+
 # Download the latest stable Python source from https://www.python.org/downloads/source/
 ENV PYTHON_VERSION="3.14.10"
 ADD --checksum=sha256:9d7c82682555f5be998a41f90c52b96e8605ba96cab61590a8ee29ebdeb24b0e --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.sigstore /opt/python.tar.xz.sigstore
 ADD --checksum=sha256:de414a57119abef52784d8993e341d53aed635fc2b05c2607d9f98a2c5b72032 --chmod=444 https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz /opt/python.tar.xz
 
 COPY --from=build_cosign /usr/local/bin/cosign /usr/local/bin/cosign
-
-ARG DEBIAN_FRONTEND="noninteractive"
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
@@ -279,11 +279,17 @@ RUN set -eux; \
 
 FROM base AS build_php_exts
 
+ARG DEBIAN_FRONTEND="noninteractive"
+
 # Download PIE from https://github.com/php/pie/releases
 ARG PIE_VERSION="1.5.5"
 ADD --checksum=sha256:2ca0dff6868f1b53c095625674deef38ac698588e0a25e4321cd834a5b7553bc --chmod=555 https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar /usr/local/bin/pie
 
-ARG DEBIAN_FRONTEND="noninteractive"
+# PIE package versions from https://packagist.org/extensions
+ARG IGBINARY_VERSION="3.2.17RC1"
+ARG IMAGICK_VERSION="3.8.1"
+ARG PHPREDIS_VERSION="6.3.0"
+ARG XDEBUG_VERSION="3.5.3"
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
@@ -339,14 +345,15 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	; \
 	\
 	# Compile, install and enable PECL extensions via PIE (igbinary must come before redis)
-	# igbinary only has an RC with PIE support on Packagist so far, allow it until a stable is published
-	pie install --no-build-tools-check --no-system-dependencies-check "igbinary/igbinary:^3.2@RC"; \
-	pie install --no-build-tools-check --no-system-dependencies-check imagick/imagick; \
-	pie install --no-build-tools-check --no-system-dependencies-check phpredis/phpredis \
+	pie install --no-build-tools-check --no-system-dependencies-check "igbinary/igbinary:$IGBINARY_VERSION"; \
+	pie install --no-build-tools-check --no-system-dependencies-check "imagick/imagick:$IMAGICK_VERSION"; \
+	pie install --no-build-tools-check --no-system-dependencies-check "phpredis/phpredis:$PHPREDIS_VERSION" \
 		--enable-redis-igbinary \
 		--enable-redis-lz4 \
 		--with-liblz4=yes \
 	; \
+	# Installed but not enabled, enable downstream with docker-php-ext-enable xdebug
+	pie install --no-build-tools-check --no-system-dependencies-check --skip-enable-extension "xdebug/xdebug:$XDEBUG_VERSION"; \
 	find /usr/local/lib/php/extensions -type f -name '*.so' -exec strip {} \;; \
 	\
 	# Some misbehaving extensions end up outputting to stdout 🙈 (https://github.com/docker-library/wordpress/issues/669#issuecomment-993945967)
@@ -379,11 +386,11 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 
 FROM base AS build_modsec
 
+ARG DEBIAN_FRONTEND="noninteractive"
+
 # Download the ModSecurity Git repository (branch: v3/master)
 ARG MODSEC_CHECKOUT="3921e8e50f8d9f24b5ff7052e77887c8ce0ffefb"
 ADD --checksum=$MODSEC_CHECKOUT --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
-
-ARG DEBIAN_FRONTEND="noninteractive"
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
@@ -411,6 +418,8 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	rm -rf /usr/local/modsecurity/lib/libmodsecurity.a /usr/local/modsecurity/lib/libmodsecurity.la /usr/local/modsecurity/lib/pkgconfig
 
 FROM base AS build_nginx
+
+ARG DEBIAN_FRONTEND="noninteractive"
 
 # Download nginx brotli module from https://github.com/google/ngx_brotli
 ENV NGX_BROTLI_GIT_COMMIT="53e0fb55f250f48fe80c0ddbf6c0f7103cdbaae1"
@@ -440,8 +449,6 @@ ADD --checksum=sha256:b2c3d480a58f61f3a7dc61850b461e892e36f236317765a4f2f6d558c9
 
 # Download cachetool from https://github.com/gordalina/cachetool/releases
 ADD --checksum=sha256:4bd3df7435a47cf1034d0d6385f4d32e1da18e08acbe3894fb10e511414dba9d --chmod=555 https://github.com/gordalina/cachetool/releases/download/12.0.0/cachetool.phar /usr/local/bin/cachetool
-
-ARG DEBIAN_FRONTEND="noninteractive"
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
@@ -504,6 +511,8 @@ FROM base AS final
 
 LABEL maintainer="Evermade"
 
+ARG DEBIAN_FRONTEND="noninteractive"
+
 # Copy built cosign binary into the final image
 COPY --from=build_cosign /usr/local/bin/cosign /usr/local/bin/cosign
 
@@ -545,8 +554,6 @@ COPY --from=build_nginx --chmod=444 /opt/fastcgi.conf /etc/nginx/fastcgi.conf
 # Copy built WP-CLI binary and tab completions into the final image
 COPY --from=build_wp_cli --chmod=555 /usr/local/bin/wp /usr/local/bin/wp
 COPY --from=build_wp_cli --chmod=444 /etc/wp-completion.bash /etc/wp-completion.bash
-
-ARG DEBIAN_FRONTEND="noninteractive"
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	--mount=type=cache,sharing=private,target=/var/lib/apt \
