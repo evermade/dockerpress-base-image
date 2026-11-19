@@ -39,6 +39,12 @@ const versions = {
 					"docker.io/library/php:8.5.13-fpm-bookworm@sha256:bad1d3498eaa489efe88c1d532e47e2f4111304c3f0b19fbc428842c39ec155c",
 				version: "8.5.13",
 			},
+			8.6: {
+				// https://hub.docker.com/layers/library/php/8.6.0-fpm-bookworm/
+				image:
+					"docker.io/library/php:8.6.0-fpm-bookworm@sha256:d9c71b11de02025532351c6adf6011eb8fac572784c84a43759a534c3d127741",
+				version: "8.6.0",
+			},
 		},
 	},
 	debian13: {
@@ -67,6 +73,12 @@ const versions = {
 				image:
 					"docker.io/library/php:8.5.13-fpm-trixie@sha256:52ba6f178d0a08f348578b03595661b7ff13defafacf4c823d045f2ecba8db8f",
 				version: "8.5.13",
+			},
+			8.6: {
+				// https://hub.docker.com/layers/library/php/8.6.0-fpm-trixie/
+				image:
+					"docker.io/library/php:8.6.0-fpm-trixie@sha256:afe649d1c5f3713a69f28b8f65022c854daa686db3265040c825ded095d89a4b",
+				version: "8.6.0",
 			},
 		},
 	},
