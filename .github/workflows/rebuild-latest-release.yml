@@ -32,5 +32,5 @@ jobs:
           fi
 
           echo "Dispatching build.yml for ${tag}"
-          gh workflow run build.yml --repo "$GITHUB_REPOSITORY" --ref "$tag"
+          gh workflow run build.yml --repo "$GITHUB_REPOSITORY" --ref "$tag" -f no_cache=true
           echo "Dispatched build for \`${tag}\`" >> "$GITHUB_STEP_SUMMARY"

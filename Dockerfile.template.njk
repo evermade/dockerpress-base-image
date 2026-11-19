@@ -15,9 +15,6 @@ ARG GO_VERSION="1.27.4"
 
 FROM {{ baseImage }} AS base
 
-# This can be used to force rebuild below while allowing use of cache mounts
-ARG BUILD_DATE="undefined"
-
 # Builders aren't interactive
 ARG DEBIAN_FRONTEND="noninteractive"
 

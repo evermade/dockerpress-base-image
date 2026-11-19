@@ -14,6 +14,11 @@ on:
     tags:
       - "v*.*.*"
   workflow_dispatch:
+    inputs:
+      no_cache:
+        description: "Rebuild without cache (e.g. to pick up apt upgrades before the base image updates)"
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -36,16 +41,12 @@ jobs:
 {%- endfor %}
 {%- endfor %}
 {%- endfor %}{% raw %}
+    env:
+      CACHE_VARIANT: ${{ matrix.platform.platform }}-${{ matrix.platform.debianVersion }}-${{ matrix.platform.phpVersion }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-
-      - name: Set environment variables
-        id: set-env
-        run: |
-          BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          echo "BUILD_DATE=${BUILD_DATE}" >> $GITHUB_ENV
-          echo "build_date=${BUILD_DATE}" >> $GITHUB_OUTPUT
 
       # Tags are applied in the merge job, here we only need the labels.
       - name: Docker meta
@@ -75,12 +76,13 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dockerpress-base-image
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
-          cache-from: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform.platform }}-${{ matrix.platform.debianVersion }}-${{ matrix.platform.phpVersion }}
-          cache-to: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform.platform }}-${{ matrix.platform.debianVersion }}-${{ matrix.platform.phpVersion }},mode=max
+          cache-from: |
+            type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ env.CACHE_VARIANT }}
+            type=gha,scope=${{ github.repository }}-master-${{ env.CACHE_VARIANT }}
+          cache-to: ${{ !inputs.no_cache && format('type=gha,scope={0}-{1}-{2},mode=max', github.repository, github.ref_name, env.CACHE_VARIANT) || '' }}
           provenance: true
           sbom: true
-          build-args: |
-            BUILD_DATE=${{ steps.set-env.outputs.build_date }}
+          no-cache: ${{ inputs.no_cache || false }}
 
       - name: Export digest
         if: github.event_name != 'pull_request'
