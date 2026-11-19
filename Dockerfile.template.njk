@@ -440,8 +440,8 @@ ENV LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT="17a5e04cc1ea18ecbdbdfc3bdd1504bc434fe0b
 ADD --checksum=sha256:63e5a39c50ec03ee39eb32adef3e0273a42d4c61843b6a15acdf1a79bda45f07 --unpack=true https://salsa.debian.org/nginx-team/libnginx-mod-http-geoip2/-/archive/$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT/libnginx-mod-http-geoip2-$LIBNGINX_MOD_HTTP_GEOIP2_GIT_COMMIT.tar.gz /opt/
 
 # Download nginx headers more module from https://github.com/openresty/headers-more-nginx-module
-ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="21066f7eed72e4de4f6ec47b93e8d5f36c38b84a"
-ADD --checksum=sha256:52f3f4dc1b34efa887155e92398052bf477702b2753585fe3482e2dd0136ea62 --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
+ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="e30b10e0bb1cfb042d76ba3a865410ff95d65660"
+ADD --checksum=sha256:7ae52431c2dd9dd98970d05b4b017e55b9261af1bdfdbf827633daf730503503 --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
 # Download the ModSecurity-nginx module from https://github.com/owasp-modsecurity/ModSecurity-nginx
 ARG MODSEC_NGX_CHECKOUT="b7cf44e57bc386bc5c15e5c9319e6b6b719357f2"
