@@ -73,16 +73,6 @@ jobs:
           - os: ubuntu-latest
             platform: linux/amd64
             arch: amd64
-            debianVersion: "debian12"
-            phpVersion: "8.6"
-          - os: ubuntu-24.04-arm
-            platform: linux/arm64
-            arch: arm64
-            debianVersion: "debian12"
-            phpVersion: "8.6"
-          - os: ubuntu-latest
-            platform: linux/amd64
-            arch: amd64
             debianVersion: "debian13"
             phpVersion: "8.2"
           - os: ubuntu-24.04-arm
@@ -120,16 +110,6 @@ jobs:
             arch: arm64
             debianVersion: "debian13"
             phpVersion: "8.5"
-          - os: ubuntu-latest
-            platform: linux/amd64
-            arch: amd64
-            debianVersion: "debian13"
-            phpVersion: "8.6"
-          - os: ubuntu-24.04-arm
-            platform: linux/arm64
-            arch: arm64
-            debianVersion: "debian13"
-            phpVersion: "8.6"
     env:
       CACHE_VARIANT: ${{ matrix.platform.platform }}-${{ matrix.platform.debianVersion }}-${{ matrix.platform.phpVersion }}
 
@@ -215,9 +195,6 @@ jobs:
           - debianVersion: "debian12"
             defaultPHPVersion: "8.3"
             phpVersion: "8.5"
-          - debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
-            phpVersion: "8.6"
           - debianVersion: "debian13"
             defaultPHPVersion: "8.3"
             phpVersion: "8.2"
@@ -230,9 +207,6 @@ jobs:
           - debianVersion: "debian13"
             defaultPHPVersion: "8.3"
             phpVersion: "8.5"
-          - debianVersion: "debian13"
-            defaultPHPVersion: "8.3"
-            phpVersion: "8.6"
     steps:
       - name: Download digests
         uses: actions/download-artifact@v8

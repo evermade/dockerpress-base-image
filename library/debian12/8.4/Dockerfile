@@ -15,6 +15,9 @@ ARG GO_VERSION="1.27.4"
 
 FROM docker.io/library/php:8.4.28-fpm-bookworm@sha256:f79355c16ef38d4dacae8517290ce23c29f39e08b43b3394512cfa4079e4c70b AS base
 
+# This can be used to force rebuild below while allowing use of cache mounts
+ARG BUILD_DATE="undefined"
+
 # Builders aren't interactive
 ARG DEBIAN_FRONTEND="noninteractive"
 
