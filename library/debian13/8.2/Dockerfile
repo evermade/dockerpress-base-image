@@ -13,10 +13,7 @@
 ARG COSIGN_VERSION="3.1.4"
 ARG GO_VERSION="1.27.4"
 
-FROM docker.io/library/php:8.2.36-fpm-trixie@sha256:8e86eb23f37833babf060879b07b4eebb8683e4a04f5573acb494ff891359aa5 AS base
-
-# This can be used to force rebuild below while allowing use of cache mounts
-ARG BUILD_DATE="undefined"
+FROM docker.io/library/php:8.2.36-fpm-trixie@sha256:66247f3e15ad735951c06af08e8b4bedb20874ea9464039146f2f0fad0ca9616 AS base
 
 # Builders aren't interactive
 ARG DEBIAN_FRONTEND="noninteractive"

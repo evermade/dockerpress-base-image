@@ -13,10 +13,7 @@
 ARG COSIGN_VERSION="3.1.4"
 ARG GO_VERSION="1.27.4"
 
-FROM docker.io/library/php:8.3.37-fpm-bookworm@sha256:ff3db7724750bf02a3c7d65be2790feb63f6173c2fb201328eb0a2295ca32041 AS base
-
-# This can be used to force rebuild below while allowing use of cache mounts
-ARG BUILD_DATE="undefined"
+FROM docker.io/library/php:8.3.37-fpm-bookworm@sha256:5b9440ebac23314bb42d33338918c1c2c852469e5b0a7f0a9493448d827bab35 AS base
 
 # Builders aren't interactive
 ARG DEBIAN_FRONTEND="noninteractive"
