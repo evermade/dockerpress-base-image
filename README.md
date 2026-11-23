@@ -10,17 +10,17 @@ We provide multiple tags for images, below are some common examples:
 
 ```dockerfile
 # To use a specific semantic version
-FROM evermadefi/dockerpress-base-image:3.0.14
+FROM evermadefi/dockerpress-base-image:3.0.23
 FROM evermadefi/dockerpress-base-image:3.0
 FROM evermadefi/dockerpress-base-image:3
 
 # You can specify the Debian and PHP versions as well
-FROM evermadefi/dockerpress-base-image:3.0.14-php8.3-debian13
-FROM evermadefi/dockerpress-base-image:3.0.14-php8.3
-FROM evermadefi/dockerpress-base-image:3.0.14-debian13
+FROM evermadefi/dockerpress-base-image:3.0.23-php8.3-debian13
+FROM evermadefi/dockerpress-base-image:3.0.23-php8.3
+FROM evermadefi/dockerpress-base-image:3.0.23-debian13
 
 # To use a specific tag or branch
-FROM evermadefi/dockerpress-base-image:v3.0.14
+FROM evermadefi/dockerpress-base-image:v3.0.23
 FROM evermadefi/dockerpress-base-image:master
 
 # To use a specific commit hash
@@ -29,7 +29,7 @@ FROM evermadefi/dockerpress-base-image:deadbeefdeadbeefdeadbeefdeadbeefdeadbeef
 
 To simply just pull the image or update a stale local copy, run the `docker pull` command like so with the tag you wish you pull:
 
-`docker pull evermadefi/dockerpress-base-image:3.0.14`
+`docker pull evermadefi/dockerpress-base-image:3.0.23`
 
 And enjoy!
 
