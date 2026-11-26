@@ -10,7 +10,7 @@
 
 
 # Versions of tools downloaded in architecture specific stages
-ARG COSIGN_VERSION="3.1.4"
+ARG COSIGN_VERSION="3.1.6"
 ARG GO_VERSION="1.27.4"
 
 FROM docker.io/library/php:8.4.28-fpm-bookworm@sha256:e4b1eec29a5be22428aa93fb43da75a0e39006e403da0c3e93631dde92f067df AS base
@@ -65,8 +65,8 @@ FROM base AS fetch_cosign_amd64
 
 # Download cosign from https://github.com/sigstore/cosign/releases
 ARG COSIGN_VERSION
-ADD --checksum=sha256:b1282021bf1d6f1031d5df46cba12386c9b438d56d276d72f4df184a0008512b --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
-ADD --checksum=sha256:424e2c97d0b45fd7a6b608a87f090f35633f4c23ece5f092d48bba11aaf4bbfa --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64 /tmp/cosign
+ADD --checksum=sha256:08a51657fa371fa91b518c13ba3491402762b31f97e00dd1b4054a8222630faf --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
+ADD --checksum=sha256:318a99ade4156a0c4113aa983b46c0a0830fa7896a096c63121ee47b610a94c6 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-amd64 /tmp/cosign
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
@@ -77,8 +77,8 @@ FROM base AS fetch_cosign_arm64
 
 # Download cosign from https://github.com/sigstore/cosign/releases
 ARG COSIGN_VERSION
-ADD --checksum=sha256:844c90077824f8134a8ef5c0d13f60ce4b2942d97e072d7e4c211e9f1d495f76 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
-ADD --checksum=sha256:ade83b7aac62e131cacfe96d958948b2150cc9efec46a570a2649b8e27dedad2 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64 /tmp/cosign
+ADD --checksum=sha256:5f635740aa77add2eb55d955483133ae07fa18a71bf98475e95759e5b4f03b75 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64-kms.sigstore.json /tmp/cosign-kms.sigstore.json
+ADD --checksum=sha256:bbb2ebc765f483cf9fac42da8763dddc2b55b350ee12ea0c44a520a6d6d52334 --chmod=444 https://github.com/sigstore/cosign/releases/download/v$COSIGN_VERSION/cosign-linux-arm64 /tmp/cosign
 
 # Download go from https://go.dev/dl/
 ARG GO_VERSION
@@ -260,9 +260,9 @@ FROM base AS build_crs
 ADD --checksum=sha256:b3ea4d3014e9386b61a12cadd986360b358996624b26f9fb6be0fc8a219873ca --chmod=444 https://coreruleset.org/security.asc /tmp/crs-key.asc
 
 # Download coreruleset from https://github.com/coreruleset/coreruleset/releases
-ARG MODSEC_CRS_VERSION="4.30.0"
-ADD --checksum=sha256:dfd8c998d9c1759a3bbb080534fd220177ae1e9213867b91dc33ad74e2e71eb4 --chmod=444 https://github.com/coreruleset/coreruleset/releases/download/v$MODSEC_CRS_VERSION/coreruleset-$MODSEC_CRS_VERSION-minimal.tar.gz.asc /tmp/crs.tar.gz.asc
-ADD --checksum=sha256:3d678a41fd5aade34760127fef5dd64fd7a77848913fc0f70dde0cf467c94427 --chmod=444 https://github.com/coreruleset/coreruleset/releases/download/v$MODSEC_CRS_VERSION/coreruleset-$MODSEC_CRS_VERSION-minimal.tar.gz /tmp/crs.tar.gz
+ARG MODSEC_CRS_VERSION="4.31.0"
+ADD --checksum=sha256:ad606547c466497f855a9508ebde1c38949a07fba7ce7737b29104178849b695 --chmod=444 https://github.com/coreruleset/coreruleset/releases/download/v$MODSEC_CRS_VERSION/coreruleset-$MODSEC_CRS_VERSION-minimal.tar.gz.asc /tmp/crs.tar.gz.asc
+ADD --checksum=sha256:70e8c32ea5b57962a9081c74b738a498dcd299b1fc32099de6444b8ca5cdd8f5 --chmod=444 https://github.com/coreruleset/coreruleset/releases/download/v$MODSEC_CRS_VERSION/coreruleset-$MODSEC_CRS_VERSION-minimal.tar.gz /tmp/crs.tar.gz
 
 RUN set -eux; \
 	\
@@ -279,8 +279,8 @@ FROM base AS build_php_exts
 ARG DEBIAN_FRONTEND="noninteractive"
 
 # Download PIE from https://github.com/php/pie/releases
-ARG PIE_VERSION="1.5.5"
-ADD --checksum=sha256:2ca0dff6868f1b53c095625674deef38ac698588e0a25e4321cd834a5b7553bc --chmod=555 https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar /usr/local/bin/pie
+ARG PIE_VERSION="1.6.0"
+ADD --checksum=sha256:81041b276f4e23dfdfa6dc941e5745f9adec824a1bcf6141e226181ef43f519e --chmod=555 https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar /usr/local/bin/pie
 
 # PIE package versions from https://packagist.org/extensions
 ARG IGBINARY_VERSION="3.2.17RC1"
@@ -386,7 +386,7 @@ FROM base AS build_modsec
 ARG DEBIAN_FRONTEND="noninteractive"
 
 # Download the ModSecurity Git repository (branch: v3/master)
-ARG MODSEC_CHECKOUT="3921e8e50f8d9f24b5ff7052e77887c8ce0ffefb"
+ARG MODSEC_CHECKOUT="475aece84b0823a4318cf31c558a9584d660dc47"
 ADD --checksum=$MODSEC_CHECKOUT --keep-git-dir https://github.com/owasp-modsecurity/ModSecurity.git#$MODSEC_CHECKOUT /usr/src/ModSecurity
 
 RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
@@ -435,8 +435,8 @@ ENV HEADERS_MORE_NGINX_MODULE_GIT_COMMIT="e30b10e0bb1cfb042d76ba3a865410ff95d656
 ADD --checksum=sha256:7ae52431c2dd9dd98970d05b4b017e55b9261af1bdfdbf827633daf730503503 --unpack=true https://github.com/openresty/headers-more-nginx-module/archive/$HEADERS_MORE_NGINX_MODULE_GIT_COMMIT.tar.gz /opt/
 
 # Download the ModSecurity-nginx module from https://github.com/owasp-modsecurity/ModSecurity-nginx
-ARG MODSEC_NGX_CHECKOUT="b7cf44e57bc386bc5c15e5c9319e6b6b719357f2"
-ADD --checksum=sha256:16f190ae434bf060dcaf5163d8272ba8dce859406c40af3aa2d5d2ab458527fe --unpack=true https://github.com/owasp-modsecurity/ModSecurity-nginx/archive/$MODSEC_NGX_CHECKOUT.tar.gz /opt/
+ARG MODSEC_NGX_CHECKOUT="8de0e0ec5b786d9a6f2d23133f63eced730b2f7d"
+ADD --checksum=sha256:4f102e3ebc7fe71571e2451461d1b50e5c92925274ca28ef27a9459aba60678e --unpack=true https://github.com/owasp-modsecurity/ModSecurity-nginx/archive/$MODSEC_NGX_CHECKOUT.tar.gz /opt/
 
 # Copy built ModSecurity libs
 COPY --from=build_modsec /usr/local/modsecurity/ /usr/local/modsecurity/
