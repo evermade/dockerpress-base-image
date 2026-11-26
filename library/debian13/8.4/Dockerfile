@@ -420,7 +420,7 @@ ARG DEBIAN_FRONTEND="noninteractive"
 
 # Download nginx brotli module from https://github.com/google/ngx_brotli
 ENV NGX_BROTLI_GIT_COMMIT="53e0fb55f250f48fe80c0ddbf6c0f7103cdbaae1"
-ADD --checksum=$NGX_BROTLI_GIT_COMMIT --keep-git-dir https://github.com/google/ngx_brotli.git#$NGX_BROTLI_GIT_COMMIT /opt/ngx_brotli
+ADD --checksum=$NGX_BROTLI_GIT_COMMIT https://github.com/google/ngx_brotli.git#$NGX_BROTLI_GIT_COMMIT /opt/ngx_brotli
 
 # Download nginx cache purge module from https://salsa.debian.org/nginx-team/libnginx-mod-http-cache-purge
 ENV LIBNGINX_MOD_HTTP_CACHE_PURGE_GIT_COMMIT="1933c6474d9de118e7efbbd495c845ea4cde27ec"
@@ -463,7 +463,6 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	apt-get build-dep -y nginx; \
 	apt-get install -y --no-install-recommends \
 		cmake \
-		git \
 		\
 		# geoip2 dependencies
 		libmaxminddb-dev \
@@ -476,8 +475,6 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 	\
 	apt-get source nginx; \
 	\
-	cd /opt/ngx_brotli; \
-	git submodule update --init --recursive; \
 	cd /opt/ngx_brotli/deps/brotli; \
 	mkdir out && cd out; \
 	cmake -DCMAKE_BUILD_TYPE=Release \
