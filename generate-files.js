@@ -12,35 +12,6 @@ const architectures = [
 ];
 
 const versions = {
-	debian12: {
-		defaultPHPVersion: "8.3",
-		phpVersions: {
-			8.2: {
-				// https://hub.docker.com/layers/library/php/8.2.36-fpm-bookworm/
-				image:
-					"docker.io/library/php:8.2.36-fpm-bookworm@sha256:afd39a6125fcb59cbe9ff0e2183bbad56aecc59858f9262c73cf6f13ddb9a9e0",
-				version: "8.2.36",
-			},
-			8.3: {
-				// https://hub.docker.com/layers/library/php/8.3.37-fpm-bookworm/
-				image:
-					"docker.io/library/php:8.3.37-fpm-bookworm@sha256:5b9440ebac23314bb42d33338918c1c2c852469e5b0a7f0a9493448d827bab35",
-				version: "8.3.37",
-			},
-			8.4: {
-				// https://hub.docker.com/layers/library/php/8.4.28-fpm-bookworm/
-				image:
-					"docker.io/library/php:8.4.28-fpm-bookworm@sha256:e4b1eec29a5be22428aa93fb43da75a0e39006e403da0c3e93631dde92f067df",
-				version: "8.4.28",
-			},
-			8.5: {
-				// https://hub.docker.com/layers/library/php/8.5.13-fpm-bookworm/
-				image:
-					"docker.io/library/php:8.5.13-fpm-bookworm@sha256:bad1d3498eaa489efe88c1d532e47e2f4111304c3f0b19fbc428842c39ec155c",
-				version: "8.5.13",
-			},
-		},
-	},
 	debian13: {
 		defaultPHPVersion: "8.3",
 		phpVersions: {

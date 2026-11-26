@@ -33,46 +33,6 @@ jobs:
           - os: ubuntu-latest
             platform: linux/amd64
             arch: amd64
-            debianVersion: "debian12"
-            phpVersion: "8.2"
-          - os: ubuntu-24.04-arm
-            platform: linux/arm64
-            arch: arm64
-            debianVersion: "debian12"
-            phpVersion: "8.2"
-          - os: ubuntu-latest
-            platform: linux/amd64
-            arch: amd64
-            debianVersion: "debian12"
-            phpVersion: "8.3"
-          - os: ubuntu-24.04-arm
-            platform: linux/arm64
-            arch: arm64
-            debianVersion: "debian12"
-            phpVersion: "8.3"
-          - os: ubuntu-latest
-            platform: linux/amd64
-            arch: amd64
-            debianVersion: "debian12"
-            phpVersion: "8.4"
-          - os: ubuntu-24.04-arm
-            platform: linux/arm64
-            arch: arm64
-            debianVersion: "debian12"
-            phpVersion: "8.4"
-          - os: ubuntu-latest
-            platform: linux/amd64
-            arch: amd64
-            debianVersion: "debian12"
-            phpVersion: "8.5"
-          - os: ubuntu-24.04-arm
-            platform: linux/arm64
-            arch: arm64
-            debianVersion: "debian12"
-            phpVersion: "8.5"
-          - os: ubuntu-latest
-            platform: linux/amd64
-            arch: amd64
             debianVersion: "debian13"
             phpVersion: "8.2"
           - os: ubuntu-24.04-arm
@@ -183,18 +143,6 @@ jobs:
       fail-fast: false
       matrix:
         variant:
-          - debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
-            phpVersion: "8.2"
-          - debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
-            phpVersion: "8.3"
-          - debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
-            phpVersion: "8.4"
-          - debianVersion: "debian12"
-            defaultPHPVersion: "8.3"
-            phpVersion: "8.5"
           - debianVersion: "debian13"
             defaultPHPVersion: "8.3"
             phpVersion: "8.2"

@@ -628,36 +628,19 @@ RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
 		\
 		# gd PHP extension dependencies
 {%- if phpMajorMinorVersion > "8.0" %}
-{%- if debianVersion == "debian12" %}
-		libavif15 \
-{%- else %}
 		libavif16 \
-{%- endif %}
 {%- endif %}
 		\
 		# imagick PHP extension dependencies
-{%- if debianVersion < "debian13" %}
-		libmagickcore-6.q16-6 \
-		libmagickwand-6.q16-6 \
-{%- else %}
 		libmagickcore-7.q16-10 \
 		libmagickwand-7.q16-10 \
 		libheif-plugin-aomenc \
-{%- endif %}
 		\
 		# intl PHP extension dependencies
-{%- if debianVersion == "debian12" %}
-		libicu72 \
-{%- else %}
 		libicu76 \
-{%- endif %}
 		\
 		# zip PHP extension dependencies
-{%- if debianVersion < "debian13" %}
-		libzip4 \
-{%- else %}
 		libzip5 \
-{%- endif %}
 		\
 		# soap PHP extension dependencies
 		libxml2 \
